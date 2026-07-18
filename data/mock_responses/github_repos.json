@@ -1,0 +1,5 @@
+[
+  {"name": "hello-world", "stargazers_count": 80, "language": "Ruby"},
+  {"name": "Spoon-Knife", "stargazers_count": 120, "language": "HTML"},
+  {"name": "api-notes", "stargazers_count": 12, "language": "Python"}
+]

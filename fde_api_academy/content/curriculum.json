@@ -1,0 +1,4481 @@
+[
+  {
+    "id": 1,
+    "title": "Python Refresher",
+    "topics": [
+      "variables",
+      "strings",
+      "lists",
+      "dictionaries",
+      "loops",
+      "functions",
+      "exceptions",
+      "file handling"
+    ],
+    "difficulty": "Beginner",
+    "lessons": [
+      {
+        "id": "m01-python-reporting",
+        "title": "Process User Data Into a Report",
+        "difficulty": "Beginner",
+        "skills": [
+          "data_parsing"
+        ],
+        "estimated_minutes": 25,
+        "explanation": "FDE work often starts with plain Python: receive messy records, normalize them, and explain what changed. In this lesson you will summarize a list of user dictionaries into a small report.",
+        "visual": "raw users -> loop over dictionaries -> count active users -> collect emails -> return report",
+        "example_code": "def names(users):\n    output = []\n    for user in users:\n        output.append(user['name'])\n    return output",
+        "guided_exercise": {
+          "id": "m01-guided",
+          "title": "Summarize users",
+          "prompt": "Open fde_api_academy/student/m01_python_report.py and implement summarize_users(users). Return total count, active count, and email list.",
+          "starter_file": "fde_api_academy/student/m01_python_report.py",
+          "validator": "validate_user_summary",
+          "skill_weights": {
+            "data_parsing": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m01-challenge",
+          "title": "Handle missing optional fields",
+          "prompt": "Update your implementation so optional keys do not crash the report. Missing active should count as False.",
+          "starter_file": "fde_api_academy/student/m01_python_report.py",
+          "validator": "validate_user_summary",
+          "skill_weights": {
+            "data_parsing": 3,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "What assumptions did your function make about input shape?",
+          "Which missing key would be most likely in real customer data?"
+        ],
+        "hints": [
+          "Start by creating a result dictionary with total, active, and emails.",
+          "Loop through each user and use user.get(...) for optional keys.",
+          "active should increase only when the value is truthy; append every email in order.",
+          "A solid solution returns {'total': len(users), 'active': sum(1 for u in users if u.get('active')), 'emails': [u.get('email') for u in users]}."
+        ],
+        "practice_drills": [
+          {
+            "id": "m01-drill-1",
+            "title": "Normalize customer records",
+            "prompt": "Write normalize_customer_records(records). Each record may have optional 'name', 'email', and 'active' keys. Return {'users': [...], 'incomplete': N} where every user is filled with defaults ('Unknown', '', False) and 'incomplete' counts records missing any of the three keys.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "normalize_customer_records",
+            "starter_file": "fde_api_academy/student/drill_m01_drill_1.py",
+            "example": "normalize_customer_records([{'name': 'Ada', 'email': 'ada@x.com', 'active': True}, {'name': 'Lin'}]) -> {'users': [{'name': 'Ada', 'email': 'ada@x.com', 'active': True}, {'name': 'Lin', 'email': '', 'active': False}], 'incomplete': 1}",
+            "expected": "Graded on 4 test cases. Your function must return exactly these results:\n(showing 3; 1 more case is hidden)\n\nnormalize_customer_records([{'name': 'Ada', 'email': 'ada@x.com', 'active': True}, {'name': 'Lin'}]) -> {'users': [{'name': 'Ada', 'email': 'ada@x.com', 'active': True}, {'name': 'Lin', 'email': '', 'active': False}], 'incomplete': 1}\n\nnormalize_customer_records([]) -> {'users': [], 'incomplete': 0}\n\nnormalize_customer_records([{}]) -> {'users': [{'name': 'Unknown', 'email': '', 'active': False}], 'incomplete': 1}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "Ada",
+                      "email": "ada@x.com",
+                      "active": true
+                    },
+                    {
+                      "name": "Lin"
+                    }
+                  ]
+                ],
+                "expected": {
+                  "users": [
+                    {
+                      "name": "Ada",
+                      "email": "ada@x.com",
+                      "active": true
+                    },
+                    {
+                      "name": "Lin",
+                      "email": "",
+                      "active": false
+                    }
+                  ],
+                  "incomplete": 1
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {
+                  "users": [],
+                  "incomplete": 0
+                }
+              },
+              {
+                "args": [
+                  [
+                    {}
+                  ]
+                ],
+                "expected": {
+                  "users": [
+                    {
+                      "name": "Unknown",
+                      "email": "",
+                      "active": false
+                    }
+                  ],
+                  "incomplete": 1
+                }
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "name": "A",
+                      "email": "a@x.com",
+                      "active": false
+                    }
+                  ]
+                ],
+                "expected": {
+                  "users": [
+                    {
+                      "name": "A",
+                      "email": "a@x.com",
+                      "active": false
+                    }
+                  ],
+                  "incomplete": 0
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m01-drill-2",
+            "title": "Build a text report",
+            "prompt": "Write build_text_report(records). Given customer records (each with an 'active' flag), return a three-line string: 'Total customers: X', 'Active customers: Y', 'Inactive customers: Z' separated by newlines.",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "build_text_report",
+            "starter_file": "fde_api_academy/student/drill_m01_drill_2.py",
+            "example": "build_text_report([{'active': True}, {'active': False}, {'active': True}]) -> 'Total customers: 3\\nActive customers: 2\\nInactive customers: 1'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nbuild_text_report([{'active': True}, {'active': False}, {'active': True}]) -> 'Total customers: 3\\nActive customers: 2\\nInactive customers: 1'\n\nbuild_text_report([]) -> 'Total customers: 0\\nActive customers: 0\\nInactive customers: 0'\n\nbuild_text_report([{'active': False}]) -> 'Total customers: 1\\nActive customers: 0\\nInactive customers: 1'",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "active": true
+                    },
+                    {
+                      "active": false
+                    },
+                    {
+                      "active": true
+                    }
+                  ]
+                ],
+                "expected": "Total customers: 3\nActive customers: 2\nInactive customers: 1"
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": "Total customers: 0\nActive customers: 0\nInactive customers: 0"
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "active": false
+                    }
+                  ]
+                ],
+                "expected": "Total customers: 1\nActive customers: 0\nInactive customers: 1"
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m01-drill-3",
+            "title": "Handle bad input safely",
+            "prompt": "Write clean_records(records). Some items may not be dictionaries. Return {'users': [...only dict rows...], 'errors': N} where N counts the skipped non-dict rows.",
+            "source_title": "GeeksforGeeks How to Parse Nested JSON in Python",
+            "source_url": "https://www.geeksforgeeks.org/how-to-parse-nested-json-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "clean_records",
+            "starter_file": "fde_api_academy/student/drill_m01_drill_3.py",
+            "example": "clean_records([{'name': 'A'}, 'bad', 5]) -> {'users': [{'name': 'A'}], 'errors': 2}",
+            "expected": "Graded on 4 test cases. Your function must return exactly these results:\n(showing 3; 1 more case is hidden)\n\nclean_records([{'name': 'A'}, 'bad', 5]) -> {'users': [{'name': 'A'}], 'errors': 2}\n\nclean_records([]) -> {'users': [], 'errors': 0}\n\nclean_records([1, 2, 3]) -> {'users': [], 'errors': 3}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "A"
+                    },
+                    "bad",
+                    5
+                  ]
+                ],
+                "expected": {
+                  "users": [
+                    {
+                      "name": "A"
+                    }
+                  ],
+                  "errors": 2
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {
+                  "users": [],
+                  "errors": 0
+                }
+              },
+              {
+                "args": [
+                  [
+                    1,
+                    2,
+                    3
+                  ]
+                ],
+                "expected": {
+                  "users": [],
+                  "errors": 3
+                }
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "x": 1
+                    },
+                    {
+                      "y": 2
+                    }
+                  ]
+                ],
+                "expected": {
+                  "users": [
+                    {
+                      "x": 1
+                    },
+                    {
+                      "y": 2
+                    }
+                  ],
+                  "errors": 0
+                }
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          },
+          {
+            "id": "m01-drill-4",
+            "title": "Shape areas with ceiling",
+            "source_title": "Palantir FDSE HackerRank 'Shape Classes' (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-hackerrank-challenge/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir FDSE 'Shape Classes' HackerRank task. Write shape_areas(shapes). Each shape is {'type': 'circle'|'rectangle'|'square', ...dims} ('r' for circle, 'w'/'h' for rectangle, 'side' for square). Use pi = 3.14159265 and return the ceiling of each area as a list of ints.",
+            "entry_function": "shape_areas",
+            "starter_file": "fde_api_academy/student/drill_m01_drill_4.py",
+            "example": "shape_areas([{'type': 'circle', 'r': 1.2}, {'type': 'square', 'side': 3}]) -> [5, 9]",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nshape_areas([{'type': 'circle', 'r': 1.2}, {'type': 'square', 'side': 3}]) -> [5, 9]\n\nshape_areas([{'type': 'rectangle', 'w': 2, 'h': 5}]) -> [10]\n\nshape_areas([]) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "type": "circle",
+                      "r": 1.2
+                    },
+                    {
+                      "type": "square",
+                      "side": 3
+                    }
+                  ]
+                ],
+                "expected": [
+                  5,
+                  9
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "type": "rectangle",
+                      "w": 2,
+                      "h": 5
+                    }
+                  ]
+                ],
+                "expected": [
+                  10
+                ]
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Data Parsing Fundamentals",
+    "topics": [
+      "dictionaries",
+      "nested dictionaries",
+      "lists of dictionaries",
+      "JSON-like structures",
+      "traversing data"
+    ],
+    "difficulty": "Beginner to Intermediate",
+    "lessons": [
+      {
+        "id": "m02-extract-contacts",
+        "title": "Traverse Nested API Data",
+        "difficulty": "Beginner to Intermediate",
+        "skills": [
+          "data_parsing"
+        ],
+        "estimated_minutes": 30,
+        "explanation": "APIs rarely return flat data. You need to move through nested dictionaries carefully, preserve useful fields, and survive missing optional values.",
+        "visual": "payload['users'][0]['profile']['name'] + payload['users'][0]['contact']['email'] -> contact row",
+        "example_code": "email = payload['users'][0]['contact']['email']\n# Safer:\nemail = user.get('contact', {}).get('email')",
+        "guided_exercise": {
+          "id": "m02-guided",
+          "title": "Extract contacts",
+          "prompt": "Implement extract_contacts(payload). Return a list of dictionaries with name, email, and phone.",
+          "starter_file": "fde_api_academy/student/m02_extract_contacts.py",
+          "validator": "validate_extract_contacts",
+          "skill_weights": {
+            "data_parsing": 3
+          }
+        },
+        "challenge_exercise": {
+          "id": "m02-challenge",
+          "title": "Preserve missing phone numbers",
+          "prompt": "Make sure users without phone numbers return phone: None instead of crashing.",
+          "starter_file": "fde_api_academy/student/m02_extract_contacts.py",
+          "validator": "validate_extract_contacts",
+          "skill_weights": {
+            "data_parsing": 3,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "Where would KeyError happen in this payload?",
+          "When should you use direct indexing instead of get()?"
+        ],
+        "hints": [
+          "Iterate over payload.get('users', []).",
+          "Read profile and contact as separate nested dictionaries.",
+          "Use .get('phone') so missing phone values become None.",
+          "Build one output row per user: {'name': profile.get('name'), 'email': contact.get('email'), 'phone': contact.get('phone')}."
+        ],
+        "practice_drills": [
+          {
+            "id": "m02-drill-1",
+            "title": "Extract nested owner emails",
+            "prompt": "Write extract_owner_emails(data) for data shaped like {'accounts': [{'owner': {'email': ...}}]}. Return a list of owner emails, skipping accounts with no owner or no email.",
+            "source_title": "Stack Overflow Python nested JSON access question",
+            "source_url": "https://stackoverflow.com/questions/23306653/python-accessing-nested-json-data",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "extract_owner_emails",
+            "starter_file": "fde_api_academy/student/drill_m02_drill_1.py",
+            "example": "extract_owner_emails({'accounts': [{'owner': {'email': 'a@x.com'}}, {'owner': {}}, {}]}) -> ['a@x.com']",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nextract_owner_emails({'accounts': [{'owner': {'email': 'a@x.com'}}, {'owner': {}}, {}]}) -> ['a@x.com']\n\nextract_owner_emails({'accounts': []}) -> []\n\nextract_owner_emails({}) -> []",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "accounts": [
+                      {
+                        "owner": {
+                          "email": "a@x.com"
+                        }
+                      },
+                      {
+                        "owner": {}
+                      },
+                      {}
+                    ]
+                  }
+                ],
+                "expected": [
+                  "a@x.com"
+                ]
+              },
+              {
+                "args": [
+                  {
+                    "accounts": []
+                  }
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  {}
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m02-drill-2",
+            "title": "Flatten CRM contacts",
+            "prompt": "Write flatten_contacts(records). Each record has 'profile' (name, email, phone) and 'company' (name) dicts. Return a flat list of {'name','company','email','phone'} using None for any missing value.",
+            "source_title": "GeeksforGeeks How to Parse Nested JSON in Python",
+            "source_url": "https://www.geeksforgeeks.org/how-to-parse-nested-json-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "flatten_contacts",
+            "starter_file": "fde_api_academy/student/drill_m02_drill_2.py",
+            "example": "flatten_contacts([{'profile': {'name': 'Ada', 'email': 'a@x.com', 'phone': '555'}, 'company': {'name': 'Acme'}}]) -> [{'name': 'Ada', 'company': 'Acme', 'email': 'a@x.com', 'phone': '555'}]",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nflatten_contacts([{'profile': {'name': 'Ada', 'email': 'a@x.com', 'phone': '555'}, 'company': {'name': 'Acme'}}]) -> [{'name': 'Ada', 'company': 'Acme', 'email': 'a@x.com', 'phone': '555'}]\n\nflatten_contacts([{'profile': {'name': 'Lin'}}]) -> [{'name': 'Lin', 'company': None, 'email': None, 'phone': None}]\n\nflatten_contacts([]) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "profile": {
+                        "name": "Ada",
+                        "email": "a@x.com",
+                        "phone": "555"
+                      },
+                      "company": {
+                        "name": "Acme"
+                      }
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "name": "Ada",
+                    "company": "Acme",
+                    "email": "a@x.com",
+                    "phone": "555"
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "profile": {
+                        "name": "Lin"
+                      }
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "name": "Lin",
+                    "company": null,
+                    "email": null,
+                    "phone": null
+                  }
+                ]
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m02-drill-3",
+            "title": "Find missing required fields",
+            "prompt": "Write find_missing_emails(data) for data shaped like {'users': [{'id': .., 'contact': {'email': ..}}]}. Return the list of user ids whose contact.email is missing or empty.",
+            "source_title": "GeeksforGeeks JSON Interview Questions",
+            "source_url": "https://www.geeksforgeeks.org/json-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "find_missing_emails",
+            "starter_file": "fde_api_academy/student/drill_m02_drill_3.py",
+            "example": "find_missing_emails({'users': [{'id': 1, 'contact': {'email': 'a@x.com'}}, {'id': 2, 'contact': {}}]}) -> [2]",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nfind_missing_emails({'users': [{'id': 1, 'contact': {'email': 'a@x.com'}}, {'id': 2, 'contact': {}}]}) -> [2]\n\nfind_missing_emails({'users': [{'id': 3, 'contact': {'email': ''}}]}) -> [3]\n\nfind_missing_emails({'users': []}) -> []",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "users": [
+                      {
+                        "id": 1,
+                        "contact": {
+                          "email": "a@x.com"
+                        }
+                      },
+                      {
+                        "id": 2,
+                        "contact": {}
+                      }
+                    ]
+                  }
+                ],
+                "expected": [
+                  2
+                ]
+              },
+              {
+                "args": [
+                  {
+                    "users": [
+                      {
+                        "id": 3,
+                        "contact": {
+                          "email": ""
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "expected": [
+                  3
+                ]
+              },
+              {
+                "args": [
+                  {
+                    "users": []
+                  }
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "JSON Mastery",
+    "topics": [
+      "json.loads()",
+      "json.dumps()",
+      "reading files",
+      "writing files",
+      "nested JSON"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m03-json-reports",
+        "title": "Transform JSON Into a Summary",
+        "difficulty": "Intermediate",
+        "skills": [
+          "data_parsing",
+          "automation"
+        ],
+        "estimated_minutes": 35,
+        "explanation": "Startup integrations often need a compact summary from a noisy JSON response. You will compute totals, top items, and language counts from repository JSON.",
+        "visual": "repos.json -> json.loads -> aggregate stars/languages -> json.dumps(report)",
+        "example_code": "import json\npayload = json.loads(raw_text)\npretty = json.dumps(payload, indent=2)",
+        "guided_exercise": {
+          "id": "m03-guided",
+          "title": "Repository report",
+          "prompt": "Implement build_repo_report(repos). Return total repos, total stars, top repo, and language counts.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "data_parsing": 3,
+            "automation": 1
+          }
+        },
+        "challenge_exercise": {
+          "id": "m03-challenge",
+          "title": "Sort and aggregate",
+          "prompt": "Extend your report logic to be stable when repos have missing language or zero stars.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "data_parsing": 3,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "What makes JSON different from a Python dictionary?",
+          "What should your code do with null language values?"
+        ],
+        "hints": [
+          "total_repos is len(repos).",
+          "Use sum(repo.get('stargazers_count', 0) for repo in repos).",
+          "max(repos, key=lambda repo: repo.get('stargazers_count', 0)) finds the top repo.",
+          "Count languages with a dictionary and skip missing languages unless your product needs an Unknown bucket."
+        ],
+        "practice_drills": [
+          {
+            "id": "m03-drill-1",
+            "title": "Load and summarize JSON",
+            "prompt": "Write summarize_repos(json_string). The string is JSON for a list of repos (each with 'name', 'stars', 'language'). Return {'total': N, 'top': name_with_most_stars, 'languages': {lang: count}}.",
+            "source_title": "GeeksforGeeks JSON Interview Questions",
+            "source_url": "https://www.geeksforgeeks.org/json-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "summarize_repos",
+            "starter_file": "fde_api_academy/student/drill_m03_drill_1.py",
+            "example": "summarize_repos('[{\"name\": \"api\", \"stars\": 9, \"language\": \"Python\"}, {\"name\": \"ui\", \"stars\": 3, \"language\": \"TS\"}]') -> {'total': 2, 'top': 'api', 'languages': {'Python': 1, 'TS': 1}}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nsummarize_repos('[{\"name\": \"api\", \"stars\": 9, \"language\": \"Python\"}, {\"name\": \"ui\", \"stars\": 3, \"language\": \"TS\"}]') -> {'total': 2, 'top': 'api', 'languages': {'Python': 1, 'TS': 1}}\n\nsummarize_repos('[]') -> {'total': 0, 'top': None, 'languages': {}}\n\nsummarize_repos('[{\"name\": \"solo\", \"stars\": 1, \"language\": \"Go\"}]') -> {'total': 1, 'top': 'solo', 'languages': {'Go': 1}}",
+            "cases": [
+              {
+                "args": [
+                  "[{\"name\": \"api\", \"stars\": 9, \"language\": \"Python\"}, {\"name\": \"ui\", \"stars\": 3, \"language\": \"TS\"}]"
+                ],
+                "expected": {
+                  "total": 2,
+                  "top": "api",
+                  "languages": {
+                    "Python": 1,
+                    "TS": 1
+                  }
+                }
+              },
+              {
+                "args": [
+                  "[]"
+                ],
+                "expected": {
+                  "total": 0,
+                  "top": null,
+                  "languages": {}
+                }
+              },
+              {
+                "args": [
+                  "[{\"name\": \"solo\", \"stars\": 1, \"language\": \"Go\"}]"
+                ],
+                "expected": {
+                  "total": 1,
+                  "top": "solo",
+                  "languages": {
+                    "Go": 1
+                  }
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m03-drill-2",
+            "title": "Round-trip JSON safely",
+            "prompt": "Write round_trip(report). Serialize the dict to JSON and parse it back, returning the restored object so it equals the original.",
+            "source_title": "GeeksforGeeks JSON Interview Questions",
+            "source_url": "https://www.geeksforgeeks.org/json-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "round_trip",
+            "starter_file": "fde_api_academy/student/drill_m03_drill_2.py",
+            "example": "round_trip({'total': 3, 'ok': True}) -> {'total': 3, 'ok': True}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nround_trip({'total': 3, 'ok': True}) -> {'total': 3, 'ok': True}\n\nround_trip({'nested': {'a': [1, 2]}}) -> {'nested': {'a': [1, 2]}}\n\nround_trip({}) -> {}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "total": 3,
+                    "ok": true
+                  }
+                ],
+                "expected": {
+                  "total": 3,
+                  "ok": true
+                }
+              },
+              {
+                "args": [
+                  {
+                    "nested": {
+                      "a": [
+                        1,
+                        2
+                      ]
+                    }
+                  }
+                ],
+                "expected": {
+                  "nested": {
+                    "a": [
+                      1,
+                      2
+                    ]
+                  }
+                }
+              },
+              {
+                "args": [
+                  {}
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 1
+            }
+          },
+          {
+            "id": "m03-drill-3",
+            "title": "Flatten nested JSON paths",
+            "prompt": "Write flatten_json(data). Turn a nested dict into a flat dict whose keys are dot paths, e.g. {'user': {'profile': {'name': 'Ada'}}} -> {'user.profile.name': 'Ada'}.",
+            "source_title": "GeeksforGeeks How to Parse Nested JSON in Python",
+            "source_url": "https://www.geeksforgeeks.org/how-to-parse-nested-json-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "flatten_json",
+            "starter_file": "fde_api_academy/student/drill_m03_drill_3.py",
+            "example": "flatten_json({'user': {'profile': {'name': 'Ada'}}}) -> {'user.profile.name': 'Ada'}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nflatten_json({'user': {'profile': {'name': 'Ada'}}}) -> {'user.profile.name': 'Ada'}\n\nflatten_json({'a': 1, 'b': {'c': 2}}) -> {'a': 1, 'b.c': 2}\n\nflatten_json({}) -> {}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "user": {
+                      "profile": {
+                        "name": "Ada"
+                      }
+                    }
+                  }
+                ],
+                "expected": {
+                  "user.profile.name": "Ada"
+                }
+              },
+              {
+                "args": [
+                  {
+                    "a": 1,
+                    "b": {
+                      "c": 2
+                    }
+                  }
+                ],
+                "expected": {
+                  "a": 1,
+                  "b.c": 2
+                }
+              },
+              {
+                "args": [
+                  {}
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "HTTP Fundamentals",
+    "topics": [
+      "HTTP",
+      "request lifecycle",
+      "headers",
+      "query parameters",
+      "request bodies",
+      "status codes"
+    ],
+    "difficulty": "Beginner",
+    "lessons": [
+      {
+        "id": "m04-status-codes",
+        "title": "Classify HTTP Outcomes",
+        "difficulty": "Beginner",
+        "skills": [
+          "api",
+          "debugging"
+        ],
+        "estimated_minutes": 25,
+        "explanation": "HTTP status codes are the first debugging signal in an integration. Learn to group success, client mistakes, authentication failures, rate limits, and server errors.",
+        "visual": "client -> request(headers, params, body) -> server -> response(status, headers, body)",
+        "example_code": "if response.status_code == 429:\n    raise RuntimeError('Back off and retry later')",
+        "guided_exercise": {
+          "id": "m04-guided",
+          "title": "Status classifier",
+          "prompt": "Implement classify_status(code): 2xx success, 401/403 auth_error, 429 rate_limited, 4xx client_error, 5xx server_error.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2,
+            "debugging": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m04-challenge",
+          "title": "Explain retry behavior",
+          "prompt": "Add comments or helper logic that distinguishes retryable 429/500 from non-retryable 400/404.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2,
+            "debugging": 2
+          }
+        },
+        "reflection_questions": [
+          "Why is 401 different from 403?",
+          "Which status codes would you retry automatically?"
+        ],
+        "hints": [
+          "Check the most specific codes before broad ranges.",
+          "401 and 403 are both auth-related for this exercise.",
+          "429 deserves its own bucket before general 4xx.",
+          "Return strings exactly as the validator expects: success, auth_error, rate_limited, client_error, server_error."
+        ],
+        "practice_drills": [
+          {
+            "id": "m04-drill-1",
+            "title": "Map status codes to actions",
+            "prompt": "Write status_action(code). Map an HTTP status to an action string: 2xx -> 'accept', 429 -> 'rate-limit backoff', 401/403 -> 'refresh credentials', 5xx -> 'retry', everything else -> 'escalate'.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "status_action",
+            "starter_file": "fde_api_academy/student/drill_m04_drill_1.py",
+            "example": "status_action(429) -> 'rate-limit backoff'",
+            "expected": "Graded on 6 test cases. Your function must return exactly these results:\n(showing 3; 3 more cases are hidden)\n\nstatus_action(200) -> 'accept'\n\nstatus_action(204) -> 'accept'\n\nstatus_action(429) -> 'rate-limit backoff'",
+            "cases": [
+              {
+                "args": [
+                  200
+                ],
+                "expected": "accept"
+              },
+              {
+                "args": [
+                  204
+                ],
+                "expected": "accept"
+              },
+              {
+                "args": [
+                  429
+                ],
+                "expected": "rate-limit backoff"
+              },
+              {
+                "args": [
+                  401
+                ],
+                "expected": "refresh credentials"
+              },
+              {
+                "args": [
+                  503
+                ],
+                "expected": "retry"
+              },
+              {
+                "args": [
+                  418
+                ],
+                "expected": "escalate"
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          },
+          {
+            "id": "m04-drill-2",
+            "title": "Explain 400 vs 404",
+            "prompt": "Write explain_status(code). Return a customer-facing message: 400 -> 'Bad request: the data sent was invalid.', 404 -> 'Not found: the requested resource does not exist.', otherwise 'Unexpected status: <code>'.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "explain_status",
+            "starter_file": "fde_api_academy/student/drill_m04_drill_2.py",
+            "example": "explain_status(404) -> 'Not found: the requested resource does not exist.'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nexplain_status(400) -> 'Bad request: the data sent was invalid.'\n\nexplain_status(404) -> 'Not found: the requested resource does not exist.'\n\nexplain_status(500) -> 'Unexpected status: 500'",
+            "cases": [
+              {
+                "args": [
+                  400
+                ],
+                "expected": "Bad request: the data sent was invalid."
+              },
+              {
+                "args": [
+                  404
+                ],
+                "expected": "Not found: the requested resource does not exist."
+              },
+              {
+                "args": [
+                  500
+                ],
+                "expected": "Unexpected status: 500"
+              }
+            ],
+            "skill_weights": {
+              "debugging": 1
+            }
+          },
+          {
+            "id": "m04-drill-3",
+            "title": "Classify retryable failures",
+            "prompt": "Write split_retryable(responses) where each response is {'status': code}. Return {'retryable': [...statuses...], 'non_retryable': [...]}. Retryable means 429 or any 5xx.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "split_retryable",
+            "starter_file": "fde_api_academy/student/drill_m04_drill_3.py",
+            "example": "split_retryable([{'status': 200}, {'status': 429}, {'status': 500}, {'status': 400}]) -> {'retryable': [429, 500], 'non_retryable': [200, 400]}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nsplit_retryable([{'status': 200}, {'status': 429}, {'status': 500}, {'status': 400}]) -> {'retryable': [429, 500], 'non_retryable': [200, 400]}\n\nsplit_retryable([]) -> {'retryable': [], 'non_retryable': []}\n\nsplit_retryable([{'status': 503}]) -> {'retryable': [503], 'non_retryable': []}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "status": 200
+                    },
+                    {
+                      "status": 429
+                    },
+                    {
+                      "status": 500
+                    },
+                    {
+                      "status": 400
+                    }
+                  ]
+                ],
+                "expected": {
+                  "retryable": [
+                    429,
+                    500
+                  ],
+                  "non_retryable": [
+                    200,
+                    400
+                  ]
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {
+                  "retryable": [],
+                  "non_retryable": []
+                }
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "status": 503
+                    }
+                  ]
+                ],
+                "expected": {
+                  "retryable": [
+                    503
+                  ],
+                  "non_retryable": []
+                }
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "GET Requests",
+    "topics": [
+      "requests.get()",
+      "query parameters",
+      "filtering",
+      "pagination"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m05-github-profile",
+        "title": "Build a GitHub Profile Explorer",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api",
+          "data_parsing"
+        ],
+        "estimated_minutes": 45,
+        "explanation": "GET requests power lookups, search, and pagination. You will analyze a GitHub user and repository list like a real customer-facing integration.",
+        "visual": "GET /users/{username} -> user JSON\nGET /users/{username}/repos?page=1 -> repo JSON -> profile report",
+        "example_code": "import requests\nresponse = requests.get(url, params={'page': 1, 'per_page': 100})\nresponse.raise_for_status()\ndata = response.json()",
+        "guided_exercise": {
+          "id": "m05-guided",
+          "title": "Analyze profile",
+          "prompt": "Implement analyze_profile(user, repos). Include username, display name, total stars, most-starred repo, and language breakdown.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 2,
+            "data_parsing": 3
+          }
+        },
+        "challenge_exercise": {
+          "id": "m05-challenge",
+          "title": "Pagination plan",
+          "prompt": "Add a fetch_all_pages helper that would keep requesting pages until an empty page is returned.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 3,
+            "automation": 1
+          }
+        },
+        "reflection_questions": [
+          "How would you prevent rate-limit surprises?",
+          "What fields should a customer-facing profile explorer show first?"
+        ],
+        "hints": [
+          "Start by computing total_stars from repos.",
+          "max(..., key=...) identifies the most-starred repository.",
+          "Count languages with a dictionary and skip missing values.",
+          "Return exactly username, display_name, total_stars, most_starred_repo, and language_breakdown."
+        ],
+        "practice_drills": [
+          {
+            "id": "m05-drill-1",
+            "title": "Build query parameters",
+            "prompt": "Write build_query(params). Return a new dict that drops any key whose value is None, '' or []. Keep everything else (status, page, per_page, sort).",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "build_query",
+            "starter_file": "fde_api_academy/student/drill_m05_drill_1.py",
+            "example": "build_query({'status': 'open', 'page': 1, 'per_page': None, 'sort': ''}) -> {'status': 'open', 'page': 1}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nbuild_query({'status': 'open', 'page': 1, 'per_page': None, 'sort': ''}) -> {'status': 'open', 'page': 1}\n\nbuild_query({'a': 0, 'b': None}) -> {'a': 0}\n\nbuild_query({}) -> {}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "status": "open",
+                    "page": 1,
+                    "per_page": null,
+                    "sort": ""
+                  }
+                ],
+                "expected": {
+                  "status": "open",
+                  "page": 1
+                }
+              },
+              {
+                "args": [
+                  {
+                    "a": 0,
+                    "b": null
+                  }
+                ],
+                "expected": {
+                  "a": 0
+                }
+              },
+              {
+                "args": [
+                  {}
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m05-drill-2",
+            "title": "Fetch paginated results",
+            "prompt": "Write collect_all(pages). pages is a list of result pages (each a list). Concatenate records page by page and stop at the first empty page, returning the flattened list.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "collect_all",
+            "starter_file": "fde_api_academy/student/drill_m05_drill_2.py",
+            "example": "collect_all([[1, 2], [3], []]) -> [1, 2, 3]",
+            "expected": "Graded on 4 test cases. Your function must return exactly these results:\n(showing 3; 1 more case is hidden)\n\ncollect_all([[1, 2], [3], []]) -> [1, 2, 3]\n\ncollect_all([[1], [2]]) -> [1, 2]\n\ncollect_all([[]]) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      2
+                    ],
+                    [
+                      3
+                    ],
+                    []
+                  ]
+                ],
+                "expected": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1
+                    ],
+                    [
+                      2
+                    ]
+                  ]
+                ],
+                "expected": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "args": [
+                  [
+                    []
+                  ]
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m05-drill-3",
+            "title": "Filter API search results",
+            "prompt": "Write filter_results(results, language, min_stars). results is a list of {'name','language','stars'}. Return the names whose language matches and stars >= min_stars.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "filter_results",
+            "starter_file": "fde_api_academy/student/drill_m05_drill_3.py",
+            "example": "filter_results([{'name': 'a', 'language': 'Python', 'stars': 5}, {'name': 'b', 'language': 'Go', 'stars': 9}], 'Python', 3) -> ['a']",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nfilter_results([{'name': 'a', 'language': 'Python', 'stars': 5}, {'name': 'b', 'language': 'Go', 'stars': 9}], 'Python', 3) -> ['a']\n\nfilter_results([{'name': 'c', 'language': 'Python', 'stars': 1}], 'Python', 3) -> []\n\nfilter_results([], 'Python', 0) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "a",
+                      "language": "Python",
+                      "stars": 5
+                    },
+                    {
+                      "name": "b",
+                      "language": "Go",
+                      "stars": 9
+                    }
+                  ],
+                  "Python",
+                  3
+                ],
+                "expected": [
+                  "a"
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "name": "c",
+                      "language": "Python",
+                      "stars": 1
+                    }
+                  ],
+                  "Python",
+                  3
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [],
+                  "Python",
+                  0
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m05-drill-4",
+            "title": "Paginate an API (Finest Food Outlets)",
+            "source_title": "Palantir FDSE HackerRank Online Assessment (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-hackerrank-challenge/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir FDSE 'Finest Food Outlets' HackerRank task. Write fetch_all_outlets(pages). pages is the list of paginated API responses, each {'page','per_page','total_pages','data':[...]}. Return every item from 'data', concatenated across all pages in order.",
+            "entry_function": "fetch_all_outlets",
+            "starter_file": "fde_api_academy/student/drill_m05_drill_4.py",
+            "example": "fetch_all_outlets([{'page': 1, 'per_page': 2, 'total_pages': 2, 'data': ['A', 'B']}, {'page': 2, 'per_page': 2, 'total_pages': 2, 'data': ['C']}]) -> ['A', 'B', 'C']",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nfetch_all_outlets([{'page': 1, 'per_page': 2, 'total_pages': 2, 'data': ['A', 'B']}, {'page': 2, 'per_page': 2, 'total_pages': 2, 'data': ['C']}]) -> ['A', 'B', 'C']\n\nfetch_all_outlets([{'page': 1, 'per_page': 5, 'total_pages': 1, 'data': []}]) -> []\n\nfetch_all_outlets([{'page': 1, 'per_page': 1, 'total_pages': 3, 'data': ['x']}, {'page': 2, 'per_page': 1, 'total_pages': 3, 'data': ['y']}, {'page': 3, 'per_page': 1, 'total_pages': 3, 'data': ['z']}]) -> ['x', 'y', 'z']",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "page": 1,
+                      "per_page": 2,
+                      "total_pages": 2,
+                      "data": [
+                        "A",
+                        "B"
+                      ]
+                    },
+                    {
+                      "page": 2,
+                      "per_page": 2,
+                      "total_pages": 2,
+                      "data": [
+                        "C"
+                      ]
+                    }
+                  ]
+                ],
+                "expected": [
+                  "A",
+                  "B",
+                  "C"
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "page": 1,
+                      "per_page": 5,
+                      "total_pages": 1,
+                      "data": []
+                    }
+                  ]
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "page": 1,
+                      "per_page": 1,
+                      "total_pages": 3,
+                      "data": [
+                        "x"
+                      ]
+                    },
+                    {
+                      "page": 2,
+                      "per_page": 1,
+                      "total_pages": 3,
+                      "data": [
+                        "y"
+                      ]
+                    },
+                    {
+                      "page": 3,
+                      "per_page": 1,
+                      "total_pages": 3,
+                      "data": [
+                        "z"
+                      ]
+                    }
+                  ]
+                ],
+                "expected": [
+                  "x",
+                  "y",
+                  "z"
+                ]
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m05-drill-5",
+            "title": "Filter REST records by period (tvseries)",
+            "source_title": "Palantir REST/API interview task (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-interview-process-questions/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir REST task (jsonmock tvseries). Write find_series(records, start_year, end_year). Each record is {'name','year'}. Return the names whose year is within [start_year, end_year] inclusive.",
+            "entry_function": "find_series",
+            "starter_file": "fde_api_academy/student/drill_m05_drill_5.py",
+            "example": "find_series([{'name': 'Show A', 'year': 2010}, {'name': 'Show B', 'year': 2020}], 2000, 2015) -> ['Show A']",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nfind_series([{'name': 'Show A', 'year': 2010}, {'name': 'Show B', 'year': 2020}], 2000, 2015) -> ['Show A']\n\nfind_series([{'name': 'Old', 'year': 1999}], 2000, 2015) -> []\n\nfind_series([], 2000, 2015) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "Show A",
+                      "year": 2010
+                    },
+                    {
+                      "name": "Show B",
+                      "year": 2020
+                    }
+                  ],
+                  2000,
+                  2015
+                ],
+                "expected": [
+                  "Show A"
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "name": "Old",
+                      "year": 1999
+                    }
+                  ],
+                  2000,
+                  2015
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [],
+                  2000,
+                  2015
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "POST Requests",
+    "topics": [
+      "requests.post()",
+      "JSON payloads",
+      "form payloads",
+      "validation"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m06-post-records",
+        "title": "Create Records Through an API",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api",
+          "debugging"
+        ],
+        "estimated_minutes": 30,
+        "explanation": "POST sends new data to a server. The practical skill is validating payloads before sending and checking the created response.",
+        "visual": "validate payload -> POST /records body={...} -> 201 Created -> parse created record",
+        "example_code": "response = requests.post(url, json={'name': 'Ada'})\nif response.status_code != 201:\n    raise RuntimeError(response.text)",
+        "guided_exercise": {
+          "id": "m06-guided",
+          "title": "Submit clean payloads",
+          "prompt": "Use MockAPIClient.post in a scratch script to create a record and inspect the 201 response.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m06-challenge",
+          "title": "Reject empty payloads",
+          "prompt": "Design a validation step that fails before sending an empty payload.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "What belongs in client-side validation versus server-side validation?",
+          "When should POST be idempotent?"
+        ],
+        "hints": [
+          "A POST body is usually sent with json=payload in requests.",
+          "201 means a resource was created.",
+          "Check response.text when debugging failed POST calls.",
+          "The mock API returns 400 for an empty payload and 201 for a non-empty payload."
+        ],
+        "practice_drills": [
+          {
+            "id": "m06-drill-1",
+            "title": "Validate POST payload",
+            "prompt": "Write validate_payload(payload, required). Return {'valid': bool, 'missing': [keys]} listing any required keys absent from payload.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "validate_payload",
+            "starter_file": "fde_api_academy/student/drill_m06_drill_1.py",
+            "example": "validate_payload({'name': 'Ada'}, ['name', 'email']) -> {'valid': False, 'missing': ['email']}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nvalidate_payload({'name': 'Ada'}, ['name', 'email']) -> {'valid': False, 'missing': ['email']}\n\nvalidate_payload({'name': 'Ada', 'email': 'a@x.com'}, ['name', 'email']) -> {'valid': True, 'missing': []}\n\nvalidate_payload({}, []) -> {'valid': True, 'missing': []}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "name": "Ada"
+                  },
+                  [
+                    "name",
+                    "email"
+                  ]
+                ],
+                "expected": {
+                  "valid": false,
+                  "missing": [
+                    "email"
+                  ]
+                }
+              },
+              {
+                "args": [
+                  {
+                    "name": "Ada",
+                    "email": "a@x.com"
+                  },
+                  [
+                    "name",
+                    "email"
+                  ]
+                ],
+                "expected": {
+                  "valid": true,
+                  "missing": []
+                }
+              },
+              {
+                "args": [
+                  {},
+                  []
+                ],
+                "expected": {
+                  "valid": true,
+                  "missing": []
+                }
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m06-drill-2",
+            "title": "Handle 201 Created",
+            "prompt": "Write created_id(response) for response {'status': code, 'body': {'id': ..}}. Return the created id only when status is 201, otherwise None.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "created_id",
+            "starter_file": "fde_api_academy/student/drill_m06_drill_2.py",
+            "example": "created_id({'status': 201, 'body': {'id': 7}}) -> 7",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\ncreated_id({'status': 201, 'body': {'id': 7}}) -> 7\n\ncreated_id({'status': 400, 'body': {}}) -> None\n\ncreated_id({'status': 201, 'body': {}}) -> None",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "status": 201,
+                    "body": {
+                      "id": 7
+                    }
+                  }
+                ],
+                "expected": 7
+              },
+              {
+                "args": [
+                  {
+                    "status": 400,
+                    "body": {}
+                  }
+                ],
+                "expected": null
+              },
+              {
+                "args": [
+                  {
+                    "status": 201,
+                    "body": {}
+                  }
+                ],
+                "expected": null
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m06-drill-3",
+            "title": "JSON body vs form body",
+            "prompt": "Write choose_body(endpoint). Return 'json' when endpoint['content_type'] is 'application/json', otherwise 'data' (form body).",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "choose_body",
+            "starter_file": "fde_api_academy/student/drill_m06_drill_3.py",
+            "example": "choose_body({'content_type': 'application/json'}) -> 'json'",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nchoose_body({'content_type': 'application/json'}) -> 'json'\n\nchoose_body({'content_type': 'application/x-www-form-urlencoded'}) -> 'data'",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "content_type": "application/json"
+                  }
+                ],
+                "expected": "json"
+              },
+              {
+                "args": [
+                  {
+                    "content_type": "application/x-www-form-urlencoded"
+                  }
+                ],
+                "expected": "data"
+              }
+            ],
+            "skill_weights": {
+              "api": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "PUT and PATCH Requests",
+    "topics": [
+      "PUT",
+      "PATCH",
+      "resource updates",
+      "partial updates"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m07-update-records",
+        "title": "Update Existing Resources",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api"
+        ],
+        "estimated_minutes": 25,
+        "explanation": "PUT usually replaces a resource; PATCH modifies part of it. FDEs need to choose the method that protects customer data.",
+        "visual": "PUT /user/1 body=full-user -> replace\nPATCH /user/1 body={title: 'CTO'} -> partial update",
+        "example_code": "requests.patch(url, json={'status': 'active'})",
+        "guided_exercise": {
+          "id": "m07-guided",
+          "title": "Choose PATCH safely",
+          "prompt": "Explain in comments when PATCH is safer than PUT for sparse update forms.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m07-challenge",
+          "title": "Avoid accidental data loss",
+          "prompt": "Sketch a helper that requires full required fields before a PUT request.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "What customer data could be lost by a bad PUT?",
+          "How would you test a partial update?"
+        ],
+        "hints": [
+          "Use PATCH when only changing a few fields.",
+          "Use PUT when you have a full replacement representation.",
+          "Tests should assert unchanged fields stay unchanged after PATCH.",
+          "A reliable update helper validates required fields before sending full replacement data."
+        ],
+        "practice_drills": [
+          {
+            "id": "m07-drill-1",
+            "title": "Choose PUT or PATCH",
+            "prompt": "Write choose_update_method(scenario). If scenario['fields_provided'] == 'all' return 'PUT', otherwise return 'PATCH' (partial update is safer when only some fields are present).",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "choose_update_method",
+            "starter_file": "fde_api_academy/student/drill_m07_drill_1.py",
+            "example": "choose_update_method({'fields_provided': 'some'}) -> 'PATCH'",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nchoose_update_method({'fields_provided': 'all'}) -> 'PUT'\n\nchoose_update_method({'fields_provided': 'some'}) -> 'PATCH'",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "fields_provided": "all"
+                  }
+                ],
+                "expected": "PUT"
+              },
+              {
+                "args": [
+                  {
+                    "fields_provided": "some"
+                  }
+                ],
+                "expected": "PATCH"
+              }
+            ],
+            "skill_weights": {
+              "api": 1
+            }
+          },
+          {
+            "id": "m07-drill-2",
+            "title": "Build partial update payloads",
+            "prompt": "Write build_patch(original, edited). Return a dict containing only the fields whose value changed from original to edited.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "build_patch",
+            "starter_file": "fde_api_academy/student/drill_m07_drill_2.py",
+            "example": "build_patch({'name': 'Ada', 'plan': 'free'}, {'name': 'Ada', 'plan': 'pro'}) -> {'plan': 'pro'}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nbuild_patch({'name': 'Ada', 'plan': 'free'}, {'name': 'Ada', 'plan': 'pro'}) -> {'plan': 'pro'}\n\nbuild_patch({'a': 1}, {'a': 1}) -> {}\n\nbuild_patch({'a': 1, 'b': 2}, {'a': 9, 'b': 2}) -> {'a': 9}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "name": "Ada",
+                    "plan": "free"
+                  },
+                  {
+                    "name": "Ada",
+                    "plan": "pro"
+                  }
+                ],
+                "expected": {
+                  "plan": "pro"
+                }
+              },
+              {
+                "args": [
+                  {
+                    "a": 1
+                  },
+                  {
+                    "a": 1
+                  }
+                ],
+                "expected": {}
+              },
+              {
+                "args": [
+                  {
+                    "a": 1,
+                    "b": 2
+                  },
+                  {
+                    "a": 9,
+                    "b": 2
+                  }
+                ],
+                "expected": {
+                  "a": 9
+                }
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m07-drill-3",
+            "title": "Guard full replacements",
+            "prompt": "Write guard_put(payload, required). A PUT replaces the whole resource, so return {'allowed': bool, 'missing': [keys]} and only allow when every required field is present.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "guard_put",
+            "starter_file": "fde_api_academy/student/drill_m07_drill_3.py",
+            "example": "guard_put({'name': 'Ada'}, ['name', 'email']) -> {'allowed': False, 'missing': ['email']}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nguard_put({'name': 'Ada'}, ['name', 'email']) -> {'allowed': False, 'missing': ['email']}\n\nguard_put({'name': 'Ada', 'email': 'a@x.com'}, ['name', 'email']) -> {'allowed': True, 'missing': []}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "name": "Ada"
+                  },
+                  [
+                    "name",
+                    "email"
+                  ]
+                ],
+                "expected": {
+                  "allowed": false,
+                  "missing": [
+                    "email"
+                  ]
+                }
+              },
+              {
+                "args": [
+                  {
+                    "name": "Ada",
+                    "email": "a@x.com"
+                  },
+                  [
+                    "name",
+                    "email"
+                  ]
+                ],
+                "expected": {
+                  "allowed": true,
+                  "missing": []
+                }
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "DELETE Requests",
+    "topics": [
+      "resource deletion",
+      "response handling",
+      "error scenarios"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m08-delete-records",
+        "title": "Delete and Verify Resources",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api",
+          "debugging"
+        ],
+        "estimated_minutes": 25,
+        "explanation": "DELETE often returns 204 with no body. The skill is confirming the outcome and handling permission or missing-resource errors clearly.",
+        "visual": "DELETE /records/1 -> 204 No Content -> optional GET /records/1 -> 404",
+        "example_code": "response = requests.delete(url)\nif response.status_code == 204:\n    return True",
+        "guided_exercise": {
+          "id": "m08-guided",
+          "title": "Handle empty responses",
+          "prompt": "Use your status classifier to treat 204 as success.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m08-challenge",
+          "title": "Explain forbidden deletes",
+          "prompt": "Design user-facing error messages for 403 versus 404 during deletion.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "api": 2,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "Why should clients not expect JSON from every successful response?",
+          "When is a soft delete better than a hard delete?"
+        ],
+        "hints": [
+          "204 is a success code even though the body is empty.",
+          "403 means the caller is known but not allowed.",
+          "404 may mean missing or hidden by permissions.",
+          "Treat deletion as a workflow: request, classify status, verify when needed."
+        ],
+        "practice_drills": [
+          {
+            "id": "m08-drill-1",
+            "title": "Delete and verify",
+            "prompt": "Write is_delete_success(status). A DELETE that returns 204 No Content is a success. Return True only for 204, else False.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "is_delete_success",
+            "starter_file": "fde_api_academy/student/drill_m08_drill_1.py",
+            "example": "is_delete_success(204) -> True",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nis_delete_success(204) -> True\n\nis_delete_success(200) -> False\n\nis_delete_success(404) -> False",
+            "cases": [
+              {
+                "args": [
+                  204
+                ],
+                "expected": true
+              },
+              {
+                "args": [
+                  200
+                ],
+                "expected": false
+              },
+              {
+                "args": [
+                  404
+                ],
+                "expected": false
+              }
+            ],
+            "skill_weights": {
+              "api": 1
+            }
+          },
+          {
+            "id": "m08-drill-2",
+            "title": "Explain 403 vs 404 deletes",
+            "prompt": "Write delete_error_message(status). 403 -> 'Forbidden: you do not have permission to delete this resource.', 404 -> 'Not found: the resource was already deleted or never existed.', otherwise 'Unexpected status: <code>'.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "delete_error_message",
+            "starter_file": "fde_api_academy/student/drill_m08_drill_2.py",
+            "example": "delete_error_message(403) -> 'Forbidden: you do not have permission to delete this resource.'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\ndelete_error_message(403) -> 'Forbidden: you do not have permission to delete this resource.'\n\ndelete_error_message(404) -> 'Not found: the resource was already deleted or never existed.'\n\ndelete_error_message(500) -> 'Unexpected status: 500'",
+            "cases": [
+              {
+                "args": [
+                  403
+                ],
+                "expected": "Forbidden: you do not have permission to delete this resource."
+              },
+              {
+                "args": [
+                  404
+                ],
+                "expected": "Not found: the resource was already deleted or never existed."
+              },
+              {
+                "args": [
+                  500
+                ],
+                "expected": "Unexpected status: 500"
+              }
+            ],
+            "skill_weights": {
+              "debugging": 1
+            }
+          },
+          {
+            "id": "m08-drill-3",
+            "title": "Soft delete design",
+            "prompt": "Write soft_delete(records, target_id). Each record has an 'id'. Remove the record whose id == target_id and also drop any record already flagged {'deleted': True}, returning the remaining active records.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "soft_delete",
+            "starter_file": "fde_api_academy/student/drill_m08_drill_3.py",
+            "example": "soft_delete([{'id': 1}, {'id': 2}, {'id': 3, 'deleted': True}], 2) -> [{'id': 1}]",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nsoft_delete([{'id': 1}, {'id': 2}, {'id': 3, 'deleted': True}], 2) -> [{'id': 1}]\n\nsoft_delete([{'id': 1}], 9) -> [{'id': 1}]\n\nsoft_delete([], 1) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1
+                    },
+                    {
+                      "id": 2
+                    },
+                    {
+                      "id": 3,
+                      "deleted": true
+                    }
+                  ],
+                  2
+                ],
+                "expected": [
+                  {
+                    "id": 1
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1
+                    }
+                  ],
+                  9
+                ],
+                "expected": [
+                  {
+                    "id": 1
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [],
+                  1
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Authentication",
+    "topics": [
+      "API keys",
+      "Bearer tokens",
+      "OAuth concepts",
+      "environment variables",
+      "secrets management"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m09-auth-env",
+        "title": "Protect Secrets With Environment Variables",
+        "difficulty": "Intermediate",
+        "skills": [
+          "authentication",
+          "api"
+        ],
+        "estimated_minutes": 35,
+        "explanation": "Production integrations should never hard-code secrets. This lesson uses .env and Authorization headers to model API key and bearer token flows.",
+        "visual": ".env -> python-dotenv -> os.getenv('TOKEN') -> Authorization: Bearer TOKEN",
+        "example_code": "from dotenv import load_dotenv\nimport os\nload_dotenv()\nheaders = {'Authorization': f\"Bearer {os.getenv('GITHUB_TOKEN')}\"}",
+        "guided_exercise": {
+          "id": "m09-guided",
+          "title": "Authenticated request setup",
+          "prompt": "Copy .env.example to .env and inspect fde_api_academy/http_client.py to see how headers are built.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "authentication": 3,
+            "api": 1
+          }
+        },
+        "challenge_exercise": {
+          "id": "m09-challenge",
+          "title": "Missing secret failure mode",
+          "prompt": "Describe how your code should fail when mocks are disabled but an API key is missing.",
+          "starter_file": "fde_api_academy/student/m04_status_codes.py",
+          "validator": "validate_status_classifier",
+          "skill_weights": {
+            "authentication": 3,
+            "debugging": 1
+          }
+        },
+        "reflection_questions": [
+          "Why should .env not be committed?",
+          "How is OAuth different from an API key?"
+        ],
+        "hints": [
+          "Use python-dotenv to load local variables.",
+          "Bearer tokens go in the Authorization header.",
+          "Fail early with a clear message when a required secret is missing.",
+          "The included http_client.py shows both mock and real authenticated request paths."
+        ],
+        "practice_drills": [
+          {
+            "id": "m09-drill-1",
+            "title": "Build auth headers",
+            "prompt": "Write build_auth_headers(env) where env is a dict of environment variables. Read env['API_TOKEN'] and return {'Authorization': 'Bearer <token>'}; return {} when the token is missing (never hard-code secrets).",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "build_auth_headers",
+            "starter_file": "fde_api_academy/student/drill_m09_drill_1.py",
+            "example": "build_auth_headers({'API_TOKEN': 'abc123'}) -> {'Authorization': 'Bearer abc123'}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nbuild_auth_headers({'API_TOKEN': 'abc123'}) -> {'Authorization': 'Bearer abc123'}\n\nbuild_auth_headers({}) -> {}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "API_TOKEN": "abc123"
+                  }
+                ],
+                "expected": {
+                  "Authorization": "Bearer abc123"
+                }
+              },
+              {
+                "args": [
+                  {}
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "authentication": 2
+            }
+          },
+          {
+            "id": "m09-drill-2",
+            "title": "Diagnose auth failures",
+            "prompt": "Write diagnose_auth(status). 401 -> 'Missing or expired token: re-authenticate and retry.', 403 -> 'Insufficient permissions: request access for this resource.', otherwise 'No auth issue detected.'.",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "diagnose_auth",
+            "starter_file": "fde_api_academy/student/drill_m09_drill_2.py",
+            "example": "diagnose_auth(401) -> 'Missing or expired token: re-authenticate and retry.'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\ndiagnose_auth(401) -> 'Missing or expired token: re-authenticate and retry.'\n\ndiagnose_auth(403) -> 'Insufficient permissions: request access for this resource.'\n\ndiagnose_auth(200) -> 'No auth issue detected.'",
+            "cases": [
+              {
+                "args": [
+                  401
+                ],
+                "expected": "Missing or expired token: re-authenticate and retry."
+              },
+              {
+                "args": [
+                  403
+                ],
+                "expected": "Insufficient permissions: request access for this resource."
+              },
+              {
+                "args": [
+                  200
+                ],
+                "expected": "No auth issue detected."
+              }
+            ],
+            "skill_weights": {
+              "authentication": 2
+            }
+          },
+          {
+            "id": "m09-drill-3",
+            "title": "API key safety checklist",
+            "prompt": "Write redact_secret(token). Return the token with everything but the last four characters masked, e.g. 'abcd1234' -> '****1234'. Tokens of length <= 4 return '****'.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "redact_secret",
+            "starter_file": "fde_api_academy/student/drill_m09_drill_3.py",
+            "example": "redact_secret('abcd1234') -> '****1234'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nredact_secret('abcd1234') -> '****1234'\n\nredact_secret('xy') -> '****'\n\nredact_secret('123456') -> '****3456'",
+            "cases": [
+              {
+                "args": [
+                  "abcd1234"
+                ],
+                "expected": "****1234"
+              },
+              {
+                "args": [
+                  "xy"
+                ],
+                "expected": "****"
+              },
+              {
+                "args": [
+                  "123456"
+                ],
+                "expected": "****3456"
+              }
+            ],
+            "skill_weights": {
+              "authentication": 2
+            }
+          },
+          {
+            "id": "m09-drill-4",
+            "title": "Permission Access Intervals",
+            "prompt": "A system stores permission records as (timestamp, permission), where permission is one of \"none\", \"member\", or \"admin\" and none < member < admin. Given unsorted records and a required permission, return all maximal contiguous timestamp intervals where the user has access. Access means rank(permission) >= rank(required). All timestamps are unique.",
+            "source_title": "User-provided LeetCode-style FDE access-control prompt",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified from the user-provided LeetCode-style prompt on 2026-06-21; topic aligns with public FDE interview prep themes around permissions, event streams, and access-control workflows.",
+            "entry_function": "get_access_intervals",
+            "starter_file": "fde_api_academy/student/drill_permission_access_intervals.py",
+            "example": "records = [(1, \"none\"), (2, \"member\"), (3, \"admin\"), (4, \"member\"), (5, \"none\"), (6, \"admin\"), (7, \"admin\"), (8, \"none\")]\nrequired = \"member\"\nget_access_intervals(records, required) -> [(2, 4), (6, 7)]",
+            "expected": "Return all maximal contiguous access intervals after sorting by timestamp. Graded on hidden cases covering unsorted records, no access, admin-only access, single-point intervals, and already sorted input. Returning lists like [[2, 4]] or tuples like [(2, 4)] is accepted.",
+            "cases": [
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "none"
+                    ],
+                    [
+                      2,
+                      "member"
+                    ],
+                    [
+                      3,
+                      "admin"
+                    ],
+                    [
+                      4,
+                      "member"
+                    ],
+                    [
+                      5,
+                      "none"
+                    ],
+                    [
+                      6,
+                      "admin"
+                    ],
+                    [
+                      7,
+                      "admin"
+                    ],
+                    [
+                      8,
+                      "none"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    6,
+                    7
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      10,
+                      "none"
+                    ],
+                    [
+                      1,
+                      "member"
+                    ],
+                    [
+                      3,
+                      "member"
+                    ],
+                    [
+                      5,
+                      "none"
+                    ],
+                    [
+                      7,
+                      "admin"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    1,
+                    3
+                  ],
+                  [
+                    7,
+                    7
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "none"
+                    ],
+                    [
+                      2,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "none"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "member"
+                    ],
+                    [
+                      2,
+                      "admin"
+                    ],
+                    [
+                      3,
+                      "member"
+                    ]
+                  ],
+                  "admin"
+                ],
+                "expected": [
+                  [
+                    2,
+                    2
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      4,
+                      "admin"
+                    ],
+                    [
+                      2,
+                      "admin"
+                    ],
+                    [
+                      1,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "admin"
+                    ],
+                    [
+                      5,
+                      "none"
+                    ]
+                  ],
+                  "admin"
+                ],
+                "expected": [
+                  [
+                    2,
+                    4
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [],
+                  "member"
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [
+                    [
+                      5,
+                      "admin"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    5,
+                    5
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      5,
+                      "none"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "none"
+                    ],
+                    [
+                      2,
+                      "member"
+                    ],
+                    [
+                      3,
+                      "admin"
+                    ]
+                  ],
+                  "none"
+                ],
+                "expected": [
+                  [
+                    1,
+                    3
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "none"
+                    ],
+                    [
+                      2,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "member"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    3,
+                    3
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "admin"
+                    ],
+                    [
+                      2,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "none"
+                    ]
+                  ],
+                  "admin"
+                ],
+                "expected": [
+                  [
+                    1,
+                    1
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "member"
+                    ],
+                    [
+                      2,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "member"
+                    ],
+                    [
+                      4,
+                      "none"
+                    ],
+                    [
+                      5,
+                      "member"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    3,
+                    3
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      3,
+                      "admin"
+                    ],
+                    [
+                      1,
+                      "admin"
+                    ],
+                    [
+                      2,
+                      "admin"
+                    ]
+                  ],
+                  "admin"
+                ],
+                "expected": [
+                  [
+                    1,
+                    3
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "member"
+                    ],
+                    [
+                      100,
+                      "member"
+                    ],
+                    [
+                      200,
+                      "none"
+                    ],
+                    [
+                      300,
+                      "member"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    1,
+                    100
+                  ],
+                  [
+                    300,
+                    300
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [
+                    [
+                      1,
+                      "member"
+                    ],
+                    [
+                      2,
+                      "none"
+                    ],
+                    [
+                      3,
+                      "member"
+                    ]
+                  ],
+                  "member"
+                ],
+                "expected": [
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    3,
+                    3
+                  ]
+                ]
+              }
+            ],
+            "skill_weights": {
+              "authentication": 2,
+              "data_parsing": 1,
+              "automation": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "GitHub API Deep Dive",
+    "topics": [
+      "repositories",
+      "pull requests",
+      "issues",
+      "commits",
+      "search APIs"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m10-github-analyzer",
+        "title": "GitHub User Analyzer",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api",
+          "data_parsing",
+          "automation"
+        ],
+        "estimated_minutes": 60,
+        "explanation": "A real FDE task: turn a GitHub account into useful business context. Analyze stars, languages, repositories, and activity signals.",
+        "visual": "users + repos + commits + issues -> analyzer -> executive summary",
+        "example_code": "repos = requests.get(repos_url, params={'per_page': 100}).json()",
+        "guided_exercise": {
+          "id": "m10-guided",
+          "title": "Analyzer core",
+          "prompt": "Reuse analyze_profile and add fields you would show in a customer-facing report.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 3,
+            "data_parsing": 3
+          }
+        },
+        "challenge_exercise": {
+          "id": "m10-challenge",
+          "title": "Commit statistics design",
+          "prompt": "Design a function signature for commit stats that can work with paginated commit data.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 3,
+            "automation": 2
+          }
+        },
+        "reflection_questions": [
+          "Which GitHub API endpoints would you read first?",
+          "How would you cache results to avoid rate limits?"
+        ],
+        "hints": [
+          "Separate fetching from analysis.",
+          "Keep report fields deterministic and testable.",
+          "Paginated endpoints need a loop and an exit condition.",
+          "The starter analyzer is intentionally pure: user JSON plus repo JSON in, report dict out."
+        ],
+        "practice_drills": [
+          {
+            "id": "m10-drill-1",
+            "title": "Repository language report",
+            "prompt": "Write repo_report(repos). Each repo has 'name', 'stargazers_count', 'language'. Return {'total_stars': N, 'top_repo': name, 'language_percentages': {lang: percent}} where percent is round(count/total*100).",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "repo_report",
+            "starter_file": "fde_api_academy/student/drill_m10_drill_1.py",
+            "example": "repo_report([{'name': 'a', 'stargazers_count': 10, 'language': 'Python'}, {'name': 'b', 'stargazers_count': 5, 'language': 'Go'}]) -> {'total_stars': 15, 'top_repo': 'a', 'language_percentages': {'Python': 50, 'Go': 50}}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nrepo_report([{'name': 'a', 'stargazers_count': 10, 'language': 'Python'}, {'name': 'b', 'stargazers_count': 5, 'language': 'Go'}]) -> {'total_stars': 15, 'top_repo': 'a', 'language_percentages': {'Python': 50, 'Go': 50}}\n\nrepo_report([{'name': 'x', 'stargazers_count': 1, 'language': 'Python'}, {'name': 'y', 'stargazers_count': 2, 'language': 'Python'}]) -> {'total_stars': 3, 'top_repo': 'y', 'language_percentages': {'Python': 100}}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "a",
+                      "stargazers_count": 10,
+                      "language": "Python"
+                    },
+                    {
+                      "name": "b",
+                      "stargazers_count": 5,
+                      "language": "Go"
+                    }
+                  ]
+                ],
+                "expected": {
+                  "total_stars": 15,
+                  "top_repo": "a",
+                  "language_percentages": {
+                    "Python": 50,
+                    "Go": 50
+                  }
+                }
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "name": "x",
+                      "stargazers_count": 1,
+                      "language": "Python"
+                    },
+                    {
+                      "name": "y",
+                      "stargazers_count": 2,
+                      "language": "Python"
+                    }
+                  ]
+                ],
+                "expected": {
+                  "total_stars": 3,
+                  "top_repo": "y",
+                  "language_percentages": {
+                    "Python": 100
+                  }
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m10-drill-2",
+            "title": "Issue triage summary",
+            "prompt": "Write triage_issues(issues, stale_days). Each issue has 'id', 'label', 'state', 'age_days'. Return {'open_by_label': {label: count}, 'stale': [ids]} counting only open issues and flagging open issues older than stale_days.",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "triage_issues",
+            "starter_file": "fde_api_academy/student/drill_m10_drill_2.py",
+            "example": "triage_issues([{'id': 1, 'label': 'bug', 'state': 'open', 'age_days': 10}, {'id': 2, 'label': 'bug', 'state': 'closed', 'age_days': 30}], 7) -> {'open_by_label': {'bug': 1}, 'stale': [1]}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\ntriage_issues([{'id': 1, 'label': 'bug', 'state': 'open', 'age_days': 10}, {'id': 2, 'label': 'bug', 'state': 'closed', 'age_days': 30}], 7) -> {'open_by_label': {'bug': 1}, 'stale': [1]}\n\ntriage_issues([], 7) -> {'open_by_label': {}, 'stale': []}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1,
+                      "label": "bug",
+                      "state": "open",
+                      "age_days": 10
+                    },
+                    {
+                      "id": 2,
+                      "label": "bug",
+                      "state": "closed",
+                      "age_days": 30
+                    }
+                  ],
+                  7
+                ],
+                "expected": {
+                  "open_by_label": {
+                    "bug": 1
+                  },
+                  "stale": [
+                    1
+                  ]
+                }
+              },
+              {
+                "args": [
+                  [],
+                  7
+                ],
+                "expected": {
+                  "open_by_label": {},
+                  "stale": []
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m10-drill-3",
+            "title": "Commit activity snapshot",
+            "prompt": "Write recent_commit_counts(commits, days). Each commit has 'author' and 'days_ago'. Return {author: count} counting only commits with days_ago < days.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "recent_commit_counts",
+            "starter_file": "fde_api_academy/student/drill_m10_drill_3.py",
+            "example": "recent_commit_counts([{'author': 'ada', 'days_ago': 1}, {'author': 'ada', 'days_ago': 10}, {'author': 'lin', 'days_ago': 2}], 7) -> {'ada': 1, 'lin': 1}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nrecent_commit_counts([{'author': 'ada', 'days_ago': 1}, {'author': 'ada', 'days_ago': 10}, {'author': 'lin', 'days_ago': 2}], 7) -> {'ada': 1, 'lin': 1}\n\nrecent_commit_counts([], 7) -> {}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "author": "ada",
+                      "days_ago": 1
+                    },
+                    {
+                      "author": "ada",
+                      "days_ago": 10
+                    },
+                    {
+                      "author": "lin",
+                      "days_ago": 2
+                    }
+                  ],
+                  7
+                ],
+                "expected": {
+                  "ada": 1,
+                  "lin": 1
+                }
+              },
+              {
+                "args": [
+                  [],
+                  7
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Data Transformation",
+    "topics": [
+      "filtering",
+      "mapping",
+      "sorting",
+      "aggregation",
+      "grouping"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m11-transformations",
+        "title": "Shape API Data for Dashboards",
+        "difficulty": "Intermediate",
+        "skills": [
+          "data_parsing",
+          "automation"
+        ],
+        "estimated_minutes": 40,
+        "explanation": "APIs provide records; users need summaries. Practice filtering, mapping, sorting, grouping, and aggregation into dashboard-ready data.",
+        "visual": "raw records -> filter active -> map fields -> group by language -> sort by stars",
+        "example_code": "top = sorted(repos, key=lambda repo: repo.get('stars', 0), reverse=True)[:5]",
+        "guided_exercise": {
+          "id": "m11-guided",
+          "title": "Aggregate repositories",
+          "prompt": "Extend build_repo_report with any extra grouped summary you find useful.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "data_parsing": 3
+          }
+        },
+        "challenge_exercise": {
+          "id": "m11-challenge",
+          "title": "Dashboard rows",
+          "prompt": "Return stable, sorted rows that a UI could render without additional logic.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "data_parsing": 3,
+            "automation": 1
+          }
+        },
+        "reflection_questions": [
+          "Which transformations belong in the backend?",
+          "How do sorted outputs make tests easier?"
+        ],
+        "hints": [
+          "Filter first when downstream logic should ignore records.",
+          "Map records into a smaller shape before exporting.",
+          "Group with a dictionary keyed by category.",
+          "Make output ordering deterministic so reports and tests are stable."
+        ],
+        "practice_drills": [
+          {
+            "id": "m11-drill-1",
+            "title": "Filter-map-sort pipeline",
+            "prompt": "Write pipeline(accounts). Each account has 'id','name','usage','active'. Return only active accounts as {'id','name','usage'}, sorted by usage descending.",
+            "source_title": "GeeksforGeeks How to Parse Nested JSON in Python",
+            "source_url": "https://www.geeksforgeeks.org/how-to-parse-nested-json-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "pipeline",
+            "starter_file": "fde_api_academy/student/drill_m11_drill_1.py",
+            "example": "pipeline([{'id': 1, 'name': 'a', 'usage': 5, 'active': True}, {'id': 2, 'name': 'b', 'usage': 9, 'active': True}, {'id': 3, 'name': 'c', 'usage': 7, 'active': False}]) -> [{'id': 2, 'name': 'b', 'usage': 9}, {'id': 1, 'name': 'a', 'usage': 5}]",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\npipeline([{'id': 1, 'name': 'a', 'usage': 5, 'active': True}, {'id': 2, 'name': 'b', 'usage': 9, 'active': True}, {'id': 3, 'name': 'c', 'usage': 7, 'active': False}]) -> [{'id': 2, 'name': 'b', 'usage': 9}, {'id': 1, 'name': 'a', 'usage': 5}]\n\npipeline([]) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1,
+                      "name": "a",
+                      "usage": 5,
+                      "active": true
+                    },
+                    {
+                      "id": 2,
+                      "name": "b",
+                      "usage": 9,
+                      "active": true
+                    },
+                    {
+                      "id": 3,
+                      "name": "c",
+                      "usage": 7,
+                      "active": false
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "id": 2,
+                    "name": "b",
+                    "usage": 9
+                  },
+                  {
+                    "id": 1,
+                    "name": "a",
+                    "usage": 5
+                  }
+                ]
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m11-drill-2",
+            "title": "Group by customer segment",
+            "prompt": "Write group_by_plan(records). Each record has 'plan' and 'usage'. Return {plan: {'count': N, 'total_usage': U}}.",
+            "source_title": "DataDriven SQL GROUP BY Interview Reference",
+            "source_url": "https://datadriven.io/sql/group-by",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "group_by_plan",
+            "starter_file": "fde_api_academy/student/drill_m11_drill_2.py",
+            "example": "group_by_plan([{'plan': 'free', 'usage': 2}, {'plan': 'free', 'usage': 3}, {'plan': 'pro', 'usage': 10}]) -> {'free': {'count': 2, 'total_usage': 5}, 'pro': {'count': 1, 'total_usage': 10}}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\ngroup_by_plan([{'plan': 'free', 'usage': 2}, {'plan': 'free', 'usage': 3}, {'plan': 'pro', 'usage': 10}]) -> {'free': {'count': 2, 'total_usage': 5}, 'pro': {'count': 1, 'total_usage': 10}}\n\ngroup_by_plan([]) -> {}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "plan": "free",
+                      "usage": 2
+                    },
+                    {
+                      "plan": "free",
+                      "usage": 3
+                    },
+                    {
+                      "plan": "pro",
+                      "usage": 10
+                    }
+                  ]
+                ],
+                "expected": {
+                  "free": {
+                    "count": 2,
+                    "total_usage": 5
+                  },
+                  "pro": {
+                    "count": 1,
+                    "total_usage": 10
+                  }
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m11-drill-3",
+            "title": "Find outliers",
+            "prompt": "Write find_outliers(records, threshold). Each record has 'endpoint' and 'p95'. Return the endpoints whose p95 is strictly above threshold.",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "find_outliers",
+            "starter_file": "fde_api_academy/student/drill_m11_drill_3.py",
+            "example": "find_outliers([{'endpoint': '/a', 'p95': 120}, {'endpoint': '/b', 'p95': 80}], 100) -> ['/a']",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nfind_outliers([{'endpoint': '/a', 'p95': 120}, {'endpoint': '/b', 'p95': 80}], 100) -> ['/a']\n\nfind_outliers([], 50) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "endpoint": "/a",
+                      "p95": 120
+                    },
+                    {
+                      "endpoint": "/b",
+                      "p95": 80
+                    }
+                  ],
+                  100
+                ],
+                "expected": [
+                  "/a"
+                ]
+              },
+              {
+                "args": [
+                  [],
+                  50
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m11-drill-4",
+            "title": "Portfolio valuation with carry-forward",
+            "source_title": "Palantir technical phone screen (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-interview-process-questions/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir phone-screen task: portfolio valuation with carry-forward prices. Write portfolio_value(prices, holdings, date). prices is [{'date','symbol','price'}] (sparse, ISO dates); holdings is {symbol: shares}; date is the valuation date. For each holding use the most recent price on or before date (0 if none) and return the total value.",
+            "entry_function": "portfolio_value",
+            "starter_file": "fde_api_academy/student/drill_m11_drill_4.py",
+            "example": "portfolio_value([{'date': '2024-01-01', 'symbol': 'AAPL', 'price': 100}, {'date': '2024-01-03', 'symbol': 'AAPL', 'price': 110}], {'AAPL': 2}, '2024-01-02') -> 200",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nportfolio_value([{'date': '2024-01-01', 'symbol': 'AAPL', 'price': 100}, {'date': '2024-01-03', 'symbol': 'AAPL', 'price': 110}], {'AAPL': 2}, '2024-01-02') -> 200\n\nportfolio_value([{'date': '2024-01-05', 'symbol': 'MSFT', 'price': 50}], {'MSFT': 3}, '2024-01-01') -> 0\n\nportfolio_value([{'date': '2024-01-01', 'symbol': 'A', 'price': 10}, {'date': '2024-01-02', 'symbol': 'B', 'price': 20}], {'A': 1, 'B': 2}, '2024-01-02') -> 50",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "date": "2024-01-01",
+                      "symbol": "AAPL",
+                      "price": 100
+                    },
+                    {
+                      "date": "2024-01-03",
+                      "symbol": "AAPL",
+                      "price": 110
+                    }
+                  ],
+                  {
+                    "AAPL": 2
+                  },
+                  "2024-01-02"
+                ],
+                "expected": 200
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "date": "2024-01-05",
+                      "symbol": "MSFT",
+                      "price": 50
+                    }
+                  ],
+                  {
+                    "MSFT": 3
+                  },
+                  "2024-01-01"
+                ],
+                "expected": 0
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "date": "2024-01-01",
+                      "symbol": "A",
+                      "price": 10
+                    },
+                    {
+                      "date": "2024-01-02",
+                      "symbol": "B",
+                      "price": 20
+                    }
+                  ],
+                  {
+                    "A": 1,
+                    "B": 2
+                  },
+                  "2024-01-02"
+                ],
+                "expected": 50
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "CSV and Data Export",
+    "topics": [
+      "CSV generation",
+      "file export",
+      "report generation"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m12-csv-export",
+        "title": "Export API Data to CSV",
+        "difficulty": "Intermediate",
+        "skills": [
+          "automation",
+          "data_parsing"
+        ],
+        "estimated_minutes": 35,
+        "explanation": "Many FDE wins are simple: pull data from an API and hand someone a clean CSV they can trust.",
+        "visual": "JSON list -> selected fields -> csv.DictWriter -> report.csv",
+        "example_code": "import csv\nwith open('report.csv', 'w', newline='') as f:\n    writer = csv.DictWriter(f, fieldnames=['name', 'stars'])\n    writer.writeheader()",
+        "guided_exercise": {
+          "id": "m12-guided",
+          "title": "JSON to CSV plan",
+          "prompt": "Create a scratch export script that writes repository name, stars, and language.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "automation": 2,
+            "data_parsing": 1
+          }
+        },
+        "challenge_exercise": {
+          "id": "m12-challenge",
+          "title": "Report contract",
+          "prompt": "Define the exact CSV columns before writing rows, then validate the exported file manually.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "automation": 3
+          }
+        },
+        "reflection_questions": [
+          "Why is a fixed column contract useful?",
+          "What should happen when a value contains a comma?"
+        ],
+        "hints": [
+          "Use csv.DictWriter instead of joining strings.",
+          "Always write a header row.",
+          "newline='' avoids extra blank lines on some platforms.",
+          "Keep export code separate from API fetch code so it is easy to test."
+        ],
+        "practice_drills": [
+          {
+            "id": "m12-drill-1",
+            "title": "JSON list to CSV rows",
+            "prompt": "Write to_csv_rows(records, columns). Return a list of rows (lists) where the first row is the column headers and each value is str(rec.get(col, '')) so missing optional fields become blank.",
+            "source_title": "GeeksforGeeks Convert JSON to CSV in Python",
+            "source_url": "https://www.geeksforgeeks.org/convert-json-to-csv-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "to_csv_rows",
+            "starter_file": "fde_api_academy/student/drill_m12_drill_1.py",
+            "example": "to_csv_rows([{'name': 'Ada', 'email': 'a@x.com'}, {'name': 'Lin'}], ['name', 'email']) -> [['name', 'email'], ['Ada', 'a@x.com'], ['Lin', '']]",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nto_csv_rows([{'name': 'Ada', 'email': 'a@x.com'}, {'name': 'Lin'}], ['name', 'email']) -> [['name', 'email'], ['Ada', 'a@x.com'], ['Lin', '']]\n\nto_csv_rows([], ['a']) -> [['a']]",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "Ada",
+                      "email": "a@x.com"
+                    },
+                    {
+                      "name": "Lin"
+                    }
+                  ],
+                  [
+                    "name",
+                    "email"
+                  ]
+                ],
+                "expected": [
+                  [
+                    "name",
+                    "email"
+                  ],
+                  [
+                    "Ada",
+                    "a@x.com"
+                  ],
+                  [
+                    "Lin",
+                    ""
+                  ]
+                ]
+              },
+              {
+                "args": [
+                  [],
+                  [
+                    "a"
+                  ]
+                ],
+                "expected": [
+                  [
+                    "a"
+                  ]
+                ]
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m12-drill-2",
+            "title": "Nested JSON export",
+            "prompt": "Write flatten_for_csv(users). Each user has 'profile' (name, email) and 'contact' (phone). Return a flat list of {'name','email','phone'} using None for missing values.",
+            "source_title": "Stack Overflow JSON to CSV Python question",
+            "source_url": "https://stackoverflow.com/questions/50219084/json-to-csv-python",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "flatten_for_csv",
+            "starter_file": "fde_api_academy/student/drill_m12_drill_2.py",
+            "example": "flatten_for_csv([{'profile': {'name': 'Ada', 'email': 'a@x.com'}, 'contact': {'phone': '555'}}]) -> [{'name': 'Ada', 'email': 'a@x.com', 'phone': '555'}]",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nflatten_for_csv([{'profile': {'name': 'Ada', 'email': 'a@x.com'}, 'contact': {'phone': '555'}}]) -> [{'name': 'Ada', 'email': 'a@x.com', 'phone': '555'}]\n\nflatten_for_csv([{'profile': {'name': 'Lin'}}]) -> [{'name': 'Lin', 'email': None, 'phone': None}]",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "profile": {
+                        "name": "Ada",
+                        "email": "a@x.com"
+                      },
+                      "contact": {
+                        "phone": "555"
+                      }
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "name": "Ada",
+                    "email": "a@x.com",
+                    "phone": "555"
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "profile": {
+                        "name": "Lin"
+                      }
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "name": "Lin",
+                    "email": null,
+                    "phone": null
+                  }
+                ]
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m12-drill-3",
+            "title": "CSV escaping edge cases",
+            "prompt": "Write csv_escape(value). If the string contains a comma, double-quote, or newline, wrap it in double quotes and double any internal quotes. Otherwise return it unchanged.",
+            "source_title": "GeeksforGeeks Convert JSON to CSV in Python",
+            "source_url": "https://www.geeksforgeeks.org/convert-json-to-csv-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "csv_escape",
+            "starter_file": "fde_api_academy/student/drill_m12_drill_3.py",
+            "example": "csv_escape('he said \"hi\"') -> '\"he said \"\"hi\"\"\"'",
+            "expected": "Graded on 4 test cases. Your function must return exactly these results:\n(showing 3; 1 more case is hidden)\n\ncsv_escape('a,b') -> '\"a,b\"'\n\ncsv_escape('he said \"hi\"') -> '\"he said \"\"hi\"\"\"'\n\ncsv_escape('plain') -> 'plain'",
+            "cases": [
+              {
+                "args": [
+                  "a,b"
+                ],
+                "expected": "\"a,b\""
+              },
+              {
+                "args": [
+                  "he said \"hi\""
+                ],
+                "expected": "\"he said \"\"hi\"\"\""
+              },
+              {
+                "args": [
+                  "plain"
+                ],
+                "expected": "plain"
+              },
+              {
+                "args": [
+                  "line\nbreak"
+                ],
+                "expected": "\"line\nbreak\""
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "SQLite Basics",
+    "topics": [
+      "tables",
+      "inserts",
+      "updates",
+      "selects",
+      "aggregations"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m13-sqlite-store",
+        "title": "Store API Data Locally",
+        "difficulty": "Intermediate",
+        "skills": [
+          "sql",
+          "data_parsing"
+        ],
+        "estimated_minutes": 45,
+        "explanation": "SQLite is perfect for local integration prototypes: durable storage, SQL queries, and no separate server.",
+        "visual": "API records -> normalize -> INSERT rows -> SELECT grouped report",
+        "example_code": "conn.execute('create table if not exists repositories (name text, stars integer, language text)')",
+        "guided_exercise": {
+          "id": "m13-guided",
+          "title": "Repository database",
+          "prompt": "Implement build_repository_database(conn, repos). Create a repositories table and insert rows.",
+          "starter_file": "fde_api_academy/student/m13_sqlite_store.py",
+          "validator": "validate_sqlite_store",
+          "skill_weights": {
+            "sql": 3,
+            "data_parsing": 1
+          }
+        },
+        "challenge_exercise": {
+          "id": "m13-challenge",
+          "title": "Aggregate with SQL",
+          "prompt": "Add a query helper that returns total stars by language.",
+          "starter_file": "fde_api_academy/student/m13_sqlite_store.py",
+          "validator": "validate_sqlite_store",
+          "skill_weights": {
+            "sql": 4
+          }
+        },
+        "reflection_questions": [
+          "What schema changes would you need for multiple users?",
+          "When should you use INSERT OR REPLACE?"
+        ],
+        "hints": [
+          "Create the table before inserting.",
+          "Use parameterized SQL with ? placeholders.",
+          "Commit after inserting rows.",
+          "The validator queries sum(stars) grouped by language, so the table and inserted values must match that contract."
+        ],
+        "practice_drills": [
+          {
+            "id": "m13-drill-1",
+            "title": "Insert API records",
+            "prompt": "Write insert_records(records). Each record has 'name' and 'stars'. Create an in-memory SQLite table, insert the rows with a parameterized query, then return the names sorted alphabetically.",
+            "source_title": "SQLite Tutorial GROUP BY",
+            "source_url": "https://www.sqlitetutorial.net/sqlite-group-by/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "insert_records",
+            "starter_file": "fde_api_academy/student/drill_m13_drill_1.py",
+            "example": "insert_records([{'name': 'zeta', 'stars': 1}, {'name': 'alpha', 'stars': 2}]) -> ['alpha', 'zeta']",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\ninsert_records([{'name': 'zeta', 'stars': 1}, {'name': 'alpha', 'stars': 2}]) -> ['alpha', 'zeta']\n\ninsert_records([]) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "name": "zeta",
+                      "stars": 1
+                    },
+                    {
+                      "name": "alpha",
+                      "stars": 2
+                    }
+                  ]
+                ],
+                "expected": [
+                  "alpha",
+                  "zeta"
+                ]
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "sql": 2
+            }
+          },
+          {
+            "id": "m13-drill-2",
+            "title": "Aggregate by language",
+            "prompt": "Write aggregate_by_language(repos). Each repo has 'language' and 'stars'. Return {language: {'count': N, 'stars': total}} (group-by language).",
+            "source_title": "SQLite Tutorial GROUP BY",
+            "source_url": "https://www.sqlitetutorial.net/sqlite-group-by/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "aggregate_by_language",
+            "starter_file": "fde_api_academy/student/drill_m13_drill_2.py",
+            "example": "aggregate_by_language([{'language': 'Python', 'stars': 3}, {'language': 'Python', 'stars': 4}, {'language': 'Go', 'stars': 1}]) -> {'Python': {'count': 2, 'stars': 7}, 'Go': {'count': 1, 'stars': 1}}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\naggregate_by_language([{'language': 'Python', 'stars': 3}, {'language': 'Python', 'stars': 4}, {'language': 'Go', 'stars': 1}]) -> {'Python': {'count': 2, 'stars': 7}, 'Go': {'count': 1, 'stars': 1}}\n\naggregate_by_language([]) -> {}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "language": "Python",
+                      "stars": 3
+                    },
+                    {
+                      "language": "Python",
+                      "stars": 4
+                    },
+                    {
+                      "language": "Go",
+                      "stars": 1
+                    }
+                  ]
+                ],
+                "expected": {
+                  "Python": {
+                    "count": 2,
+                    "stars": 7
+                  },
+                  "Go": {
+                    "count": 1,
+                    "stars": 1
+                  }
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "sql": 2
+            }
+          },
+          {
+            "id": "m13-drill-3",
+            "title": "Find duplicate external ids",
+            "prompt": "Write find_duplicate_ids(records). Each record has 'external_id'. Return {external_id: count} for every id that appears more than once.",
+            "source_title": "DataDriven SQL GROUP BY Interview Reference",
+            "source_url": "https://datadriven.io/sql/group-by",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "find_duplicate_ids",
+            "starter_file": "fde_api_academy/student/drill_m13_drill_3.py",
+            "example": "find_duplicate_ids([{'external_id': 'a'}, {'external_id': 'a'}, {'external_id': 'b'}]) -> {'a': 2}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nfind_duplicate_ids([{'external_id': 'a'}, {'external_id': 'a'}, {'external_id': 'b'}]) -> {'a': 2}\n\nfind_duplicate_ids([]) -> {}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "external_id": "a"
+                    },
+                    {
+                      "external_id": "a"
+                    },
+                    {
+                      "external_id": "b"
+                    }
+                  ]
+                ],
+                "expected": {
+                  "a": 2
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "sql": 2
+            }
+          },
+          {
+            "id": "m13-drill-4",
+            "title": "Session duration per city (SQL join)",
+            "source_title": "Palantir FDSE HackerRank SQL task (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-hackerrank-challenge/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir FDSE SQL task 'Client Session Duration Report'. Write session_duration_by_city(cities, clients, sessions). Join clients to cities (client.city_id -> city.id) and sessions to clients (session.client_id -> client.id). Return [{'city','total'}] of total session duration per city, sorted ascending by total then city name.",
+            "entry_function": "session_duration_by_city",
+            "starter_file": "fde_api_academy/student/drill_m13_drill_4.py",
+            "example": "session_duration_by_city([{'id': 1, 'name': 'Austin'}, {'id': 2, 'name': 'Boston'}], [{'id': 10, 'city_id': 1}, {'id': 11, 'city_id': 2}], [{'client_id': 10, 'duration': 30}, {'client_id': 11, 'duration': 20}, {'client_id': 10, 'duration': 5}]) -> [{'city': 'Boston', 'total': 20}, {'city': 'Austin', 'total': 35}]",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nsession_duration_by_city([{'id': 1, 'name': 'Austin'}, {'id': 2, 'name': 'Boston'}], [{'id': 10, 'city_id': 1}, {'id': 11, 'city_id': 2}], [{'client_id': 10, 'duration': 30}, {'client_id': 11, 'duration': 20}, {'client_id': 10, 'duration': 5}]) -> [{'city': 'Boston', 'total': 20}, {'city': 'Austin', 'total': 35}]\n\nsession_duration_by_city([{'id': 1, 'name': 'Solo'}], [{'id': 9, 'city_id': 1}], []) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1,
+                      "name": "Austin"
+                    },
+                    {
+                      "id": 2,
+                      "name": "Boston"
+                    }
+                  ],
+                  [
+                    {
+                      "id": 10,
+                      "city_id": 1
+                    },
+                    {
+                      "id": 11,
+                      "city_id": 2
+                    }
+                  ],
+                  [
+                    {
+                      "client_id": 10,
+                      "duration": 30
+                    },
+                    {
+                      "client_id": 11,
+                      "duration": 20
+                    },
+                    {
+                      "client_id": 10,
+                      "duration": 5
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "city": "Boston",
+                    "total": 20
+                  },
+                  {
+                    "city": "Austin",
+                    "total": 35
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "id": 1,
+                      "name": "Solo"
+                    }
+                  ],
+                  [
+                    {
+                      "id": 9,
+                      "city_id": 1
+                    }
+                  ],
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "sql": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Debugging Integrations",
+    "topics": [
+      "missing keys",
+      "bad JSON",
+      "network failures",
+      "authentication failures",
+      "incorrect parsing",
+      "edge cases"
+    ],
+    "difficulty": "Intermediate to Advanced",
+    "lessons": [
+      {
+        "id": "m14-debugging-lab",
+        "title": "Diagnose Broken Integrations",
+        "difficulty": "Intermediate to Advanced",
+        "skills": [
+          "debugging",
+          "api",
+          "data_parsing"
+        ],
+        "estimated_minutes": 75,
+        "explanation": "Debugging is a disciplined loop: reproduce, read the stack trace, isolate the failing assumption, add a narrow fix, and capture a regression test.",
+        "visual": "failure -> reproduce -> inspect status/body/trace -> identify assumption -> patch -> test",
+        "example_code": "try:\n    data = response.json()\nexcept ValueError as exc:\n    raise RuntimeError('API returned invalid JSON') from exc",
+        "guided_exercise": {
+          "id": "m14-guided",
+          "title": "Missing key resilience",
+          "prompt": "Revisit extract_contacts and make it resilient to missing nested dictionaries.",
+          "starter_file": "fde_api_academy/student/m02_extract_contacts.py",
+          "validator": "validate_extract_contacts",
+          "skill_weights": {
+            "debugging": 3,
+            "data_parsing": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m14-challenge",
+          "title": "Root cause report",
+          "prompt": "Write a short debugging note in docs/debugging-notes.md for one failure mode: symptom, cause, fix, test.",
+          "starter_file": "fde_api_academy/student/m02_extract_contacts.py",
+          "validator": "validate_extract_contacts",
+          "skill_weights": {
+            "debugging": 4
+          }
+        },
+        "reflection_questions": [
+          "What was the first observable symptom?",
+          "Which assumption actually broke?"
+        ],
+        "hints": [
+          "Start by reproducing the failure with the smallest payload.",
+          "Print or inspect the exact object before the failing line.",
+          "Replace brittle indexing with explicit validation or safe .get calls.",
+          "A strong debugging note separates symptom, root cause, fix, and regression test."
+        ],
+        "practice_drills": [
+          {
+            "id": "m14-drill-1",
+            "title": "Debug missing key",
+            "prompt": "Write safe_get(data, path). path is a dotted key path like 'user.profile.name'. Walk the nested dict and return the value, or None if any key along the path is missing (no KeyError).",
+            "source_title": "GeeksforGeeks How to Parse Nested JSON in Python",
+            "source_url": "https://www.geeksforgeeks.org/how-to-parse-nested-json-in-python/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "safe_get",
+            "starter_file": "fde_api_academy/student/drill_m14_drill_1.py",
+            "example": "safe_get({'user': {'profile': {'name': 'Ada'}}}, 'user.profile.name') -> 'Ada'",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nsafe_get({'user': {'profile': {'name': 'Ada'}}}, 'user.profile.name') -> 'Ada'\n\nsafe_get({'user': {}}, 'user.profile.name') -> None\n\nsafe_get({}, 'a.b') -> None",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "user": {
+                      "profile": {
+                        "name": "Ada"
+                      }
+                    }
+                  },
+                  "user.profile.name"
+                ],
+                "expected": "Ada"
+              },
+              {
+                "args": [
+                  {
+                    "user": {}
+                  },
+                  "user.profile.name"
+                ],
+                "expected": null
+              },
+              {
+                "args": [
+                  {},
+                  "a.b"
+                ],
+                "expected": null
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          },
+          {
+            "id": "m14-drill-2",
+            "title": "Debug bad JSON",
+            "prompt": "Write parse_response(response) for response {'status','content_type','body'}. If content_type is 'application/json' and body parses, return {'ok': True, 'data': parsed}. Otherwise return {'ok': False, 'status': .., 'content_type': .., 'preview': body[:40]}.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "parse_response",
+            "starter_file": "fde_api_academy/student/drill_m14_drill_2.py",
+            "example": "parse_response({'status': 200, 'content_type': 'application/json', 'body': '{\"id\": 1}'}) -> {'ok': True, 'data': {'id': 1}}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nparse_response({'status': 200, 'content_type': 'application/json', 'body': '{\"id\": 1}'}) -> {'ok': True, 'data': {'id': 1}}\n\nparse_response({'status': 500, 'content_type': 'text/html', 'body': '<html>oops</html>'}) -> {'ok': False, 'status': 500, 'content_type': 'text/html', 'preview': '<html>oops</html>'}\n\nparse_response({'status': 200, 'content_type': 'application/json', 'body': 'not json'}) -> {'ok': False, 'status': 200, 'content_type': 'application/json', 'preview': 'not json'}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "status": 200,
+                    "content_type": "application/json",
+                    "body": "{\"id\": 1}"
+                  }
+                ],
+                "expected": {
+                  "ok": true,
+                  "data": {
+                    "id": 1
+                  }
+                }
+              },
+              {
+                "args": [
+                  {
+                    "status": 500,
+                    "content_type": "text/html",
+                    "body": "<html>oops</html>"
+                  }
+                ],
+                "expected": {
+                  "ok": false,
+                  "status": 500,
+                  "content_type": "text/html",
+                  "preview": "<html>oops</html>"
+                }
+              },
+              {
+                "args": [
+                  {
+                    "status": 200,
+                    "content_type": "application/json",
+                    "body": "not json"
+                  }
+                ],
+                "expected": {
+                  "ok": false,
+                  "status": 200,
+                  "content_type": "application/json",
+                  "preview": "not json"
+                }
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          },
+          {
+            "id": "m14-drill-3",
+            "title": "Debug rate limits",
+            "prompt": "Write backoff_schedule(n). Return the exponential backoff delays for n retries as [1, 2, 4, 8, ...] (i.e. 2**i for i in range(n)).",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "backoff_schedule",
+            "starter_file": "fde_api_academy/student/drill_m14_drill_3.py",
+            "example": "backoff_schedule(3) -> [1, 2, 4]",
+            "expected": "Graded on 4 test cases. Your function must return exactly these results:\n(showing 3; 1 more case is hidden)\n\nbackoff_schedule(3) -> [1, 2, 4]\n\nbackoff_schedule(1) -> [1]\n\nbackoff_schedule(0) -> []",
+            "cases": [
+              {
+                "args": [
+                  3
+                ],
+                "expected": [
+                  1,
+                  2,
+                  4
+                ]
+              },
+              {
+                "args": [
+                  1
+                ],
+                "expected": [
+                  1
+                ]
+              },
+              {
+                "args": [
+                  0
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  5
+                ],
+                "expected": [
+                  1,
+                  2,
+                  4,
+                  8,
+                  16
+                ]
+              }
+            ],
+            "skill_weights": {
+              "automation": 2
+            }
+          },
+          {
+            "id": "m14-drill-4",
+            "title": "Fix double-counted contacts",
+            "source_title": "Palantir debugging interview round (reported)",
+            "source_url": "https://www.linkjob.ai/interview-questions/palantir-interview-process-questions/",
+            "verification_note": "Modeled on a task reported by candidates for Palantir's Forward Deployed (Software) Engineer interview; verified against public write-ups on 2026-06-08.",
+            "prompt": "Reported Palantir debugging round: fix a double-counting contact-tracing bug. Write count_contacts(pairs). pairs is a list of [a, b] contacts that may be duplicated or reversed. Count each unique undirected contact once (ignore self-pairs) and return {person: number_of_distinct_contacts}.",
+            "entry_function": "count_contacts",
+            "starter_file": "fde_api_academy/student/drill_m14_drill_4.py",
+            "example": "count_contacts([['ada', 'lin'], ['lin', 'ada'], ['ada', 'sam']]) -> {'ada': 2, 'lin': 1, 'sam': 1}",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\ncount_contacts([['ada', 'lin'], ['lin', 'ada'], ['ada', 'sam']]) -> {'ada': 2, 'lin': 1, 'sam': 1}\n\ncount_contacts([['a', 'a'], ['a', 'b']]) -> {'a': 1, 'b': 1}\n\ncount_contacts([]) -> {}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    [
+                      "ada",
+                      "lin"
+                    ],
+                    [
+                      "lin",
+                      "ada"
+                    ],
+                    [
+                      "ada",
+                      "sam"
+                    ]
+                  ]
+                ],
+                "expected": {
+                  "ada": 2,
+                  "lin": 1,
+                  "sam": 1
+                }
+              },
+              {
+                "args": [
+                  [
+                    [
+                      "a",
+                      "a"
+                    ],
+                    [
+                      "a",
+                      "b"
+                    ]
+                  ]
+                ],
+                "expected": {
+                  "a": 1,
+                  "b": 1
+                }
+              },
+              {
+                "args": [
+                  []
+                ],
+                "expected": {}
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Real API Integrations",
+    "topics": [
+      "GitHub API",
+      "JSONPlaceholder API",
+      "OpenWeather API",
+      "OpenAI API mocks",
+      "Stripe API mocks",
+      "docs reading"
+    ],
+    "difficulty": "Intermediate",
+    "lessons": [
+      {
+        "id": "m15-real-api-playbook",
+        "title": "Read Docs and Build Integration Adapters",
+        "difficulty": "Intermediate",
+        "skills": [
+          "api",
+          "authentication",
+          "debugging"
+        ],
+        "estimated_minutes": 60,
+        "explanation": "Every new integration starts with docs. Identify auth, base URL, endpoints, request shape, response shape, errors, and rate limits before coding.",
+        "visual": "docs -> endpoint contract -> adapter function -> parser -> tests with mock response",
+        "example_code": "def adapter(client, params):\n    response = client.get('resource', **params)\n    if not response.ok:\n        raise RuntimeError(response.text)\n    return response.json()",
+        "guided_exercise": {
+          "id": "m15-guided",
+          "title": "Mocked adapter",
+          "prompt": "Use MockAPIClient to fetch github_user or weather data and inspect the response shape.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 3
+          }
+        },
+        "challenge_exercise": {
+          "id": "m15-challenge",
+          "title": "Integration checklist",
+          "prompt": "Create an integration checklist for GitHub, JSONPlaceholder, OpenWeather, OpenAI, and Stripe.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "api": 3,
+            "authentication": 2
+          }
+        },
+        "reflection_questions": [
+          "Which docs section do you read first?",
+          "How do mocks reduce risk before using real credentials?"
+        ],
+        "hints": [
+          "Find authentication requirements first.",
+          "Capture example responses as fixtures.",
+          "Write parser tests against fixtures.",
+          "Use real APIs only after the mock path and error handling are working."
+        ],
+        "practice_drills": [
+          {
+            "id": "m15-drill-1",
+            "title": "Read docs into an adapter",
+            "prompt": "Write build_adapter(doc). Given an API docs dict, return an adapter {'base_url','auth','endpoint','params','fields'} pulled from the matching doc keys (params/fields default to []).",
+            "source_title": "Educative REST API Interview Questions",
+            "source_url": "https://www.educative.io/blog/rest-api-interview-questions",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "build_adapter",
+            "starter_file": "fde_api_academy/student/drill_m15_drill_1.py",
+            "example": "build_adapter({'base_url': 'https://api.x.com', 'auth': 'bearer', 'endpoint': '/users', 'params': ['page'], 'fields': ['id', 'name']}) -> {'base_url': 'https://api.x.com', 'auth': 'bearer', 'endpoint': '/users', 'params': ['page'], 'fields': ['id', 'name']}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nbuild_adapter({'base_url': 'https://api.x.com', 'auth': 'bearer', 'endpoint': '/users', 'params': ['page'], 'fields': ['id', 'name']}) -> {'base_url': 'https://api.x.com', 'auth': 'bearer', 'endpoint': '/users', 'params': ['page'], 'fields': ['id', 'name']}\n\nbuild_adapter({'base_url': 'https://b.com', 'auth': 'none', 'endpoint': '/x'}) -> {'base_url': 'https://b.com', 'auth': 'none', 'endpoint': '/x', 'params': [], 'fields': []}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "base_url": "https://api.x.com",
+                    "auth": "bearer",
+                    "endpoint": "/users",
+                    "params": [
+                      "page"
+                    ],
+                    "fields": [
+                      "id",
+                      "name"
+                    ]
+                  }
+                ],
+                "expected": {
+                  "base_url": "https://api.x.com",
+                  "auth": "bearer",
+                  "endpoint": "/users",
+                  "params": [
+                    "page"
+                  ],
+                  "fields": [
+                    "id",
+                    "name"
+                  ]
+                }
+              },
+              {
+                "args": [
+                  {
+                    "base_url": "https://b.com",
+                    "auth": "none",
+                    "endpoint": "/x"
+                  }
+                ],
+                "expected": {
+                  "base_url": "https://b.com",
+                  "auth": "none",
+                  "endpoint": "/x",
+                  "params": [],
+                  "fields": []
+                }
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m15-drill-2",
+            "title": "Mock before live integration",
+            "prompt": "Write count_items(fixture). fixture is a mock response {'body': json_string} where the body decodes to {'items': [...]}. Return the number of items.",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "count_items",
+            "starter_file": "fde_api_academy/student/drill_m15_drill_2.py",
+            "example": "count_items({'body': '{\"items\": [1, 2, 3]}'}) -> 3",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\ncount_items({'body': '{\"items\": [1, 2, 3]}'}) -> 3\n\ncount_items({'body': '{\"items\": []}'}) -> 0",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "body": "{\"items\": [1, 2, 3]}"
+                  }
+                ],
+                "expected": 3
+              },
+              {
+                "args": [
+                  {
+                    "body": "{\"items\": []}"
+                  }
+                ],
+                "expected": 0
+              }
+            ],
+            "skill_weights": {
+              "api": 2
+            }
+          },
+          {
+            "id": "m15-drill-3",
+            "title": "Normalize multiple APIs",
+            "prompt": "Write normalize_event(record). github records {'source':'github','stars':N} -> {'source':'github','metric':'stars','value':N}; weather records {'source':'weather','temp':T} -> {'source':'weather','metric':'temp','value':T}.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "normalize_event",
+            "starter_file": "fde_api_academy/student/drill_m15_drill_3.py",
+            "example": "normalize_event({'source': 'github', 'stars': 12}) -> {'source': 'github', 'metric': 'stars', 'value': 12}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nnormalize_event({'source': 'github', 'stars': 12}) -> {'source': 'github', 'metric': 'stars', 'value': 12}\n\nnormalize_event({'source': 'weather', 'temp': 70}) -> {'source': 'weather', 'metric': 'temp', 'value': 70}",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "source": "github",
+                    "stars": 12
+                  }
+                ],
+                "expected": {
+                  "source": "github",
+                  "metric": "stars",
+                  "value": 12
+                }
+              },
+              {
+                "args": [
+                  {
+                    "source": "weather",
+                    "temp": 70
+                  }
+                ],
+                "expected": {
+                  "source": "weather",
+                  "metric": "temp",
+                  "value": 70
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "Automation Workflows",
+    "topics": [
+      "GitHub Activity Reporter",
+      "Weather Alert Tool",
+      "API Data Sync Tool",
+      "Issue Tracker Automation",
+      "AI-Powered Data Summarizer"
+    ],
+    "difficulty": "Intermediate to Advanced",
+    "lessons": [
+      {
+        "id": "m16-automation-workflows",
+        "title": "Build Practical API Automations",
+        "difficulty": "Intermediate to Advanced",
+        "skills": [
+          "automation",
+          "api",
+          "debugging"
+        ],
+        "estimated_minutes": 90,
+        "explanation": "Automation glues systems together. Good workflows are observable, idempotent, configurable, and clear when they fail.",
+        "visual": "schedule/manual trigger -> fetch data -> transform -> store/export/notify -> log result",
+        "example_code": "def run_workflow():\n    data = fetch()\n    report = transform(data)\n    save(report)\n    return report",
+        "guided_exercise": {
+          "id": "m16-guided",
+          "title": "Activity reporter",
+          "prompt": "Use the GitHub analyzer output as the basis for a daily activity reporter.",
+          "starter_file": "fde_api_academy/student/m05_github_profile.py",
+          "validator": "validate_github_profile",
+          "skill_weights": {
+            "automation": 3,
+            "api": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m16-challenge",
+          "title": "Sync workflow design",
+          "prompt": "Design an API data sync tool with retry, dedupe, logging, and SQLite storage.",
+          "starter_file": "fde_api_academy/student/m13_sqlite_store.py",
+          "validator": "validate_sqlite_store",
+          "skill_weights": {
+            "automation": 4,
+            "sql": 2
+          }
+        },
+        "reflection_questions": [
+          "What makes a workflow safe to rerun?",
+          "What logs would help you debug a failed sync?"
+        ],
+        "hints": [
+          "Separate fetch, transform, store, and notify steps.",
+          "Idempotency usually needs stable external IDs.",
+          "Retry only failures that are likely temporary.",
+          "The capstone project shows a fuller automation architecture."
+        ],
+        "practice_drills": [
+          {
+            "id": "m16-drill-1",
+            "title": "Design an idempotent sync",
+            "prompt": "Write idempotent_sync(existing_ids, incoming). existing_ids is a list of ids already stored; incoming is a list of records with an 'id'. Return only the records whose id is not already present, so the job is safe to rerun.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "idempotent_sync",
+            "starter_file": "fde_api_academy/student/drill_m16_drill_1.py",
+            "example": "idempotent_sync([1, 2], [{'id': 1}, {'id': 3}]) -> [{'id': 3}]",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\nidempotent_sync([1, 2], [{'id': 1}, {'id': 3}]) -> [{'id': 3}]\n\nidempotent_sync([], [{'id': 5}]) -> [{'id': 5}]\n\nidempotent_sync([1, 2], []) -> []",
+            "cases": [
+              {
+                "args": [
+                  [
+                    1,
+                    2
+                  ],
+                  [
+                    {
+                      "id": 1
+                    },
+                    {
+                      "id": 3
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "id": 3
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [],
+                  [
+                    {
+                      "id": 5
+                    }
+                  ]
+                ],
+                "expected": [
+                  {
+                    "id": 5
+                  }
+                ]
+              },
+              {
+                "args": [
+                  [
+                    1,
+                    2
+                  ],
+                  []
+                ],
+                "expected": []
+              }
+            ],
+            "skill_weights": {
+              "automation": 2
+            }
+          },
+          {
+            "id": "m16-drill-2",
+            "title": "Build retry policy",
+            "prompt": "Write retry_decision(status). 429 -> 'retry with backoff', 500 -> 'retry', 400 -> 'do not retry', 401 -> 'refresh auth', anything else -> 'escalate'.",
+            "source_title": "DataCamp REST API Interview Questions and Answers",
+            "source_url": "https://www.datacamp.com/blog/rest-api-interview-questions/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "retry_decision",
+            "starter_file": "fde_api_academy/student/drill_m16_drill_2.py",
+            "example": "retry_decision(429) -> 'retry with backoff'",
+            "expected": "Graded on 5 test cases. Your function must return exactly these results:\n(showing 3; 2 more cases are hidden)\n\nretry_decision(429) -> 'retry with backoff'\n\nretry_decision(500) -> 'retry'\n\nretry_decision(400) -> 'do not retry'",
+            "cases": [
+              {
+                "args": [
+                  429
+                ],
+                "expected": "retry with backoff"
+              },
+              {
+                "args": [
+                  500
+                ],
+                "expected": "retry"
+              },
+              {
+                "args": [
+                  400
+                ],
+                "expected": "do not retry"
+              },
+              {
+                "args": [
+                  401
+                ],
+                "expected": "refresh auth"
+              },
+              {
+                "args": [
+                  418
+                ],
+                "expected": "escalate"
+              }
+            ],
+            "skill_weights": {
+              "automation": 2
+            }
+          },
+          {
+            "id": "m16-drill-3",
+            "title": "Automated report workflow",
+            "prompt": "Write workflow_steps(). Return the ordered automation steps for the morning report job as the list ['fetch', 'store', 'export', 'log'].",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "workflow_steps",
+            "starter_file": "fde_api_academy/student/drill_m16_drill_3.py",
+            "example": "workflow_steps() -> ['fetch', 'store', 'export', 'log']",
+            "expected": "Graded on 1 test case. Your function must return exactly these results:\n\nworkflow_steps() -> ['fetch', 'store', 'export', 'log']",
+            "cases": [
+              {
+                "args": [],
+                "expected": [
+                  "fetch",
+                  "store",
+                  "export",
+                  "log"
+                ]
+              }
+            ],
+            "skill_weights": {
+              "automation": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "title": "FDE Interview Simulations",
+    "topics": [
+      "report generation",
+      "integration fixes",
+      "workflow design",
+      "JSON parsing",
+      "authentication",
+      "code improvement"
+    ],
+    "difficulty": "Easy to Hard",
+    "lessons": [
+      {
+        "id": "m17-interview-sims",
+        "title": "Startup-Style Interview Tasks",
+        "difficulty": "Easy to Hard",
+        "skills": [
+          "api",
+          "data_parsing",
+          "debugging",
+          "automation",
+          "sql",
+          "authentication"
+        ],
+        "estimated_minutes": 120,
+        "explanation": "FDE interviews reward shipping useful, robust work under ambiguity. Practice framing assumptions, building a small integration, explaining tradeoffs, and debugging quickly.",
+        "visual": "ambiguous task -> clarify assumptions -> small working tool -> tests -> explanation",
+        "example_code": "def main():\n    report = run_capstone_pipeline()\n    print(report)",
+        "guided_exercise": {
+          "id": "m17-guided",
+          "title": "Easy simulation",
+          "prompt": "Pull data from a mocked API and generate a summary report.",
+          "starter_file": "fde_api_academy/student/m03_json_report.py",
+          "validator": "validate_json_transform",
+          "skill_weights": {
+            "api": 2,
+            "data_parsing": 2
+          }
+        },
+        "challenge_exercise": {
+          "id": "m17-challenge",
+          "title": "Hard simulation",
+          "prompt": "Build the API Operations Dashboard capstone in projects/api_operations_dashboard.py.",
+          "starter_file": "fde_api_academy/student/m13_sqlite_store.py",
+          "validator": "validate_sqlite_store",
+          "skill_weights": {
+            "api": 3,
+            "data_parsing": 3,
+            "debugging": 3,
+            "automation": 3,
+            "sql": 3,
+            "authentication": 2
+          }
+        },
+        "project": {
+          "name": "API Operations Dashboard",
+          "requirements": [
+            "multiple API integrations",
+            "authentication",
+            "data parsing",
+            "SQLite storage",
+            "reporting",
+            "error handling",
+            "logging"
+          ]
+        },
+        "reflection_questions": [
+          "How did you reduce ambiguity?",
+          "What would you improve with another hour?",
+          "Which failure mode did you handle best?"
+        ],
+        "hints": [
+          "Clarify inputs, outputs, and success criteria first.",
+          "Build a narrow end-to-end path before adding features.",
+          "Use mocks and fixtures to make tests deterministic.",
+          "A strong final answer explains design, tradeoffs, errors handled, and how to run it."
+        ],
+        "practice_drills": [
+          {
+            "id": "m17-drill-1",
+            "title": "Customer data report simulation",
+            "prompt": "Write executive_summary(records). Each record has 'customer' and 'usage'. Return {'total_customers': N, 'total_usage': sum, 'top_customer': name_with_highest_usage}.",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "executive_summary",
+            "starter_file": "fde_api_academy/student/drill_m17_drill_1.py",
+            "example": "executive_summary([{'customer': 'Acme', 'usage': 12}, {'customer': 'Globex', 'usage': 20}]) -> {'total_customers': 2, 'total_usage': 32, 'top_customer': 'Globex'}",
+            "expected": "Graded on 2 test cases. Your function must return exactly these results:\n\nexecutive_summary([{'customer': 'Acme', 'usage': 12}, {'customer': 'Globex', 'usage': 20}]) -> {'total_customers': 2, 'total_usage': 32, 'top_customer': 'Globex'}\n\nexecutive_summary([{'customer': 'Solo', 'usage': 1}]) -> {'total_customers': 1, 'total_usage': 1, 'top_customer': 'Solo'}",
+            "cases": [
+              {
+                "args": [
+                  [
+                    {
+                      "customer": "Acme",
+                      "usage": 12
+                    },
+                    {
+                      "customer": "Globex",
+                      "usage": 20
+                    }
+                  ]
+                ],
+                "expected": {
+                  "total_customers": 2,
+                  "total_usage": 32,
+                  "top_customer": "Globex"
+                }
+              },
+              {
+                "args": [
+                  [
+                    {
+                      "customer": "Solo",
+                      "usage": 1
+                    }
+                  ]
+                ],
+                "expected": {
+                  "total_customers": 1,
+                  "total_usage": 1,
+                  "top_customer": "Solo"
+                }
+              }
+            ],
+            "skill_weights": {
+              "data_parsing": 2
+            }
+          },
+          {
+            "id": "m17-drill-2",
+            "title": "Broken integration simulation",
+            "prompt": "Write diagnose_integration(response) for {'status', 'json_valid', 'retries'}. Return a sorted list of issue tags: add 'auth' when status is 401, 'parsing' when json_valid is False, and 'retry' when retries is 0.",
+            "source_title": "Exponent Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.tryexponent.com/blog/forward-deployed-engineer-interview-the-definitive-2026-guide-fde",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "diagnose_integration",
+            "starter_file": "fde_api_academy/student/drill_m17_drill_2.py",
+            "example": "diagnose_integration({'status': 401, 'json_valid': False, 'retries': 0}) -> ['auth', 'parsing', 'retry']",
+            "expected": "Graded on 3 test cases. Your function must return exactly these results:\n\ndiagnose_integration({'status': 401, 'json_valid': False, 'retries': 0}) -> ['auth', 'parsing', 'retry']\n\ndiagnose_integration({'status': 200, 'json_valid': True, 'retries': 2}) -> []\n\ndiagnose_integration({'status': 200, 'json_valid': False, 'retries': 1}) -> ['parsing']",
+            "cases": [
+              {
+                "args": [
+                  {
+                    "status": 401,
+                    "json_valid": false,
+                    "retries": 0
+                  }
+                ],
+                "expected": [
+                  "auth",
+                  "parsing",
+                  "retry"
+                ]
+              },
+              {
+                "args": [
+                  {
+                    "status": 200,
+                    "json_valid": true,
+                    "retries": 2
+                  }
+                ],
+                "expected": []
+              },
+              {
+                "args": [
+                  {
+                    "status": 200,
+                    "json_valid": false,
+                    "retries": 1
+                  }
+                ],
+                "expected": [
+                  "parsing"
+                ]
+              }
+            ],
+            "skill_weights": {
+              "debugging": 2
+            }
+          },
+          {
+            "id": "m17-drill-3",
+            "title": "System sync design simulation",
+            "prompt": "Write sync_design_components(). Return the ordered components of a robust CRM<->product sync as ['extract', 'transform', 'load', 'audit_log', 'error_recovery'].",
+            "source_title": "Blockchain Council Forward Deployed Engineer Interview Guide",
+            "source_url": "https://www.blockchain-council.org/ai/forward-deployed-engineer-interview-guide-questions-coding-tasks-case-studies/",
+            "verification_note": "Verified as a public interview/prep source for this topic on 2026-06-07; prompt wording is adapted for FDE API Academy practice.",
+            "entry_function": "sync_design_components",
+            "starter_file": "fde_api_academy/student/drill_m17_drill_3.py",
+            "example": "sync_design_components() -> ['extract', 'transform', 'load', 'audit_log', 'error_recovery']",
+            "expected": "Graded on 1 test case. Your function must return exactly these results:\n\nsync_design_components() -> ['extract', 'transform', 'load', 'audit_log', 'error_recovery']",
+            "cases": [
+              {
+                "args": [],
+                "expected": [
+                  "extract",
+                  "transform",
+                  "load",
+                  "audit_log",
+                  "error_recovery"
+                ]
+              }
+            ],
+            "skill_weights": {
+              "automation": 1
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

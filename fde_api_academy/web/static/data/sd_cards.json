@@ -1,0 +1,302 @@
+[
+  {
+    "id": "load-balancer",
+    "name": "Load Balancer",
+    "category": "Traffic",
+    "definition": "Distributes incoming requests across many identical servers so no single instance is overwhelmed, and routes around dead ones.",
+    "pros": ["Horizontal scaling of stateless services", "Health checks remove failed nodes", "Enables zero-downtime deploys"],
+    "cons": ["Can become a bottleneck/SPOF if not redundant", "Adds a network hop", "Session affinity complicates stateful apps"],
+    "whenToUse": "Any service that runs on more than one machine and needs traffic spread evenly.",
+    "whenNotToUse": "A single-instance internal tool, or when the real bottleneck is the database, not the app tier."
+  },
+  {
+    "id": "cdn",
+    "name": "CDN (Content Delivery Network)",
+    "category": "Traffic",
+    "definition": "A geographically distributed cache of edge servers that serves static/media content from a location near the user.",
+    "pros": ["Cuts latency for global users", "Offloads origin bandwidth", "Absorbs traffic spikes for static assets"],
+    "cons": ["Cache invalidation is hard", "Costs money per GB egress", "Useless for highly dynamic, per-user data"],
+    "whenToUse": "Serving images, video, JS/CSS, or any cacheable blob to a global audience.",
+    "whenNotToUse": "Personalized, frequently-changing API responses that can't be cached."
+  },
+  {
+    "id": "cache",
+    "name": "In-Memory Cache (Redis/Memcached)",
+    "category": "Data",
+    "definition": "A fast key-value store in RAM that holds hot data so you avoid recomputing or re-reading from a slower database.",
+    "pros": ["Sub-millisecond reads", "Takes load off the primary DB", "Great for read-heavy workloads"],
+    "cons": ["Stale data / invalidation complexity", "Limited by RAM size", "Cache stampede on expiry"],
+    "whenToUse": "Read-heavy access patterns with a hot subset of data (sessions, counters, feeds, lookups).",
+    "whenNotToUse": "Write-heavy data with low re-read rate, or when you need durable storage."
+  },
+  {
+    "id": "read-replica",
+    "name": "Read Replica",
+    "category": "Data",
+    "definition": "A copy of the database that asynchronously follows the primary and serves read queries to scale read throughput.",
+    "pros": ["Scales reads horizontally", "Isolates analytics from the write path", "Can fail over to it"],
+    "cons": ["Replication lag → stale reads", "Doesn't scale writes", "More infra to operate"],
+    "whenToUse": "Read:write ratio is high and you can tolerate slightly stale reads.",
+    "whenNotToUse": "Write-bound systems, or when every read must be perfectly fresh."
+  },
+  {
+    "id": "sharding",
+    "name": "Sharding / Partitioning",
+    "category": "Data",
+    "definition": "Splitting one logical dataset across many database nodes by a partition key so each node holds only a slice.",
+    "pros": ["Scales writes and storage past one machine", "Smaller per-node indexes", "Blast radius is one shard"],
+    "cons": ["Cross-shard queries/joins are painful", "Re-sharding is operationally hard", "Hot keys skew load"],
+    "whenToUse": "A single DB can no longer hold the data or absorb the write volume.",
+    "whenNotToUse": "Data fits comfortably on one node — sharding early adds needless complexity."
+  },
+  {
+    "id": "message-queue",
+    "name": "Message Queue",
+    "category": "Async",
+    "definition": "A durable buffer (e.g. SQS, RabbitMQ) that decouples producers from consumers so work is processed asynchronously.",
+    "pros": ["Absorbs spikes / smooths load", "Decouples services", "Retries and dead-letter handling"],
+    "cons": ["Adds eventual consistency", "Ordering/exactly-once is tricky", "Another system to monitor"],
+    "whenToUse": "Slow or spiky background work: sending email, encoding video, fan-out, ingestion.",
+    "whenNotToUse": "Synchronous request/response where the user needs the answer right now."
+  },
+  {
+    "id": "pub-sub",
+    "name": "Pub/Sub (Kafka/PubSub)",
+    "category": "Async",
+    "definition": "A publish-subscribe log where one event is broadcast to many independent consumer groups, often replayable.",
+    "pros": ["One event → many consumers", "Replayable, ordered per partition", "High throughput streaming"],
+    "cons": ["Operational complexity", "Consumers must handle duplicates", "Partitioning decisions are sticky"],
+    "whenToUse": "Event-driven fan-out, activity streams, log/event pipelines, change propagation.",
+    "whenNotToUse": "Simple point-to-point task hand-off (a plain queue is enough)."
+  },
+  {
+    "id": "rate-limiter",
+    "name": "Rate Limiter",
+    "category": "Traffic",
+    "definition": "Caps how many requests a client can make in a window (token bucket, sliding window) to protect the system.",
+    "pros": ["Prevents abuse and overload", "Fair resource sharing", "Protects downstream dependencies"],
+    "cons": ["Distributed counting needs shared state", "Wrong limits hurt real users", "Clock/window edge cases"],
+    "whenToUse": "Public APIs, login endpoints, or any shared resource that needs protection from spikes/abuse.",
+    "whenNotToUse": "Purely internal, trusted, low-volume calls where throttling adds no value."
+  },
+  {
+    "id": "api-gateway",
+    "name": "API Gateway",
+    "category": "Traffic",
+    "definition": "A single entry point that handles auth, routing, rate limiting, and request shaping in front of many microservices.",
+    "pros": ["Centralizes cross-cutting concerns", "One front door for clients", "Decouples clients from service topology"],
+    "cons": ["Potential bottleneck/SPOF", "Can grow into a god-object", "Extra latency hop"],
+    "whenToUse": "Microservice architectures needing shared auth, routing, throttling at the edge.",
+    "whenNotToUse": "A small monolith with one public endpoint."
+  },
+  {
+    "id": "reverse-proxy",
+    "name": "Reverse Proxy",
+    "category": "Traffic",
+    "definition": "A server (e.g. Nginx) that sits in front of app servers to terminate TLS, cache, compress, and forward requests.",
+    "pros": ["TLS termination & compression", "Static caching", "Hides backend topology"],
+    "cons": ["Another hop", "Config sprawl", "Can mask backend errors"],
+    "whenToUse": "Terminating TLS, serving static files, and basic routing in front of app servers.",
+    "whenNotToUse": "When you already have a full API gateway covering these concerns."
+  },
+  {
+    "id": "kv-store",
+    "name": "NoSQL Key-Value / Wide-Column Store",
+    "category": "Data",
+    "definition": "A schemaless store (DynamoDB, Cassandra) optimized for fast lookups by key and massive horizontal scale.",
+    "pros": ["Scales horizontally with ease", "Predictable low-latency by key", "Flexible schema"],
+    "cons": ["Weak ad-hoc queries/joins", "Often eventual consistency", "You design around access patterns up front"],
+    "whenToUse": "Huge scale, simple access-by-key patterns: user profiles, sessions, mappings, feeds.",
+    "whenNotToUse": "Complex relational queries, transactions across entities, strong ACID needs."
+  },
+  {
+    "id": "sql-db",
+    "name": "Relational Database (SQL)",
+    "category": "Data",
+    "definition": "A schema-based store with ACID transactions and joins (Postgres, MySQL) — strong consistency by default.",
+    "pros": ["ACID transactions", "Rich queries & joins", "Mature, well-understood"],
+    "cons": ["Vertical scaling limits", "Sharding is manual", "Schema changes can be heavy"],
+    "whenToUse": "Money, orders, relationships, anything needing transactions and correctness.",
+    "whenNotToUse": "Internet-scale, simple key lookups where a NoSQL store scales more cheaply."
+  },
+  {
+    "id": "consistent-hashing",
+    "name": "Consistent Hashing",
+    "category": "Data",
+    "definition": "A hashing scheme that maps keys to nodes on a ring so adding/removing a node moves only a small fraction of keys.",
+    "pros": ["Minimal reshuffling on scale events", "Even distribution with virtual nodes", "Foundation for sharded caches/DBs"],
+    "cons": ["More complex than modulo hashing", "Hot keys still skew", "Needs virtual nodes to balance"],
+    "whenToUse": "Distributing keys across a cache/DB cluster that grows and shrinks.",
+    "whenNotToUse": "A fixed, small node count where simple hashing is fine."
+  },
+  {
+    "id": "bloom-filter",
+    "name": "Bloom Filter",
+    "category": "Data",
+    "definition": "A compact probabilistic set that answers 'definitely not present' or 'maybe present' to skip expensive lookups.",
+    "pros": ["Tiny memory footprint", "Avoids pointless disk/DB hits", "Fast membership checks"],
+    "cons": ["False positives (never false negatives)", "Can't delete (standard variant)", "Not a real data store"],
+    "whenToUse": "Cheaply checking 'have I seen this URL/key?' before a costly read (crawlers, caches, dedupe).",
+    "whenNotToUse": "When you need exact membership or to retrieve the value itself."
+  },
+  {
+    "id": "wal",
+    "name": "Write-Ahead Log (WAL)",
+    "category": "Data",
+    "definition": "Append-only log of changes written before applying them, enabling crash recovery and replication.",
+    "pros": ["Durability & crash recovery", "Source for replication/CDC", "Sequential writes are fast"],
+    "cons": ["Log must be truncated/compacted", "Replay can be slow", "Extra write amplification"],
+    "whenToUse": "Building durable storage, replication, or event sourcing on top of an ordered log.",
+    "whenNotToUse": "Ephemeral data where durability doesn't matter."
+  },
+  {
+    "id": "object-storage",
+    "name": "Object / Blob Storage (S3)",
+    "category": "Storage",
+    "definition": "Durable, cheap storage for large immutable blobs (images, video, backups) addressed by key over HTTP.",
+    "pros": ["Cheap and effectively infinite", "11 9s durability", "Pairs naturally with a CDN"],
+    "cons": ["High per-object latency vs DB", "No queries/transactions", "Eventual consistency on some ops"],
+    "whenToUse": "Storing user uploads, media, logs, backups — anything large and file-like.",
+    "whenNotToUse": "Small structured records you need to query or update transactionally."
+  },
+  {
+    "id": "search-index",
+    "name": "Search Index (Inverted Index / Elasticsearch)",
+    "category": "Data",
+    "definition": "A term→documents index that powers fast full-text search, filtering, and ranking.",
+    "pros": ["Fast text search & relevance ranking", "Faceting/filtering", "Scales horizontally"],
+    "cons": ["Eventually consistent with source of truth", "Heavy to operate", "Not your primary store"],
+    "whenToUse": "Full-text search, autocomplete corpora, log search, complex filtering.",
+    "whenNotToUse": "Exact key lookups or as a system of record."
+  },
+  {
+    "id": "websocket",
+    "name": "WebSocket / Long-Lived Connection",
+    "category": "Realtime",
+    "definition": "A persistent bidirectional connection so the server can push to the client instantly without polling.",
+    "pros": ["True real-time server push", "Lower overhead than polling", "Bidirectional"],
+    "cons": ["Stateful connections complicate scaling", "Need a connection/registry layer", "Reconnection logic"],
+    "whenToUse": "Chat, live location, presence, notifications, collaborative editing.",
+    "whenNotToUse": "Infrequent updates where simple polling or SSE is cheaper to operate."
+  },
+  {
+    "id": "geospatial-index",
+    "name": "Geospatial Index (Quadtree / Geohash)",
+    "category": "Data",
+    "definition": "A spatial data structure that answers 'what's near this lat/long?' efficiently.",
+    "pros": ["Fast proximity & range queries", "Bounds the search space", "Supports moving objects"],
+    "cons": ["Rebalancing for dense areas", "Update cost for fast-moving entities", "Edge-of-cell queries"],
+    "whenToUse": "Find nearby drivers/restaurants/users, maps, location-based matching.",
+    "whenNotToUse": "Non-spatial data — it adds no value."
+  },
+  {
+    "id": "consensus",
+    "name": "Consensus / Leader Election (Raft, Paxos)",
+    "category": "Coordination",
+    "definition": "A protocol that lets a cluster agree on one value/leader despite failures, underpinning strong consistency.",
+    "pros": ["Single source of truth under failure", "Strong consistency", "Automatic failover"],
+    "cons": ["Latency of quorum writes", "Complex to implement correctly", "Throughput capped by the leader"],
+    "whenToUse": "Coordinating metadata, leader election, config, distributed locks (ZooKeeper/etcd).",
+    "whenNotToUse": "High-throughput data-plane writes that don't need global agreement."
+  },
+  {
+    "id": "replication",
+    "name": "Replication (Leader–Follower)",
+    "category": "Data",
+    "definition": "Keeping copies of data on multiple nodes for durability, read scaling, and failover.",
+    "pros": ["Survives node loss", "Read scaling", "Geo-locality of reads"],
+    "cons": ["Lag and conflicts", "Failover complexity", "Costs more storage"],
+    "whenToUse": "Almost any stateful system that must survive a machine dying.",
+    "whenNotToUse": "Truly disposable, easily-recomputed data."
+  },
+  {
+    "id": "eventual-consistency",
+    "name": "Eventual Consistency",
+    "category": "Consistency",
+    "definition": "A model where replicas converge over time; reads may briefly see stale data in exchange for availability and scale.",
+    "pros": ["High availability & low latency", "Scales across regions", "Survives partitions (AP)"],
+    "cons": ["Stale reads", "Conflict resolution needed", "Harder mental model for clients"],
+    "whenToUse": "Likes, view counts, feeds, presence — where being slightly stale is fine.",
+    "whenNotToUse": "Balances, inventory, bookings — where stale data causes real errors."
+  },
+  {
+    "id": "strong-consistency",
+    "name": "Strong Consistency",
+    "category": "Consistency",
+    "definition": "Every read reflects the latest committed write (linearizability), usually via quorums or a single leader.",
+    "pros": ["Correctness for money/inventory", "Simple client reasoning", "No stale reads"],
+    "cons": ["Higher latency", "Lower availability under partitions (CP)", "Harder to scale geographically"],
+    "whenToUse": "Payments, seat/inventory reservation, account balances, anything that must not double-spend.",
+    "whenNotToUse": "Social/feed data where availability and speed matter more than freshness."
+  },
+  {
+    "id": "cdc",
+    "name": "Change Data Capture (CDC)",
+    "category": "Async",
+    "definition": "Streams row-level changes out of a database (via its log) to keep caches, search indexes, and warehouses in sync.",
+    "pros": ["Decouples DB from downstream consumers", "Near-real-time sync", "No dual-write bugs"],
+    "cons": ["Pipeline to operate", "Schema-change handling", "Ordering/replay concerns"],
+    "whenToUse": "Keeping a search index, cache, or analytics store in sync with the primary DB.",
+    "whenNotToUse": "When a simple synchronous write or cache invalidation suffices."
+  },
+  {
+    "id": "fanout",
+    "name": "Fan-out (on write vs on read)",
+    "category": "Pattern",
+    "definition": "A feed-delivery strategy: push a new post into each follower's feed (write) or assemble feeds at read time (read).",
+    "pros": ["Fan-out-on-write = fast reads", "Fan-out-on-read = cheap writes", "Tunable per user"],
+    "cons": ["Write fan-out explodes for celebrities", "Read fan-out is slow for big follow lists", "Hybrid is complex"],
+    "whenToUse": "Designing news feeds, timelines, notifications with follower graphs.",
+    "whenNotToUse": "Systems without a one-to-many distribution pattern."
+  },
+  {
+    "id": "id-generator",
+    "name": "Distributed ID Generator (Snowflake)",
+    "category": "Coordination",
+    "definition": "Generates unique, roughly time-ordered IDs across many machines without a central bottleneck.",
+    "pros": ["Globally unique without coordination", "Time-sortable", "High throughput"],
+    "cons": ["Clock skew issues", "Needs machine-id allocation", "64-bit layout constraints"],
+    "whenToUse": "Short URLs, tweet/message IDs, any sharded system needing unique sortable keys.",
+    "whenNotToUse": "Single-node apps where an auto-increment column is enough."
+  },
+  {
+    "id": "circuit-breaker",
+    "name": "Circuit Breaker",
+    "category": "Resilience",
+    "definition": "Stops calling a failing dependency after an error threshold, failing fast and giving it time to recover.",
+    "pros": ["Prevents cascading failures", "Fails fast", "Auto-recovers via half-open probes"],
+    "cons": ["Tuning thresholds is tricky", "Can hide real problems", "Needs fallbacks"],
+    "whenToUse": "Calls to flaky external services or downstream dependencies.",
+    "whenNotToUse": "Local, in-process calls that can't fail in the same way."
+  },
+  {
+    "id": "idempotency-key",
+    "name": "Idempotency Key",
+    "category": "Resilience",
+    "definition": "A client-supplied unique token so retried requests are applied at most once (no duplicate charges/records).",
+    "pros": ["Safe retries", "Prevents double-processing", "Essential for payments/webhooks"],
+    "cons": ["Must store keys/results", "Key lifecycle/expiry", "Adds a lookup per write"],
+    "whenToUse": "Payments, order creation, webhook handlers, any non-idempotent write that may be retried.",
+    "whenNotToUse": "Naturally idempotent operations (pure PUT/GET)."
+  },
+  {
+    "id": "olap",
+    "name": "Data Warehouse / OLAP",
+    "category": "Analytics",
+    "definition": "A columnar analytics store (Snowflake, BigQuery, Redshift) for large aggregate queries, separate from the transactional DB.",
+    "pros": ["Fast aggregates over huge data", "Isolates analytics from OLTP", "Cheap columnar storage"],
+    "cons": ["Not for low-latency point reads", "Batch/ETL lag", "Expensive for tiny queries"],
+    "whenToUse": "Reporting, dashboards, analytics on event/transaction history.",
+    "whenNotToUse": "Serving individual user requests in real time."
+  },
+  {
+    "id": "tsdb",
+    "name": "Time-Series Database",
+    "category": "Analytics",
+    "definition": "A store optimized for timestamped metrics with downsampling and retention (Prometheus, InfluxDB).",
+    "pros": ["Efficient for metrics/telemetry", "Downsampling & TTL", "Fast time-range queries"],
+    "cons": ["Niche query model", "Not general-purpose", "Cardinality blowups"],
+    "whenToUse": "Monitoring, metrics, surge/demand signals, rate measurements over time.",
+    "whenNotToUse": "Relational/transactional data."
+  }
+]

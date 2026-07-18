@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FDE API Academy</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="academy-landing">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">FDE</span>
+        <div>
+          <h1>API Academy</h1>
+          <p>Forward deployed engineering practice</p>
+        </div>
+      </div>
+      <div class="progress-ring" aria-label="Completion progress">
+        <div class="ring-value" id="completionValue">0%</div>
+        <span>completed</span>
+      </div>
+      <nav id="lessonNav" class="lesson-nav"></nav>
+    </aside>
+
+    <main class="app">
+      <section class="academy-chooser" id="academyChooser">
+        <div class="chooser-head">
+          <p class="eyebrow">Local learning hub</p>
+          <h2>Choose an academy</h2>
+          <p>Pick a focused track and jump straight into practice.</p>
+        </div>
+        <div class="academy-grid">
+          <button class="academy-card" data-open-academy="fde">
+            <span class="academy-mark api">FDE</span>
+            <strong>FDE API Academy</strong>
+            <span>REST APIs, JSON parsing, automation, SQLite, system design, and customer simulations.</span>
+          </button>
+          <button class="academy-card" data-open-academy="security">
+            <span class="academy-mark security">SEC</span>
+            <strong>Security Engineering Academy</strong>
+            <span>Grace Nolan's interview notes organized into security modules, drills, and interview prompts.</span>
+          </button>
+        </div>
+      </section>
+
+      <header class="topbar" id="academyTopbar">
+        <div>
+          <p class="eyebrow" id="topEyebrow">Local bootcamp</p>
+          <h2 id="topTitle">FDE API Academy</h2>
+        </div>
+        <div class="top-actions">
+          <div class="segmented academy-switch" role="tablist" aria-label="Academy selector">
+            <button class="segment" data-open-academy="home">Home</button>
+            <button class="segment active" data-open-academy="fde">FDE</button>
+            <button class="segment" data-open-academy="security">Security</button>
+          </div>
+          <div class="segmented" role="tablist" aria-label="App view">
+            <button id="viewCurriculum" class="segment active">API Curriculum</button>
+            <button id="viewLeetcode" class="segment">LeetCode Drills</button>
+            <button id="viewSystemDesign" class="segment">System Design</button>
+            <button id="viewCustomerSim" class="segment">Customer Sim</button>
+          </div>
+          <button id="refreshButton" class="icon-button" title="Refresh progress" aria-label="Refresh progress">↻</button>
+          <a class="button" href="/api/state" target="_blank">API</a>
+        </div>
+      </header>
+
+      <section class="workspace" id="curriculumView">
+        <article class="lesson-pane">
+          <div class="lesson-header">
+            <div>
+              <p class="eyebrow" id="lessonMeta">Lesson</p>
+              <h3 id="lessonTitle">Loading...</h3>
+            </div>
+            <span class="status-pill" id="lessonStatus">loading</span>
+          </div>
+
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="learn">Learn</button>
+            <button class="tab" data-tab="exercise">Exercise</button>
+            <button class="tab" data-tab="code">Code</button>
+            <button class="tab" data-tab="reflect">Reflect</button>
+          </div>
+
+          <div id="learnTab" class="tab-panel active">
+            <p id="lessonExplanation" class="lesson-copy"></p>
+            <div class="flow-box">
+              <span>Flow</span>
+              <pre id="lessonVisual"></pre>
+            </div>
+            <div class="code-block">
+              <span>Example</span>
+              <pre><code id="exampleCode"></code></pre>
+            </div>
+          </div>
+
+          <div id="exerciseTab" class="tab-panel">
+            <div class="exercise-grid">
+              <section class="exercise-card">
+                <p class="eyebrow">Guided</p>
+                <h4 id="guidedTitle"></h4>
+                <p id="guidedPrompt"></p>
+                <button id="validateGuided" class="button primary">Validate Guided</button>
+              </section>
+              <section class="exercise-card">
+                <p class="eyebrow">Challenge</p>
+                <h4 id="challengeTitle"></h4>
+                <p id="challengePrompt"></p>
+                <button id="validateChallenge" class="button">Validate Challenge</button>
+              </section>
+            </div>
+            <div id="validationResult" class="result-box"></div>
+            <section class="mentor-card">
+              <div>
+                <p class="eyebrow">Mentor Mode</p>
+                <h4 id="mentorLabel">Hint ladder</h4>
+              </div>
+              <p id="mentorHint">Ask for a hint when you are stuck. The first one is intentionally gentle.</p>
+              <button id="mentorButton" class="button">Get Hint</button>
+            </section>
+          </div>
+
+          <div id="codeTab" class="tab-panel">
+            <div class="code-workspace">
+              <section class="problem-panel">
+                <div class="problem-topline">
+                  <p class="eyebrow">Problem</p>
+                  <div class="segmented compact" aria-label="Exercise selector">
+                    <button id="editGuided" class="segment active">Guided</button>
+                    <button id="editChallenge" class="segment">Challenge</button>
+                  </div>
+                </div>
+                <h4 id="codePromptTitle">Loading question...</h4>
+                <p id="codePromptText" class="problem-copy">If this text stays here, refresh the page once.</p>
+                <div class="problem-section">
+                  <span>Example</span>
+                  <pre id="codeExample"></pre>
+                </div>
+                <div class="problem-section">
+                  <span>Expected</span>
+                  <pre id="codeExpected"></pre>
+                </div>
+                <div class="problem-section source-section" id="activeSourceSection">
+                  <span>Source</span>
+                  <a id="activeSourceLink" href="#" target="_blank" rel="noreferrer">Current lesson validator</a>
+                  <small id="activeSourceNote">Guided/challenge validator built into FDE API Academy.</small>
+                </div>
+                <div class="problem-section">
+                  <span>Interview drills</span>
+                  <div id="codeDrills" class="drill-list"></div>
+                </div>
+                <div class="problem-section mentor-inline">
+                  <span id="codeMentorLabel">Mentor</span>
+                  <p id="codeMentorHint">Need a nudge? Ask for a hint without leaving this workspace.</p>
+                  <button id="codeHintButton" class="button">Get Hint</button>
+                </div>
+              </section>
+
+              <section class="editor-panel">
+                <div class="editor-toolbar">
+                  <p class="file-path" id="starterPath"></p>
+                  <div class="editor-actions">
+                    <button id="saveCode" class="button">Save</button>
+                    <button id="runCode" class="button">▶ Run</button>
+                    <button id="submitCode" class="button primary">Submit</button>
+                  </div>
+                </div>
+                <textarea id="codeEditor" class="code-editor" spellcheck="false"></textarea>
+                <div id="codeResult" class="result-box"></div>
+              </section>
+            </div>
+          </div>
+
+          <div id="reflectTab" class="tab-panel">
+            <ul id="reflectionList" class="reflection-list"></ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="sd-view" id="systemDesignView" hidden>
+        <div class="sd-head">
+          <div>
+            <p class="eyebrow">Interview practice</p>
+            <h3>System Design Cards</h3>
+            <p class="sd-sub">Scenario practice from real, company-attributed system design interview questions.</p>
+          </div>
+          <div class="sd-head-right">
+            <div class="sd-score" id="sdScore"></div>
+            <div class="segmented" role="tablist" aria-label="System design topic">
+              <button id="sdTopicDistributed" class="segment active">Distributed Systems</button>
+              <button id="sdTopicSchema" class="segment">Schema Design (SQL)</button>
+            </div>
+            <div class="segmented" role="tablist" aria-label="System design mode">
+              <button id="sdModePractice" class="segment active">Practice</button>
+              <button id="sdModeStudy" class="segment">Study</button>
+            </div>
+          </div>
+        </div>
+        <div id="sdBody"></div>
+        <footer class="sd-footer" id="sdFooter"></footer>
+      </section>
+
+      <section class="sd-view cs-view" id="customerSimView" hidden>
+        <div class="sd-head">
+          <div>
+            <p class="eyebrow">Forward-deployed soft skills</p>
+            <h3>Customer Sim</h3>
+            <p class="sd-sub">A customer pushes back. Choose how you'd respond — then see whether it builds trust or burns it.</p>
+          </div>
+          <div class="sd-head-right">
+            <div class="sd-score" id="csScore"></div>
+          </div>
+        </div>
+        <div id="csBody"></div>
+        <footer class="sd-footer" id="csFooter"></footer>
+      </section>
+
+      <section class="security-view" id="securityAcademyView" hidden>
+        <div class="security-shell">
+          <aside class="security-nav">
+            <div>
+              <p class="eyebrow">Security track</p>
+              <h3>Mastery Map</h3>
+            </div>
+            <div class="security-progress" id="securityProgress"></div>
+            <div class="security-readiness" id="securityReadiness"></div>
+            <label class="security-search">
+              <span>Find a module</span>
+              <input id="securitySearch" type="search" placeholder="Search topics" autocomplete="off" />
+            </label>
+            <nav id="securityModuleNav"></nav>
+          </aside>
+          <article class="security-main">
+            <div class="security-hero">
+              <div>
+                <p class="eyebrow">Based on gracenolan/Notes</p>
+                <h3 id="securityTitle">Loading security guide...</h3>
+                <p id="securityIntro"></p>
+              </div>
+              <a class="button" href="https://github.com/gracenolan/Notes.git" target="_blank" rel="noreferrer">Source</a>
+            </div>
+            <div class="security-module-status" id="securityModuleStatus"></div>
+            <div class="security-actions">
+              <button class="button" id="securityPrevious" type="button">Previous</button>
+              <button class="button primary" id="securityNext" type="button">Next Module</button>
+              <button class="button security-reset" id="securityReset" type="button">Reset Progress</button>
+            </div>
+            <div class="security-panels">
+              <section class="security-panel security-learn-panel">
+                <span>Learn</span>
+                <div id="securityObjectives"></div>
+                <div id="securityLearn"></div>
+              </section>
+              <section class="security-panel security-lab-panel">
+                <span>Hands-on Lab</span>
+                <div id="securityLab"></div>
+              </section>
+              <section class="security-panel security-interview-panel">
+                <span>Interview Drill</span>
+                <div id="securityInterview"></div>
+              </section>
+              <section class="security-panel security-test-panel">
+                <span>Knowledge Check</span>
+                <div id="securityAssessment"></div>
+              </section>
+              <details class="security-panel security-source-panel">
+                <summary>Grace Nolan source notes</summary>
+                <div id="securitySource"></div>
+              </details>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/views.js?v=2"></script>
+    <script src="/app.js?v=9"></script>
+    <script src="/systemdesign.js?v=4"></script>
+    <script src="/customersim.js?v=1"></script>
+    <script src="/security.js?v=3"></script>
+    <script src="/security-hub.js?v=1"></script>
+  </body>
+</html>

@@ -1,0 +1,383 @@
+[
+  {
+    "id": "scope-creep",
+    "title": "The Friday ask",
+    "persona": "Dana — Director of Ops at the customer, your main sponsor",
+    "context": "You're three days from a milestone demo of the integration you were hired to deliver. Dana drops by with 'one more thing.'",
+    "difficulty": "Core",
+    "tags": ["Scope management", "Expectation setting"],
+    "principles": [
+      "Acknowledge the request before you push back.",
+      "Protect the committed milestone; trade scope, don't silently absorb it.",
+      "Offer a path (after the demo / a fast-follow), not a flat no."
+    ],
+    "turns": [
+      {
+        "customer": "Before Friday's demo — can you also wire in our Salesforce export? Leadership will be in the room and it'd really land. Shouldn't be much, right?",
+        "options": [
+          {
+            "text": "Totally hear why that'd land with leadership. Friday's scope is locked to what we committed, so I don't want to risk it — can we demo the core flow Friday and I'll scope the Salesforce export as a fast-follow right after?",
+            "quality": "strong",
+            "reaction": "Okay, that's fair. I don't want to jeopardize Friday either.",
+            "feedback": "Strong. You acknowledged the motivation, protected the committed milestone, and offered a concrete path forward instead of a flat no."
+          },
+          {
+            "text": "Sure, I'll make it happen. I'll just push hard the next few days.",
+            "quality": "weak",
+            "reaction": "Great, thanks! See you Friday.",
+            "feedback": "Weak. Silently absorbing scope under a fixed deadline risks the whole demo and trains the customer that deadlines are soft. Over-committing is a classic FDE failure mode."
+          },
+          {
+            "text": "That's out of scope. It wasn't in the statement of work.",
+            "quality": "okay",
+            "reaction": "...alright. Felt like a small thing to me.",
+            "feedback": "Okay but cold. You're right to guard scope, but leading with 'out of scope / SOW' makes you sound like a vendor, not a partner. Acknowledge the why first, then redirect."
+          }
+        ]
+      },
+      {
+        "customer": "Could you at least fake it for the demo? Just hardcode an export so it looks real on screen.",
+        "options": [
+          {
+            "text": "I'd rather not show something that isn't real — if leadership asks to click into it and it breaks, that hurts us both. I can show the live core flow and put a one-slide roadmap for the Salesforce export so they see it's coming.",
+            "quality": "strong",
+            "reaction": "Good point. The roadmap slide works.",
+            "feedback": "Strong. You named the shared risk of a fake demo and replaced it with an honest alternative that still addresses Dana's real goal: showing leadership momentum."
+          },
+          {
+            "text": "Yeah, I can hardcode a mock so it looks done.",
+            "quality": "weak",
+            "reaction": "Perfect, that's all I need.",
+            "feedback": "Weak. A faked demo erodes trust the moment anyone probes it, and it sets an expectation the feature exists. Honesty about what's real is core to the FDE relationship."
+          },
+          {
+            "text": "We never fake demos.",
+            "quality": "okay",
+            "reaction": "I wasn't trying to be sketchy.",
+            "feedback": "Okay. Right instinct, but the absolute framing can sound preachy and put Dana on the defensive. Explain the shared risk and offer the alternative."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "outage-blame",
+    "title": "\"Your tool broke our pipeline\"",
+    "persona": "Marcus — Lead Data Engineer, skeptical of your platform",
+    "context": "Marcus pings you, clearly stressed: their nightly pipeline failed and he thinks your integration caused it. You don't yet know the cause.",
+    "difficulty": "Advanced",
+    "tags": ["Incident handling", "De-escalation", "Ownership"],
+    "principles": [
+      "Lead with empathy and urgency, not defensiveness.",
+      "Don't assign blame before you have data — but do take ownership of driving it to resolution.",
+      "Communicate a clear next step and timeline."
+    ],
+    "turns": [
+      {
+        "customer": "Your integration took down our nightly pipeline. Everything's red this morning. This is exactly what I was worried about.",
+        "options": [
+          {
+            "text": "That sounds really disruptive — let's get it green. I'm on it now. Can you share the failure time and the error? I'll pull our integration logs for that window and we'll trace it together.",
+            "quality": "strong",
+            "reaction": "Okay. Failure was 2:14am, here's the error.",
+            "feedback": "Strong. You matched his urgency, took ownership of driving resolution, and moved straight to evidence-gathering — without prematurely admitting fault or deflecting."
+          },
+          {
+            "text": "That's almost certainly not us — our integration was tested. It's probably something on your side.",
+            "quality": "weak",
+            "reaction": "Wow. Helpful.",
+            "feedback": "Weak. Deflecting before you have data destroys trust in an incident. Even if you're right later, leading with 'not us' makes you the adversary."
+          },
+          {
+            "text": "I'm so sorry, that's on us. I'll fix it right away.",
+            "quality": "okay",
+            "reaction": "So you know what happened?",
+            "feedback": "Okay-ish. Empathy is good, but apologizing for a cause you haven't confirmed can be just as misleading as deflecting — and it boxes you in. Own the response, not an unproven fault."
+          }
+        ]
+      },
+      {
+        "customer": "Logs show the job failed pulling from your endpoint. So it IS you.",
+        "options": [
+          {
+            "text": "Let me confirm with our side. I see those requests hit at 2:14 — checking whether we returned errors or were just slow... It looks like we rate-limited the burst. That's on our config; I'll raise your limit now and add a retry-with-backoff so a spike can't fail your job again. Fix in ~30 min, then let's re-run.",
+            "quality": "strong",
+            "reaction": "Appreciate you actually digging in. Go ahead.",
+            "feedback": "Strong. You verified with evidence, took clear ownership of the real root cause, and gave a concrete fix + timeline + a prevention so it won't recur."
+          },
+          {
+            "text": "Failing to pull doesn't mean we caused it — your retry logic should've handled it.",
+            "quality": "weak",
+            "reaction": "Unbelievable.",
+            "feedback": "Weak. Technically there may be a shared cause, but relitigating blame mid-incident reads as dodging. Fix first, do the joint post-mortem later."
+          },
+          {
+            "text": "Yes, you're right, it's our endpoint. I'll get someone to look at it.",
+            "quality": "okay",
+            "reaction": "When? I need this today.",
+            "feedback": "Okay. Owning it is good, but 'get someone to look' with no timeline or specifics leaves Marcus anxious and out of control. Give the root cause, the fix, and an ETA."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unrealistic-deadline",
+    "title": "The compressed timeline",
+    "persona": "Priya — VP Product, ambitious and time-pressured",
+    "context": "Priya wants the full rollout in two weeks. Your honest estimate is five to six. She's about to commit a date to her execs.",
+    "difficulty": "Core",
+    "tags": ["Expectation setting", "Negotiation", "Scoping"],
+    "principles": [
+      "Push back with a plan and tradeoffs, not just 'it can't be done.'",
+      "Separate must-haves from nice-to-haves to find a real path.",
+      "Give the customer an informed choice rather than a false yes."
+    ],
+    "turns": [
+      {
+        "customer": "I need the whole thing live in two weeks. I'm telling the exec team today. Can you commit?",
+        "options": [
+          {
+            "text": "I want to give you a date you can stake your reputation on. The full scope is realistically 5–6 weeks. But if we split it — core sync live in two weeks, reporting and the admin UI as phase two — you can commit a real go-live to execs today. Want me to map that phasing?",
+            "quality": "strong",
+            "reaction": "A phased date I can defend is better than a fake one. Show me.",
+            "feedback": "Strong. You didn't just say no — you reframed to a phased plan that gives Priya something credible to commit, with the tradeoff made explicit."
+          },
+          {
+            "text": "Two weeks works, we'll find a way.",
+            "quality": "weak",
+            "reaction": "Amazing, committing it now.",
+            "feedback": "Weak. A false yes to please an exec is the most expensive mistake an FDE makes — it just moves the broken promise two weeks out, with leadership watching."
+          },
+          {
+            "text": "That's not possible. It'll take at least six weeks.",
+            "quality": "okay",
+            "reaction": "That's not what I want to hear. Can you try?",
+            "feedback": "Okay. Honest, but a flat 'not possible' with no alternative leaves Priya stuck and tempted to overrule you. Always pair the constraint with options."
+          }
+        ]
+      },
+      {
+        "customer": "Execs will ask why it can't all be done in two weeks. What do I tell them?",
+        "options": [
+          {
+            "text": "Tell them the data migration and reconciliation are the long pole — rushing them risks corrupting records, which is far costlier than a two-week phase split. Phase one proves the integration live; phase two hardens the rest. I'll give you a one-pager with the risk framing.",
+            "quality": "strong",
+            "reaction": "That framing will actually land. Send the one-pager.",
+            "feedback": "Strong. You translated the technical constraint into business risk (data corruption cost) and armed your sponsor to defend the plan upward — that's FDE force-multiplication."
+          },
+          {
+            "text": "Just tell them engineering said so.",
+            "quality": "weak",
+            "reaction": "That'll go over great in the boardroom.",
+            "feedback": "Weak. 'Engineering said so' undermines your sponsor and sounds like an excuse. Give her the real reason in language execs respect."
+          },
+          {
+            "text": "Tell them it's complex and these things take time.",
+            "quality": "okay",
+            "reaction": "They'll want more than that.",
+            "feedback": "Okay. True but vague. Execs push on vague answers. Name the specific long pole and the concrete risk of rushing it."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "non-technical-stakeholder",
+    "title": "Explaining a hard limit",
+    "persona": "Janet — Business sponsor, non-technical, results-focused",
+    "context": "Janet wants real-time dashboards. The source system only allows a data pull every 15 minutes. She doesn't understand why 'real-time' is hard.",
+    "difficulty": "Core",
+    "tags": ["Translation", "Managing expectations"],
+    "principles": [
+      "Translate technical constraints into business terms; drop the jargon.",
+      "Anchor on the customer's actual goal, not the literal request.",
+      "Offer what's achievable and check it meets the need."
+    ],
+    "turns": [
+      {
+        "customer": "I just want it to be real-time. Why is that complicated? My phone is real-time.",
+        "options": [
+          {
+            "text": "Great question. The system we pull from only opens the gate every 15 minutes — we can't get data faster than it's willing to give it. So the dashboard can be at most 15 minutes behind. Before we solve for 'real-time,' can I ask: what decision are you making from this dashboard? That tells me how fresh it truly needs to be.",
+            "quality": "strong",
+            "reaction": "Honestly, I check it twice a day. 15 minutes is fine.",
+            "feedback": "Strong. You explained the constraint with a plain analogy, no jargon, and uncovered that the real need is far looser than the literal ask — saving a pointless engineering fight."
+          },
+          {
+            "text": "It's because the upstream API has a 15-minute rate-limited polling window and we can't exceed the throttle without webhooks they don't expose.",
+            "quality": "weak",
+            "reaction": "I... have no idea what you just said.",
+            "feedback": "Weak. Accurate but drowned in jargon. A non-technical sponsor tunes out, and you look like you're hiding behind complexity."
+          },
+          {
+            "text": "We can't do real-time, sorry. 15 minutes is the limit.",
+            "quality": "okay",
+            "reaction": "That's disappointing.",
+            "feedback": "Okay. Honest but leaves Janet disappointed and uninformed. You didn't explain why or check whether 15 minutes actually meets her need (it does)."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bad-feature-idea",
+    "title": "Saying no to a feature",
+    "persona": "Tom — Customer engineer who's attached to his idea",
+    "context": "Tom wants you to build a custom rules engine inside the integration. It would be a maintenance nightmare and a config-driven approach solves his real problem.",
+    "difficulty": "Advanced",
+    "tags": ["Diplomatic no", "Requirements discovery"],
+    "principles": [
+      "Find the underlying need before rejecting the proposed solution.",
+      "Disagree with the approach without dismissing the person.",
+      "Steer toward the simpler design by showing it solves their goal."
+    ],
+    "turns": [
+      {
+        "customer": "We should build a full rules engine into the integration so we can write any logic we want. I've already sketched it out.",
+        "options": [
+          {
+            "text": "I can tell you've thought about this. Help me understand the cases you need to handle — if I know the rules you're actually trying to express, I can recommend the lightest way to support them. A full engine is a lot to maintain, so I want to be sure it's the right tool.",
+            "quality": "strong",
+            "reaction": "Mostly it's routing records by region and a few overrides.",
+            "feedback": "Strong. You respected his effort, dug for the real requirements, and planted the maintenance concern without killing his idea outright."
+          },
+          {
+            "text": "A rules engine is overkill and a maintenance nightmare. We're not building that.",
+            "quality": "weak",
+            "reaction": "Wow, okay, forget I suggested anything.",
+            "feedback": "Weak. You may be right technically, but dismissing his idea flatly makes him defensive and shuts down collaboration. You also never learned what he actually needs."
+          },
+          {
+            "text": "Sure, we can look into building a rules engine.",
+            "quality": "okay",
+            "reaction": "Great, I'll send my sketch.",
+            "feedback": "Okay-bad. Agreeing to avoid friction commits you to an over-engineered build. The kind, useful move is to explore the need, not rubber-stamp the solution."
+          }
+        ]
+      },
+      {
+        "customer": "So can we build the engine or not?",
+        "options": [
+          {
+            "text": "For routing-by-region plus a few overrides, a config file gets you there in days instead of weeks, and your team can edit it without code. A full engine would solve the same cases but you'd own a mini programming language forever. I'd start with config and revisit only if the rules really outgrow it. Fair?",
+            "quality": "strong",
+            "reaction": "...yeah, config probably is enough. Let's do that.",
+            "feedback": "Strong. You mapped his actual needs to the simpler solution, named the long-term cost of the complex one, and left the door open — guiding rather than overruling."
+          },
+          {
+            "text": "No. Config is the right answer, trust me.",
+            "quality": "okay",
+            "reaction": "Trust you, huh.",
+            "feedback": "Okay. Right destination, weak delivery. 'Trust me' isn't a reason. Show how config covers his cases so he arrives at the conclusion himself."
+          },
+          {
+            "text": "If you really want the engine, I'll build it.",
+            "quality": "weak",
+            "reaction": "I mean, yeah, let's build it.",
+            "feedback": "Weak. Caving the moment he repeats the ask delivers the over-engineered solution you know is wrong. Holding a well-reasoned line is part of the job."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vague-requirements",
+    "title": "\"Just make it work like before\"",
+    "persona": "Robert — Operations manager replacing a legacy system",
+    "context": "Robert keeps describing what he wants as 'like the old system.' You've never seen the old system. You need real requirements before you build the wrong thing.",
+    "difficulty": "Core",
+    "tags": ["Requirements discovery", "Active listening"],
+    "principles": [
+      "Turn vague comparisons into concrete, observable behaviors.",
+      "Ask about the workflow and the why, not just the what.",
+      "Confirm understanding by playing it back."
+    ],
+    "turns": [
+      {
+        "customer": "Just make it work like our old system did. Everyone knew how to use that.",
+        "options": [
+          {
+            "text": "Makes sense — familiarity matters. Since I never saw the old system, walk me through one real task you did in it start to finish. What did you click, what did it show you, what did you do next? That'll let me match what mattered.",
+            "quality": "strong",
+            "reaction": "Sure — every morning I'd open the queue, filter to my region, and...",
+            "feedback": "Strong. You converted a vague comparison into a concrete walkthrough of a real workflow — the fastest way to surface the requirements that actually matter."
+          },
+          {
+            "text": "Okay, we'll replicate the old system.",
+            "quality": "weak",
+            "reaction": "Perfect.",
+            "feedback": "Weak. You can't replicate something you've never seen. This guarantees you build the wrong thing and discover it at the demo."
+          },
+          {
+            "text": "The old system is gone, so we need to define new requirements. Can you write them up?",
+            "quality": "okay",
+            "reaction": "I'm not really sure how to write requirements...",
+            "feedback": "Okay. Right that you need specifics, but offloading 'write the requirements' onto a non-technical user usually fails. Draw them out through conversation instead."
+          }
+        ]
+      },
+      {
+        "customer": "It just needs to feel the same. I don't know how to explain it better than that.",
+        "options": [
+          {
+            "text": "No problem — let me play back what I heard: you open a work queue, filter to your region, and process items top to bottom, and the key is doing that in as few clicks as the old tool. Did I get that right, and what's the one thing the old system did that you'd miss most?",
+            "quality": "strong",
+            "reaction": "Exactly right. The thing I'd miss is the keyboard shortcuts.",
+            "feedback": "Strong. Playing it back confirms understanding and surfaces the hidden must-have (keyboard shortcuts) that 'feels the same' was really about."
+          },
+          {
+            "text": "I'll do my best to guess what you mean.",
+            "quality": "weak",
+            "reaction": "Okay, I guess.",
+            "feedback": "Weak. Guessing on requirements is how you end up rebuilding. Reflect back what you've gathered and pull the specifics out."
+          },
+          {
+            "text": "Let's just build something and you tell me what's wrong.",
+            "quality": "okay",
+            "reaction": "I mean, that could take a while...",
+            "feedback": "Okay. Iteration is healthy, but starting with zero confirmed requirements wastes a build cycle. A two-minute playback first dramatically narrows the target."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "executive-status",
+    "title": "The status update that isn't good news",
+    "persona": "Alana — Customer COO, sees you for 10 minutes",
+    "context": "You hit a real blocker: the customer's data is messier than expected and integration is a week behind. Alana wants a status update and she values candor.",
+    "difficulty": "Advanced",
+    "tags": ["Executive communication", "Bad news", "Trust"],
+    "principles": [
+      "Lead with the headline and the plan, not a slow build-up.",
+      "Be candid about slippage; bury nothing.",
+      "Pair every problem with what you're doing about it and what you need."
+    ],
+    "turns": [
+      {
+        "customer": "Give me the 30-second version. Are we on track?",
+        "options": [
+          {
+            "text": "Short version: we're about a week behind, and it's because your source data has more inconsistencies than the sample suggested. The integration itself works — we're building cleanup for the edge cases. New realistic date is the 22nd. The one thing that'd speed this up is access to someone who knows the legacy data quirks.",
+            "quality": "strong",
+            "reaction": "I appreciate the straight answer. I'll get you that data person.",
+            "feedback": "Strong. Headline first, candid about the slip and why, paired with a plan, a date, and a specific ask. Execs reward this and it builds durable trust."
+          },
+          {
+            "text": "Mostly on track! A few small things to iron out but nothing major.",
+            "quality": "weak",
+            "reaction": "Great, I'll tell the board we're on schedule.",
+            "feedback": "Weak. Sugar-coating a real slip is the worst move — Alana now repeats false info to the board and the reckoning is bigger next week. Candor early is cheaper than candor late."
+          },
+          {
+            "text": "Well, it's complicated — the data has a lot of issues, there are edge cases, the reconciliation logic is tricky, and...",
+            "quality": "okay",
+            "reaction": "I have 10 minutes. What's the bottom line?",
+            "feedback": "Okay. Honest but buries the lede. Executives want the headline and the plan first; details only if they ask. Lead with 'a week behind, here's the plan.'"
+          }
+        ]
+      }
+    ]
+  }
+]

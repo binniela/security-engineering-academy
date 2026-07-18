@@ -1,0 +1,272 @@
+[
+  {
+    "id": "surrogate-key",
+    "name": "Surrogate Primary Key (auto-increment / id)",
+    "category": "Keys & IDs",
+    "definition": "A synthetic, meaningless primary key (e.g. a serial/identity or UUID) that uniquely identifies each row instead of using business data.",
+    "pros": ["Stable — never changes even if business data does", "Simple single-column joins and FKs", "No risk of leaking/colliding on real-world values"],
+    "cons": ["Doesn't enforce business uniqueness on its own", "An extra column", "Two rows can be identical except the id without a unique constraint"],
+    "whenToUse": "Almost every table — the default primary key for entities like users, orders, products.",
+    "whenNotToUse": "Pure junction tables where the composite of two FKs is already a perfect natural key."
+  },
+  {
+    "id": "natural-key",
+    "name": "Natural Key",
+    "category": "Keys & IDs",
+    "definition": "Using real-world data that's inherently unique (e.g. email, ISBN, country code) as the primary key.",
+    "pros": ["No extra column", "Meaningful — the key itself carries information", "Enforces business uniqueness for free"],
+    "cons": ["Business values change (email updates) and cascade everywhere", "Often wide/multi-column → bloated FKs and indexes", "Leaks data into URLs/FKs"],
+    "whenToUse": "Small stable reference tables (country codes, currency codes) where the value truly never changes.",
+    "whenNotToUse": "Mutable or user-supplied values like email or username — use a surrogate key + a UNIQUE constraint instead."
+  },
+  {
+    "id": "composite-key",
+    "name": "Composite Primary Key",
+    "category": "Keys & IDs",
+    "definition": "A primary key made of two or more columns together, common on junction tables (e.g. (order_id, product_id)).",
+    "pros": ["Natural fit for many-to-many links", "Prevents duplicate relationships automatically", "No surrogate column needed"],
+    "cons": ["Wider foreign keys if other tables reference it", "More verbose joins", "Reordering columns affects index usefulness"],
+    "whenToUse": "Junction tables, or where a row is uniquely identified only by a combination of columns.",
+    "whenNotToUse": "Core entity tables that other tables reference a lot — a surrogate id is cleaner there."
+  },
+  {
+    "id": "uuid-vs-serial",
+    "name": "UUID vs Auto-increment Choice",
+    "category": "Keys & IDs",
+    "definition": "Deciding between a sequential integer id and a UUID for the surrogate key.",
+    "pros": ["UUIDs are unguessable and generatable client-side / across shards", "Serials are compact, sortable, and index-friendly"],
+    "cons": ["Random UUIDs hurt index locality and are larger", "Serials leak row counts and don't work well across distributed inserts"],
+    "whenToUse": "UUID when ids are exposed publicly or generated in many places; serial/bigserial for internal, single-DB tables.",
+    "whenNotToUse": "Don't default to random UUID PKs on huge write-heavy tables without considering index bloat (UUIDv7/ULID help)."
+  },
+  {
+    "id": "foreign-key",
+    "name": "Foreign Key Constraint",
+    "category": "Relationships",
+    "definition": "A column that references another table's primary key, enforcing referential integrity (you can't point at a row that doesn't exist).",
+    "pros": ["Guarantees relationships are valid", "Prevents orphaned rows", "Documents the data model"],
+    "cons": ["Slight write overhead", "Can complicate bulk loads/deletes", "Needs an index to keep joins/deletes fast"],
+    "whenToUse": "Every relationship between tables — this is the backbone of a relational schema.",
+    "whenNotToUse": "Rarely omitted; only in extreme write-throughput cases where integrity is enforced elsewhere (a deliberate, documented tradeoff)."
+  },
+  {
+    "id": "one-to-many-fk",
+    "name": "One-to-Many via Foreign Key",
+    "category": "Relationships",
+    "definition": "Model 'one X has many Y' by putting the X id as a foreign key column on the Y table (e.g. order_id on order_items).",
+    "pros": ["The canonical, simplest relationship", "No extra table needed", "Efficient lookups of children by parent"],
+    "cons": ["Only models one-to-many, not many-to-many", "Child can belong to exactly one parent"],
+    "whenToUse": "A customer has many orders; an order has many line items; a post has many comments.",
+    "whenNotToUse": "When each side can relate to many of the other — that needs a junction table."
+  },
+  {
+    "id": "junction-table",
+    "name": "Junction / Associative Table (Many-to-Many)",
+    "category": "Relationships",
+    "definition": "A table holding two foreign keys to resolve a many-to-many relationship into two one-to-many relationships (e.g. order_items, post_tags).",
+    "pros": ["The correct way to model many-to-many", "Can carry attributes about the relationship", "Composite PK prevents duplicate links"],
+    "cons": ["An extra table and joins", "Grows large", "Both FKs usually need indexes"],
+    "whenToUse": "Students↔courses, orders↔products, posts↔tags, users↔roles — any many-to-many.",
+    "whenNotToUse": "A simple one-to-many — adding a junction table there is over-engineering."
+  },
+  {
+    "id": "self-referencing-fk",
+    "name": "Self-Referencing FK (Hierarchy / Adjacency List)",
+    "category": "Relationships",
+    "definition": "A foreign key on a table that points back to the same table, modeling trees like categories or org charts (parent_id).",
+    "pros": ["Simple way to store hierarchies", "Arbitrary depth", "One table"],
+    "cons": ["Recursive queries needed for deep traversal", "Can't easily get full subtree in one simple query", "Risk of cycles without checks"],
+    "whenToUse": "Category trees, comment threads, employee→manager, nested folders.",
+    "whenNotToUse": "Flat data with no hierarchy, or when you need heavy subtree queries (consider closure table/path enumeration)."
+  },
+  {
+    "id": "junction-extra-cols",
+    "name": "Attributes on the Junction Table",
+    "category": "Relationships",
+    "definition": "Storing data about the relationship itself on the junction row (e.g. quantity and unit_price on order_items, role granted_at).",
+    "pros": ["Captures relationship-specific facts in the right place", "Avoids duplicating data on either parent", "Natural home for qty/price/timestamps"],
+    "cons": ["Turns a 'pure' link table into an entity", "Easy to forget needed columns"],
+    "whenToUse": "order_items.quantity, enrollment.grade, membership.joined_at.",
+    "whenNotToUse": "When the relationship truly has no attributes — keep the link table minimal."
+  },
+  {
+    "id": "polymorphic-assoc",
+    "name": "Polymorphic Association",
+    "category": "Relationships",
+    "definition": "One column pair (type + id) that points to rows in different tables (e.g. comment on either a post or a photo).",
+    "pros": ["Flexible — one comments table for many parents", "Fewer tables up front"],
+    "cons": ["Cannot use real foreign keys → loses referential integrity", "Hard to index/join", "Often a code smell"],
+    "whenToUse": "Rarely — only when many parent types share identical child structure and integrity can be tolerated.",
+    "whenNotToUse": "Usually avoid in interviews: prefer separate FK columns or separate tables so real FKs work. A classic over-engineering trap."
+  },
+  {
+    "id": "normalize-3nf",
+    "name": "Normalize to 3NF",
+    "category": "Normalization",
+    "definition": "Organize tables so each fact lives in exactly one place — no repeating groups, every non-key column depends on the whole key and nothing but the key.",
+    "pros": ["Eliminates update/insert/delete anomalies", "No redundant data to drift out of sync", "Clear, maintainable model"],
+    "cons": ["More joins to assemble data", "Can be slower for read-heavy reporting"],
+    "whenToUse": "The default for transactional (OLTP) schemas — start normalized.",
+    "whenNotToUse": "Don't over-normalize tiny value lists into ten tables; and analytics/reporting may deliberately denormalize."
+  },
+  {
+    "id": "denormalize",
+    "name": "Deliberate Denormalization",
+    "category": "Normalization",
+    "definition": "Intentionally duplicating data (e.g. storing order_total, or a cached count) to avoid expensive joins/aggregations.",
+    "pros": ["Faster reads for hot paths", "Fewer joins", "Good for reporting/read models"],
+    "cons": ["Redundant data can drift out of sync", "Needs triggers/jobs to keep consistent", "Premature denormalization is a common mistake"],
+    "whenToUse": "Proven read hotspots, reporting tables, or immutable snapshots (e.g. price captured on the order at purchase time).",
+    "whenNotToUse": "Up front, before you have a measured read problem — that's classic over-engineering."
+  },
+  {
+    "id": "lookup-table",
+    "name": "Lookup / Reference Table",
+    "category": "Normalization",
+    "definition": "A small table of allowed values (statuses, categories, countries) that other tables reference by FK instead of free-text.",
+    "pros": ["One source of truth for allowed values", "Easy to add/rename values", "Joins give human labels"],
+    "cons": ["Extra join for a label", "Overkill for a tiny fixed set you could CHECK"],
+    "whenToUse": "Sets of values that change over time or carry their own attributes (categories, plan types).",
+    "whenNotToUse": "A truly fixed 2–3 value set — a CHECK constraint or enum is simpler."
+  },
+  {
+    "id": "not-null",
+    "name": "NOT NULL Constraint",
+    "category": "Integrity",
+    "definition": "Requires a column to always have a value, encoding 'this fact is mandatory' into the schema.",
+    "pros": ["Prevents missing required data", "Removes ambiguous NULL logic", "Self-documenting"],
+    "cons": ["Needs a default or value on insert", "Wrong on genuinely optional fields"],
+    "whenToUse": "Required fields: foreign keys, names, created_at, money amounts.",
+    "whenNotToUse": "Genuinely optional attributes (middle_name, deleted_at) — NULL is meaningful there."
+  },
+  {
+    "id": "unique-constraint",
+    "name": "UNIQUE Constraint",
+    "category": "Integrity",
+    "definition": "Guarantees no two rows share the same value(s) in a column or column set (e.g. UNIQUE(email), UNIQUE(order_id, product_id)).",
+    "pros": ["Enforces business uniqueness the PK doesn't", "Backed by an index → fast lookups", "Stops duplicate links on junction tables"],
+    "cons": ["Blocks legitimate duplicates if mis-scoped", "NULL handling varies by DB"],
+    "whenToUse": "Emails/usernames, and to prevent duplicate relationships on junction tables.",
+    "whenNotToUse": "Columns that legitimately repeat (status, city)."
+  },
+  {
+    "id": "check-constraint",
+    "name": "CHECK Constraint",
+    "category": "Integrity",
+    "definition": "Enforces a rule on column values (e.g. price >= 0, end_date > start_date, status IN (...)).",
+    "pros": ["Bad data can't enter the table", "Encodes business rules in the schema", "Cheap"],
+    "cons": ["Complex rules belong in app logic", "Not all DBs enforce identically"],
+    "whenToUse": "Non-negative amounts, valid date ranges, small fixed status sets, percentage 0–100.",
+    "whenNotToUse": "Multi-row or cross-table rules — those need triggers or app logic."
+  },
+  {
+    "id": "on-delete-action",
+    "name": "ON DELETE Behavior (CASCADE / RESTRICT / SET NULL)",
+    "category": "Integrity",
+    "definition": "Defines what happens to child rows when a referenced parent is deleted.",
+    "pros": ["CASCADE auto-cleans dependent rows", "RESTRICT protects against accidental data loss", "SET NULL detaches without deleting"],
+    "cons": ["CASCADE can delete far more than intended", "Wrong choice causes orphans or surprise deletions"],
+    "whenToUse": "CASCADE for owned children (order → order_items); RESTRICT for references you must not orphan (don't delete a product still on orders).",
+    "whenNotToUse": "Don't blanket-CASCADE everything — think per relationship."
+  },
+  {
+    "id": "index-fk",
+    "name": "Index on Foreign Key",
+    "category": "Performance",
+    "definition": "An index on each FK column so joins and 'find children of this parent' lookups (and cascading deletes) are fast.",
+    "pros": ["Fast joins and child lookups", "Speeds up cascading deletes", "Cheap insurance on relationships"],
+    "cons": ["Slight write/storage overhead", "Most DBs do NOT auto-index FKs (only the referenced PK)"],
+    "whenToUse": "Virtually every foreign key column you join or filter on.",
+    "whenNotToUse": "A tiny table scanned entirely anyway, or an FK you never query by."
+  },
+  {
+    "id": "composite-index",
+    "name": "Composite Index",
+    "category": "Performance",
+    "definition": "An index on multiple columns in order, serving queries that filter/sort by that column prefix (e.g. (tenant_id, created_at)).",
+    "pros": ["One index serves multi-column filters and sorts", "Leftmost-prefix queries benefit too", "Great for tenant-scoped queries"],
+    "cons": ["Column order matters a lot", "Doesn't help queries that skip the leading column", "More write cost"],
+    "whenToUse": "When you frequently filter by A and B together, or filter by A and sort by B.",
+    "whenNotToUse": "When queries hit the columns independently — separate indexes may serve better."
+  },
+  {
+    "id": "covering-index",
+    "name": "Covering Index",
+    "category": "Performance",
+    "definition": "An index that includes all columns a query needs, so the DB answers from the index without touching the table.",
+    "pros": ["Avoids table lookups → very fast reads", "Great for hot read queries"],
+    "cons": ["Larger index", "Extra write cost", "Easy to over-add"],
+    "whenToUse": "A proven hot query that selects a few columns filtered by indexed ones.",
+    "whenNotToUse": "Speculatively — adding covering indexes before measuring is over-engineering."
+  },
+  {
+    "id": "partial-index",
+    "name": "Partial / Filtered Index",
+    "category": "Performance",
+    "definition": "An index over only the rows matching a condition (e.g. WHERE deleted_at IS NULL, or status='active').",
+    "pros": ["Smaller, faster index", "Perfect for soft-delete / active-row queries", "Less write overhead than a full index"],
+    "cons": ["Only helps queries matching the predicate", "DB support varies"],
+    "whenToUse": "Indexing only active/non-deleted rows, or a unique constraint scoped to active rows.",
+    "whenNotToUse": "When queries span all rows regardless of the condition."
+  },
+  {
+    "id": "money-decimal",
+    "name": "Money as DECIMAL / Integer Cents",
+    "category": "Data Types",
+    "definition": "Store currency as DECIMAL(n,2) or integer minor units (cents) — never floating point.",
+    "pros": ["Exact — no rounding errors", "Correct sums and comparisons", "Standard for financial data"],
+    "cons": ["Must track currency separately", "Integer cents needs care on display"],
+    "whenToUse": "Any monetary amount: prices, totals, balances, invoice line items.",
+    "whenNotToUse": "Never use FLOAT/DOUBLE for money — a guaranteed interview red flag."
+  },
+  {
+    "id": "timestamptz",
+    "name": "Timestamps in UTC (timestamptz)",
+    "category": "Data Types",
+    "definition": "Store timestamps with time zone / in UTC, converting to local time only at display.",
+    "pros": ["Unambiguous across time zones", "Correct ordering and intervals", "Avoids DST bugs"],
+    "cons": ["Must convert for display", "Naive timestamp columns lose zone info"],
+    "whenToUse": "created_at, updated_at, event times — basically all timestamps.",
+    "whenNotToUse": "Pure calendar dates with no time/zone meaning (use DATE)."
+  },
+  {
+    "id": "soft-delete",
+    "name": "Soft Delete (deleted_at)",
+    "category": "Patterns",
+    "definition": "Mark rows deleted with a flag/timestamp instead of removing them, filtering them out of normal queries.",
+    "pros": ["Recoverable / auditable", "Preserves references from historical rows", "Undo support"],
+    "cons": ["Every query must filter deleted rows", "Unique constraints must be scoped (partial index)", "Table keeps growing"],
+    "whenToUse": "User-facing records that may need recovery or audit (accounts, posts, orders).",
+    "whenNotToUse": "High-churn ephemeral data, or when compliance requires real deletion."
+  },
+  {
+    "id": "audit-columns",
+    "name": "Audit Columns (created_at / updated_at)",
+    "category": "Patterns",
+    "definition": "Standard timestamp (and often created_by/updated_by) columns on every table to track when rows change.",
+    "pros": ["Cheap, universally useful", "Enables debugging, sorting by recency, sync", "Expected by reviewers"],
+    "cons": ["updated_at needs a trigger or app discipline", "Minor storage"],
+    "whenToUse": "Essentially every entity table.",
+    "whenNotToUse": "Immutable append-only event rows where created_at alone suffices."
+  },
+  {
+    "id": "status-history",
+    "name": "History / Event Table over Mutable Status",
+    "category": "Patterns",
+    "definition": "Instead of overwriting a single status column, append rows to a history/events table to keep the full timeline.",
+    "pros": ["Full audit trail of state changes", "Answers 'when did X happen'", "Append-only is concurrency-friendly"],
+    "cons": ["More rows and a join to get current state", "Often paired with a cached current_status"],
+    "whenToUse": "Order/shipment/subscription lifecycles where history matters.",
+    "whenNotToUse": "Trivial flags where only the current value matters — a status column is enough."
+  },
+  {
+    "id": "multi-tenant-key",
+    "name": "Tenant ID Column (Multi-tenancy)",
+    "category": "Patterns",
+    "definition": "Add tenant_id (org/account id) to tenant-owned tables and include it in keys, indexes, and every query to isolate customers.",
+    "pros": ["Strong data isolation per customer", "Composite indexes on (tenant_id, …) scope queries", "Simpler than DB-per-tenant"],
+    "cons": ["Must remember it in every query (risk of cross-tenant leak)", "Skewed tenants create hotspots"],
+    "whenToUse": "Shared-schema multi-tenant SaaS where each row belongs to one customer org.",
+    "whenNotToUse": "Single-tenant apps, or when isolation requires separate databases/schemas."
+  }
+]

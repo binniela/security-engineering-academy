@@ -1,0 +1,310 @@
+[
+  {
+    "id": "url-shortener",
+    "title": "Design a URL Shortener (TinyURL / Bitly)",
+    "prompt": "Design a service that turns long URLs into short codes and redirects users, handling ~100M new links and heavy redirect (read) traffic per day.",
+    "companies": ["Amazon", "Google", "Meta"],
+    "difficulty": "Starter",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (URL shortener: \"Google, Amazon, Meta\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Educative — System design questions asked by top companies", "url": "https://www.educative.io/blog/system-design-interview-questions" }
+    ],
+    "best": ["kv-store", "cache", "id-generator", "load-balancer"],
+    "acceptable": ["cdn", "consistent-hashing", "sql-db"],
+    "keyIdea": "Read-heavy mapping problem: generate a unique short key, store key→URL in a horizontally scalable store, and serve redirects from cache.",
+    "notes": {
+      "kv-store": "Optimal. The core is a simple key→long-URL lookup at huge scale — exactly what a key-value store is built for.",
+      "cache": "Optimal. Redirects are extremely read-heavy with a hot tail; caching popular codes slashes DB load and latency.",
+      "id-generator": "Optimal. You need unique, collision-free short codes; a distributed ID generator (then Base62-encode) avoids coordination.",
+      "load-balancer": "Optimal. Redirect traffic is massive and stateless — spread it across many app servers.",
+      "cdn": "Acceptable. Helps geographically for the redirect hop, though the payload is tiny; secondary to caching.",
+      "consistent-hashing": "Acceptable. Useful once the KV/cache layer is sharded across many nodes.",
+      "sql-db": "Acceptable but not ideal. Works at small scale, but vertical limits make NoSQL the better fit at 100M/day.",
+      "strong-consistency": "Poor fit. A new short link being visible a few ms late is harmless; paying the latency cost of strong consistency is wasteful.",
+      "geospatial-index": "Poor fit. There is no spatial/location dimension to this problem.",
+      "search-index": "Poor fit. You look up by exact key, not by full-text search."
+    }
+  },
+  {
+    "id": "news-feed",
+    "title": "Design a News Feed (Instagram / Facebook feed)",
+    "prompt": "Design the home feed: users follow others, and each user sees a ranked, recent timeline of posts. Handle the celebrity (large-follower) problem and fast feed reads.",
+    "companies": ["Meta"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "IGotAnOffer — Meta system design interview (\"Design Instagram\" is the most common)", "url": "https://igotanoffer.com/blogs/tech/meta-system-design-interview" },
+      { "label": "DesignGurus — FAANG questions, ranked", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" }
+    ],
+    "best": ["fanout", "cache", "kv-store", "object-storage"],
+    "acceptable": ["cdn", "load-balancer", "message-queue", "eventual-consistency"],
+    "keyIdea": "Pick a feed-delivery strategy (fan-out on write vs read, hybrid for celebrities), precompute timelines in a fast store, and serve media from object storage + CDN.",
+    "notes": {
+      "fanout": "Optimal. The central design decision is fan-out-on-write vs on-read; the celebrity problem is the classic follow-up.",
+      "cache": "Optimal. Precomputed timelines and hot posts live in cache for fast feed reads.",
+      "kv-store": "Optimal. Per-user timelines and the follower graph scale best in a wide-column/KV store.",
+      "object-storage": "Optimal. Photos/videos are large immutable blobs — store them in S3-style object storage, not the DB.",
+      "cdn": "Acceptable. Delivers the media referenced by the feed to global users.",
+      "message-queue": "Acceptable. Fan-out work is done asynchronously off the write path.",
+      "eventual-consistency": "Acceptable. A post appearing a moment late in some feeds is fine; favors availability.",
+      "load-balancer": "Acceptable. Standard for the stateless read tier.",
+      "strong-consistency": "Poor fit. Feeds tolerate slight staleness; strong consistency adds cost for no user benefit.",
+      "idempotency-key": "Poor fit. This isn't a money/transaction path that needs at-most-once semantics."
+    }
+  },
+  {
+    "id": "rate-limiter",
+    "title": "Design a Distributed Rate Limiter",
+    "prompt": "Design an API rate limiter (e.g. 'N requests per user per minute') that works correctly across a fleet of servers without letting users exceed their quota.",
+    "companies": ["Amazon", "Stripe", "Uber", "Microsoft", "Pinterest"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (\"Amazon, Google, Uber, Stripe, Microsoft, Atlassian, Pinterest\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "LeetCode discuss — Uber | Rate Limiter (reported)", "url": "https://leetcode.com/discuss/interview-question/system-design/124558/Uber-or-Rate-Limiter/745950" }
+    ],
+    "best": ["rate-limiter", "cache", "api-gateway"],
+    "acceptable": ["consistent-hashing", "load-balancer", "tsdb"],
+    "keyIdea": "Keep per-client counters (token bucket / sliding window) in a shared fast store so all servers see the same count; enforce at the edge.",
+    "notes": {
+      "rate-limiter": "Optimal. This is literally the component being designed — token bucket or sliding-window log.",
+      "cache": "Optimal. Counters need a shared, atomic, low-latency store (Redis with INCR/TTL) visible to every server.",
+      "api-gateway": "Optimal. The natural enforcement point — reject over-limit requests before they hit services.",
+      "consistent-hashing": "Acceptable. Routes a given client's counter to a consistent shard of the counter store.",
+      "tsdb": "Acceptable. Useful for observing/alerting on request rates, not for the enforcement path itself.",
+      "load-balancer": "Acceptable. Present in any multi-server setup but not specific to rate limiting.",
+      "sql-db": "Poor fit. A relational DB per request is far too slow for counter increments at the edge.",
+      "object-storage": "Poor fit. Blob storage has nothing to do with fast counters.",
+      "geospatial-index": "Poor fit. No location dimension here."
+    }
+  },
+  {
+    "id": "chat-system",
+    "title": "Design a Chat System (Messenger / WhatsApp)",
+    "prompt": "Design 1:1 and group messaging: real-time delivery, online/offline presence, delivery/read receipts, and message history.",
+    "companies": ["Meta", "Google"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (chat: \"Meta, Google, and multiple FAANG\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Educative — System design questions asked by top companies", "url": "https://www.educative.io/blog/system-design-interview-questions" }
+    ],
+    "best": ["websocket", "message-queue", "kv-store"],
+    "acceptable": ["load-balancer", "pub-sub", "cache", "object-storage"],
+    "keyIdea": "Hold persistent connections for instant push, route messages through a queue/fan-out, and store history + presence in a fast write-heavy store.",
+    "notes": {
+      "websocket": "Optimal. Real-time bidirectional delivery and presence need long-lived connections, not polling.",
+      "message-queue": "Optimal. Decouples senders from receivers and buffers messages for offline users.",
+      "kv-store": "Optimal. Message history and per-conversation data are write-heavy and key-addressed — ideal for Cassandra/KV.",
+      "pub-sub": "Acceptable. Good for fanning a group message to many recipient connection servers.",
+      "cache": "Acceptable. Presence and recent messages benefit from an in-memory layer.",
+      "object-storage": "Acceptable. For media attachments (images, voice notes).",
+      "load-balancer": "Acceptable, with the caveat that connections are sticky/stateful.",
+      "sql-db": "Poor fit at scale. Message volume is enormous and append-heavy; relational storage becomes a bottleneck.",
+      "olap": "Poor fit. Analytics store, not a real-time messaging path."
+    }
+  },
+  {
+    "id": "ride-sharing",
+    "title": "Design a Ride-Sharing Backend (Uber / Lyft)",
+    "prompt": "Design driver–rider matching: track driver locations in real time, find nearby drivers for a request, dispatch, and compute ETAs/surge under strict latency.",
+    "companies": ["Uber", "Amazon", "Meta"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "System Design Handbook — Uber system design interview guide", "url": "https://www.systemdesignhandbook.com/guides/uber-system-design-interview/" },
+      { "label": "IGotAnOffer — Amazon system design (reported: \"design Uber for a robo-taxi service\")", "url": "https://igotanoffer.com/en/advice/amazon-system-design-interview" }
+    ],
+    "best": ["geospatial-index", "websocket", "cache", "load-balancer"],
+    "acceptable": ["message-queue", "kv-store", "tsdb", "sql-db"],
+    "keyIdea": "Index driver locations spatially (geohash/quadtree) for nearby lookups, stream live positions over persistent connections, and keep matching low-latency.",
+    "notes": {
+      "geospatial-index": "Optimal. 'Find nearby drivers' is a proximity query — geohash/quadtree is the heart of the design.",
+      "websocket": "Optimal. Drivers stream location and riders get live updates over long-lived connections.",
+      "cache": "Optimal. Hot driver-location data must be read/updated in-memory at high frequency.",
+      "load-balancer": "Optimal. High-volume stateless request tier for matching/booking.",
+      "message-queue": "Acceptable. Dispatch events, trip lifecycle, and notifications flow asynchronously.",
+      "tsdb": "Acceptable. Surge pricing reads demand/supply signals over time windows.",
+      "sql-db": "Acceptable. The actual trip/payment records want transactional storage even if location data does not.",
+      "kv-store": "Acceptable. Driver/rider session state.",
+      "search-index": "Poor fit. This is spatial proximity, not full-text search.",
+      "object-storage": "Poor fit for the core loop (only relevant for documents/photos)."
+    }
+  },
+  {
+    "id": "notification-service",
+    "title": "Design a Notification Service",
+    "prompt": "Design a system that sends push, SMS, and email at scale (e.g. 10M push, 5M email, 1M SMS/day), with user channel preferences, retries on provider failure, and no duplicate sends.",
+    "companies": ["Google", "Amazon", "Airbnb", "Uber", "Pinterest"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (notifications: \"Google, Amazon, Airbnb, Pinterest, Uber, Instacart\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Double Pointer — Notification service system design interview", "url": "https://medium.com/double-pointer/system-design-interview-notification-service-86cb5c266218" }
+    ],
+    "best": ["message-queue", "circuit-breaker", "idempotency-key", "kv-store"],
+    "acceptable": ["pub-sub", "cache", "rate-limiter", "load-balancer"],
+    "keyIdea": "Queue notifications, fan out to channel workers that call third-party providers, retry with backoff + circuit breakers, and dedupe with idempotency keys.",
+    "notes": {
+      "message-queue": "Optimal. Decouples producers from per-channel senders and absorbs huge spikes.",
+      "circuit-breaker": "Optimal. External providers (APNs, Twilio, SendGrid) fail; you must stop hammering them and fail over.",
+      "idempotency-key": "Optimal. Retries must not send the same notification twice — dedupe each send.",
+      "kv-store": "Optimal. Store user preferences, device tokens, and dedupe state with fast key access.",
+      "pub-sub": "Acceptable. Good for fanning one event to multiple channel consumers.",
+      "rate-limiter": "Acceptable. Respect per-provider and per-user send limits.",
+      "cache": "Acceptable. Cache user preferences/tokens on the hot path.",
+      "load-balancer": "Acceptable. Standard for the ingestion API tier.",
+      "geospatial-index": "Poor fit. No spatial component.",
+      "strong-consistency": "Poor fit. Delivery is best-effort/eventual; strong consistency isn't the constraint."
+    }
+  },
+  {
+    "id": "typeahead",
+    "title": "Design Typeahead / Autocomplete",
+    "prompt": "Design search-box autocomplete: as the user types each character, return the top-N most relevant suggestions in a few milliseconds, ranked by popularity.",
+    "companies": ["Google", "Meta", "LinkedIn", "Netflix"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (typeahead: \"Google, Meta, and Netflix\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Double Pointer — Autocomplete/Type-ahead system design interview", "url": "https://medium.com/double-pointer/system-design-interview-autocomplete-type-ahead-system-for-a-search-box-1ac968f9f121" }
+    ],
+    "best": ["cache", "search-index", "load-balancer"],
+    "acceptable": ["cdn", "kv-store", "olap", "message-queue"],
+    "keyIdea": "Precompute a trie/prefix index of popular queries, serve top-N from an in-memory layer per keystroke, and rebuild rankings offline from query logs.",
+    "notes": {
+      "cache": "Optimal. Every keystroke is a lookup; suggestions must come from RAM (often a trie in Redis) for low latency.",
+      "search-index": "Optimal. A prefix/inverted index over the query corpus produces ranked completions.",
+      "load-balancer": "Optimal. Each keystroke is a request — high QPS stateless tier.",
+      "olap": "Acceptable. Offline aggregation of query logs computes popularity rankings.",
+      "message-queue": "Acceptable. Streams raw queries into the aggregation pipeline.",
+      "cdn": "Acceptable. Can cache very common prefixes at the edge.",
+      "kv-store": "Acceptable. Stores the precomputed prefix→suggestions maps.",
+      "strong-consistency": "Poor fit. Suggestions being slightly out of date is fine; latency matters more.",
+      "geospatial-index": "Poor fit. No location dimension."
+    }
+  },
+  {
+    "id": "video-streaming",
+    "title": "Design a Video Streaming Service (YouTube / Netflix)",
+    "prompt": "Design upload, transcoding, storage, and global low-buffering playback of video, plus view counts and recommendations at massive read scale.",
+    "companies": ["Netflix", "Google (YouTube)", "Amazon"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "Educative — System design questions (\"Design a video streaming service like YouTube or Netflix\")", "url": "https://www.educative.io/blog/system-design-interview-questions" },
+      { "label": "DesignGurus — FAANG questions, ranked", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" }
+    ],
+    "best": ["cdn", "object-storage", "message-queue", "cache"],
+    "acceptable": ["load-balancer", "kv-store", "eventual-consistency", "olap"],
+    "keyIdea": "Store originals in object storage, transcode asynchronously into multiple bitrates, and serve segments from a CDN; metadata/counts in fast stores.",
+    "notes": {
+      "cdn": "Optimal. Global low-buffering playback is impossible without edge caching of video segments.",
+      "object-storage": "Optimal. Raw uploads and transcoded renditions are huge blobs best kept in S3-style storage.",
+      "message-queue": "Optimal. Transcoding is slow, spiky background work — pipeline it through a queue.",
+      "cache": "Optimal. Video metadata, thumbnails, and view counts are extremely read-heavy.",
+      "olap": "Acceptable. Watch-history analytics and recommendation features run on a warehouse.",
+      "eventual-consistency": "Acceptable. View counts can lag slightly.",
+      "kv-store": "Acceptable. Video metadata and user state.",
+      "load-balancer": "Acceptable. Standard front tier.",
+      "strong-consistency": "Poor fit. Playback/counts don't need linearizability; it would hurt scale.",
+      "geospatial-index": "Poor fit. No proximity query (CDN handles geography)."
+    }
+  },
+  {
+    "id": "file-storage",
+    "title": "Design a File Storage & Sync Service (Dropbox / Google Drive)",
+    "prompt": "Design upload, download, and multi-device sync of files: handle large files, deduplication, conflict resolution, and sharing.",
+    "companies": ["Google", "Microsoft", "Amazon", "Dropbox"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (Drive/Dropbox: \"Google, Meta, Amazon, Microsoft, and Dropbox\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "IGotAnOffer — Microsoft interview (reported: \"design Dropbox/iCloud\")", "url": "https://igotanoffer.com/blogs/tech/microsoft-software-development-engineer-interview" }
+    ],
+    "best": ["object-storage", "sql-db", "message-queue", "cdn"],
+    "acceptable": ["cache", "bloom-filter", "load-balancer", "cdc"],
+    "keyIdea": "Split files into content-addressed chunks in object storage (dedupe), track chunks/versions in a metadata DB, and sync changes to devices via a queue.",
+    "notes": {
+      "object-storage": "Optimal. File chunks/blocks live in durable, cheap object storage.",
+      "sql-db": "Optimal here (as the metadata DB). File/version/chunk metadata and sharing ACLs want transactional, queryable storage.",
+      "message-queue": "Optimal. Sync notifications and chunk processing are asynchronous.",
+      "cdn": "Optimal. Download/sharing of files benefits from edge delivery.",
+      "bloom-filter": "Acceptable. Cheap pre-check for 'do we already have this chunk?' before dedupe lookup.",
+      "cache": "Acceptable. Hot metadata/chunk lookups.",
+      "cdc": "Acceptable. Propagate metadata changes to sync/search subsystems.",
+      "load-balancer": "Acceptable. Standard front tier.",
+      "geospatial-index": "Poor fit. No spatial dimension.",
+      "tsdb": "Poor fit. Not a metrics problem."
+    }
+  },
+  {
+    "id": "payment-system",
+    "title": "Design a Payment System (Stripe-style)",
+    "prompt": "Design charge processing: accept a payment, talk to external processors/banks, guarantee exactly-once charging under retries, and keep an auditable ledger.",
+    "companies": ["Stripe", "Amazon", "PayPal", "Capital One"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (payments: \"Stripe, Amazon, PayPal, and Capital One\")", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Educative — System design questions (\"Design a payment gateway like Stripe\")", "url": "https://www.educative.io/blog/system-design-interview-questions" }
+    ],
+    "best": ["idempotency-key", "strong-consistency", "sql-db", "message-queue"],
+    "acceptable": ["circuit-breaker", "wal", "cdc", "load-balancer"],
+    "keyIdea": "Money demands correctness: idempotency keys for exactly-once charging, ACID/strongly-consistent ledger, and resilient async calls to external processors.",
+    "notes": {
+      "idempotency-key": "Optimal. The defining requirement — a retried charge must never double-charge the customer.",
+      "strong-consistency": "Optimal. Balances and ledger entries must be linearizable; no stale or conflicting reads.",
+      "sql-db": "Optimal. A transactional, auditable ledger is the textbook job for a relational DB.",
+      "message-queue": "Optimal. Calls to banks/processors and webhooks are async with retries.",
+      "circuit-breaker": "Acceptable. External processors fail; trip the breaker rather than cascade.",
+      "wal": "Acceptable. Append-only ledger / event sourcing for auditability.",
+      "cdc": "Acceptable. Stream ledger changes to reporting/fraud systems.",
+      "load-balancer": "Acceptable. Standard front tier.",
+      "eventual-consistency": "Poor fit. Money cannot be eventually consistent — this is the trap answer.",
+      "cache": "Poor fit for the ledger path. Caching balances risks serving stale money data."
+    }
+  },
+  {
+    "id": "distributed-cache",
+    "title": "Design a Distributed Cache",
+    "prompt": "Design an in-memory cache cluster (Memcached/Redis-style): distribute keys across nodes, handle node add/remove gracefully, set eviction/TTL, and stay available.",
+    "companies": ["Microsoft", "Amazon"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "IGotAnOffer — Microsoft/Amazon system design (reported: \"design a distributed cache system\")", "url": "https://igotanoffer.com/en/advice/amazon-system-design-interview" },
+      { "label": "DesignGurus — FAANG questions, ranked", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" }
+    ],
+    "best": ["consistent-hashing", "cache", "replication"],
+    "acceptable": ["bloom-filter", "load-balancer", "eventual-consistency"],
+    "keyIdea": "Spread keys with consistent hashing so scaling moves few keys, replicate hot shards for availability, and define an eviction policy (LRU/TTL).",
+    "notes": {
+      "consistent-hashing": "Optimal. The key design problem: distribute keys so adding/removing a node reshuffles minimal data.",
+      "cache": "Optimal. You are literally building the in-memory cache layer.",
+      "replication": "Optimal. Replicate shards so a node loss doesn't drop a slice of the keyspace.",
+      "bloom-filter": "Acceptable. Avoid lookups for keys that definitely aren't cached.",
+      "eventual-consistency": "Acceptable. Replicas may briefly diverge; usually fine for a cache.",
+      "load-balancer": "Acceptable. Client routing, though consistent hashing often handles placement.",
+      "sql-db": "Poor fit. The whole point is to avoid the slow durable store on reads.",
+      "geospatial-index": "Poor fit. No spatial queries.",
+      "olap": "Poor fit. Analytics store, not a low-latency cache."
+    }
+  },
+  {
+    "id": "web-crawler",
+    "title": "Design a Web Crawler",
+    "prompt": "Design a crawler that fetches billions of pages: discover URLs, avoid re-crawling duplicates, respect politeness/robots, and scale across many workers.",
+    "companies": ["Google", "Amazon", "Meta"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "DesignGurus — FAANG questions, ranked (web crawler across major prep platforms)", "url": "https://designgurus.substack.com/p/30-system-design-interview-questions" },
+      { "label": "Educative — System design questions asked by top companies", "url": "https://www.educative.io/blog/system-design-interview-questions" }
+    ],
+    "best": ["message-queue", "bloom-filter", "object-storage", "rate-limiter"],
+    "acceptable": ["kv-store", "consistent-hashing", "search-index", "load-balancer"],
+    "keyIdea": "A URL frontier (queue) feeds workers; a Bloom filter / seen-set dedupes URLs; fetched pages go to object storage; politeness throttles per-domain rate.",
+    "notes": {
+      "message-queue": "Optimal. The URL frontier is a giant queue feeding fetcher workers.",
+      "bloom-filter": "Optimal. Cheaply answer 'have we already seen this URL?' across billions without huge memory.",
+      "object-storage": "Optimal. Store the raw fetched HTML/pages as blobs.",
+      "rate-limiter": "Optimal. Politeness — cap requests per domain so you don't hammer sites or get banned.",
+      "kv-store": "Acceptable. URL metadata, crawl timestamps, and dedupe backing store.",
+      "consistent-hashing": "Acceptable. Partition the frontier/seen-set across workers.",
+      "search-index": "Acceptable. The downstream indexing step (if asked to make pages searchable).",
+      "load-balancer": "Acceptable. Coordinating worker fleets.",
+      "strong-consistency": "Poor fit. Crawling tolerates duplicates/staleness; coordination overhead isn't worth it.",
+      "geospatial-index": "Poor fit. No spatial component."
+    }
+  }
+]

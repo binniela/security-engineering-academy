@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fde-academy",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "fde_api_academy.web.server", "--port", "8765"],
+      "port": 8765
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "id": "cus_mock_123",
+  "email": "customer@example.com",
+  "subscriptions": {"data": [{"status": "active", "plan": {"nickname": "Startup"}}]}
+}

@@ -1,0 +1,272 @@
+[
+  {
+    "id": "ecommerce-orders",
+    "title": "Schema: E-commerce orders",
+    "prompt": "Design the tables for an online store: customers place orders, each order contains many products with a quantity, and you must record the price at the time of purchase.",
+    "tags": ["Many-to-many", "Junction table", "Money", "Normalization"],
+    "difficulty": "Starter",
+    "sources": [
+      { "label": "GeeksforGeeks — How to design a relational database for an e-commerce website", "url": "https://www.geeksforgeeks.org/dbms/how-to-design-a-relational-database-for-e-commerce-website/" },
+      { "label": "Hello Interview — Data modeling for system design interviews", "url": "https://www.hellointerview.com/learn/system-design/core-concepts/data-modeling" }
+    ],
+    "best": ["junction-table", "one-to-many-fk", "foreign-key", "money-decimal", "index-fk"],
+    "acceptable": ["surrogate-key", "junction-extra-cols", "composite-key", "audit-columns", "not-null"],
+    "keyIdea": "Orders↔products is many-to-many, so resolve it with an order_items junction table that carries quantity and the captured unit_price. Store money as DECIMAL/cents.",
+    "notes": {
+      "junction-table": "Optimal. order_items resolves the many-to-many between orders and products.",
+      "one-to-many-fk": "Optimal. customer→orders and order→order_items are one-to-many via FKs.",
+      "foreign-key": "Optimal. FKs from orders→customers and order_items→orders/products keep the data valid.",
+      "money-decimal": "Optimal. Prices and totals must be DECIMAL or integer cents — never float.",
+      "index-fk": "Optimal. Index order_items.order_id and product_id so order/product lookups are fast.",
+      "junction-extra-cols": "Acceptable/expected. quantity and unit_price live on order_items, not on products.",
+      "composite-key": "Acceptable. (order_id, product_id) is a fine PK for order_items (or a surrogate id + UNIQUE on the pair).",
+      "audit-columns": "Acceptable. created_at on orders is standard and useful.",
+      "denormalize": "Trap. Capturing unit_price on the order is correct (a snapshot), but adding a cached order_total before you need it is premature denormalization.",
+      "polymorphic-assoc": "Poor. There's nothing polymorphic here; it would only throw away foreign-key integrity.",
+      "self-referencing-fk": "Poor. No hierarchy in this core model (categories would be a separate concern)."
+    },
+    "solution": {
+      "tables": [
+        { "name": "customers", "columns": ["id PK", "email UNIQUE NOT NULL", "name", "created_at"] },
+        { "name": "products", "columns": ["id PK", "name NOT NULL", "price DECIMAL(10,2) NOT NULL", "created_at"] },
+        { "name": "orders", "columns": ["id PK", "customer_id FK→customers.id NOT NULL", "status", "created_at"] },
+        { "name": "order_items", "columns": ["order_id FK→orders.id", "product_id FK→products.id", "quantity INT NOT NULL CHECK(quantity>0)", "unit_price DECIMAL(10,2) NOT NULL", "PK (order_id, product_id)"] }
+      ],
+      "notes": "order_items is the junction table. unit_price is copied onto the line so historical orders don't change when product prices do. Index both FKs on order_items."
+    }
+  },
+  {
+    "id": "social-follows",
+    "title": "Schema: Social follow graph",
+    "prompt": "Design tables so users can follow other users (directional), prevent duplicate follows, and let you query a user's followers and who they follow.",
+    "tags": ["Self many-to-many", "Composite key", "Indexing"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "DataCamp — Many-to-many relationships: a guide to database design", "url": "https://www.datacamp.com/blog/many-to-many-relationship" },
+      { "label": "Red-Gate — Top database schema design interview questions", "url": "https://www.red-gate.com/blog/database-schema-design-interview-questions/" }
+    ],
+    "best": ["junction-table", "composite-key", "foreign-key", "index-fk"],
+    "acceptable": ["unique-constraint", "composite-index", "audit-columns", "self-referencing-fk"],
+    "keyIdea": "A follow is a self-referencing many-to-many: one follows table with follower_id and followee_id, a composite PK to block duplicates, and an index on each direction.",
+    "notes": {
+      "junction-table": "Optimal. A follows table links users to users.",
+      "composite-key": "Optimal. PK (follower_id, followee_id) makes a duplicate follow impossible.",
+      "foreign-key": "Optimal. Both columns are FKs to users.id.",
+      "index-fk": "Optimal. You query both 'who follows me' and 'who I follow' — index both columns.",
+      "unique-constraint": "Acceptable. Equivalent to the composite PK if you used a surrogate id instead.",
+      "composite-index": "Acceptable. (follower_id, followee_id) and the reverse serve the two query directions.",
+      "self-referencing-fk": "Acceptable framing — the junction references the same users table on both sides.",
+      "money-decimal": "Poor. No money in this model.",
+      "polymorphic-assoc": "Poor. Both sides are users; a plain FK pair is correct."
+    },
+    "solution": {
+      "tables": [
+        { "name": "users", "columns": ["id PK", "username UNIQUE NOT NULL", "created_at"] },
+        { "name": "follows", "columns": ["follower_id FK→users.id", "followee_id FK→users.id", "created_at", "PK (follower_id, followee_id)", "CHECK (follower_id <> followee_id)"] }
+      ],
+      "notes": "Composite PK prevents duplicate follows; the CHECK stops self-follows. Index followee_id separately to list a user's followers efficiently."
+    }
+  },
+  {
+    "id": "hotel-bookings",
+    "title": "Schema: Hotel room bookings",
+    "prompt": "Design tables for booking hotel rooms: guests book a room for a date range. Prevent invalid ranges and avoid double-booking the same room for overlapping dates.",
+    "tags": ["Constraints", "Date ranges", "Integrity"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "InterviewQuery — Database design interview questions", "url": "https://www.interviewquery.com/p/database-design-interview-questions" },
+      { "label": "Red-Gate — Top database schema design interview questions", "url": "https://www.red-gate.com/blog/database-schema-design-interview-questions/" }
+    ],
+    "best": ["foreign-key", "check-constraint", "one-to-many-fk", "index-fk"],
+    "acceptable": ["surrogate-key", "not-null", "composite-index", "status-history"],
+    "keyIdea": "Model rooms, guests, and bookings with FKs; use a CHECK so check_out > check_in; prevent overlaps with a uniqueness/exclusion rule and index the room+date range for lookups.",
+    "notes": {
+      "foreign-key": "Optimal. bookings reference both room and guest.",
+      "check-constraint": "Optimal. CHECK (check_out > check_in) blocks invalid ranges at the schema level.",
+      "one-to-many-fk": "Optimal. A room has many bookings; a guest has many bookings.",
+      "index-fk": "Optimal. Index room_id (and the date columns) to find a room's bookings fast.",
+      "composite-index": "Acceptable. (room_id, check_in, check_out) supports overlap checks.",
+      "status-history": "Acceptable. Booking status changes (held→confirmed→cancelled) can be tracked over time.",
+      "not-null": "Acceptable. Dates, room_id, guest_id are all mandatory.",
+      "denormalize": "Trap. Don't precompute availability tables before you need them — derive from bookings first.",
+      "polymorphic-assoc": "Poor. No polymorphism here.",
+      "money-decimal": "Acceptable only if you add pricing; not the core of overlap prevention."
+    },
+    "solution": {
+      "tables": [
+        { "name": "rooms", "columns": ["id PK", "room_number UNIQUE NOT NULL", "type"] },
+        { "name": "guests", "columns": ["id PK", "email UNIQUE NOT NULL", "name"] },
+        { "name": "bookings", "columns": ["id PK", "room_id FK→rooms.id NOT NULL", "guest_id FK→guests.id NOT NULL", "check_in DATE NOT NULL", "check_out DATE NOT NULL", "status", "CHECK (check_out > check_in)"] }
+      ],
+      "notes": "Prevent overlapping bookings with a DB exclusion constraint (Postgres: EXCLUDE USING gist on room_id + daterange) or enforce in a transaction with a (room_id, check_in, check_out) index. A simple UNIQUE can't express overlap."
+    }
+  },
+  {
+    "id": "multi-tenant-saas",
+    "title": "Schema: Multi-tenant SaaS",
+    "prompt": "Design a shared-schema multi-tenant app where each customer organization's data must be isolated. Tenants have users and projects; queries must never leak across tenants.",
+    "tags": ["Multi-tenancy", "Isolation", "Composite index"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "Hello Interview — Data modeling for system design interviews", "url": "https://www.hellointerview.com/learn/system-design/core-concepts/data-modeling" },
+      { "label": "InterviewQuery — Database design interview questions", "url": "https://www.interviewquery.com/p/database-design-interview-questions" }
+    ],
+    "best": ["multi-tenant-key", "foreign-key", "composite-index", "one-to-many-fk"],
+    "acceptable": ["surrogate-key", "index-fk", "not-null", "audit-columns"],
+    "keyIdea": "Put tenant_id on every tenant-owned table, include it in composite indexes and ideally keys, and scope every query by it. The tenant_id discipline is the whole game.",
+    "notes": {
+      "multi-tenant-key": "Optimal. tenant_id on every owned table is the core isolation mechanism.",
+      "foreign-key": "Optimal. FKs to tenants and within a tenant's data.",
+      "composite-index": "Optimal. (tenant_id, …) indexes keep per-tenant queries fast and scoped.",
+      "one-to-many-fk": "Optimal. tenant→users, tenant→projects, project→tasks.",
+      "index-fk": "Acceptable. Standard FK indexing.",
+      "audit-columns": "Acceptable. Expected on entities.",
+      "denormalize": "Poor (premature). Don't duplicate tenant data for speed before measuring.",
+      "polymorphic-assoc": "Poor. Adds risk and breaks FK integrity — dangerous in a multi-tenant isolation context.",
+      "self-referencing-fk": "Poor. No hierarchy required by the prompt."
+    },
+    "solution": {
+      "tables": [
+        { "name": "tenants", "columns": ["id PK", "name NOT NULL", "created_at"] },
+        { "name": "users", "columns": ["id PK", "tenant_id FK→tenants.id NOT NULL", "email NOT NULL", "UNIQUE (tenant_id, email)"] },
+        { "name": "projects", "columns": ["id PK", "tenant_id FK→tenants.id NOT NULL", "name NOT NULL", "created_at"] },
+        { "name": "tasks", "columns": ["id PK", "tenant_id FK→tenants.id NOT NULL", "project_id FK→projects.id NOT NULL", "title", "status"] }
+      ],
+      "notes": "tenant_id on every table; UNIQUE(tenant_id, email) so email is unique per tenant, not globally. Lead composite indexes with tenant_id. Belt-and-suspenders: row-level security to prevent cross-tenant leaks."
+    }
+  },
+  {
+    "id": "blog-tags",
+    "title": "Schema: Blog posts and tags",
+    "prompt": "Design tables for a blog: authors write posts, and each post can have many tags while each tag applies to many posts.",
+    "tags": ["Many-to-many", "Junction table", "Lookup"],
+    "difficulty": "Starter",
+    "sources": [
+      { "label": "DataCamp — Many-to-many relationships: a guide to database design", "url": "https://www.datacamp.com/blog/many-to-many-relationship" },
+      { "label": "GeeksforGeeks — Database design & modeling interview questions", "url": "https://www.geeksforgeeks.org/gate/database-design-modeling-interview-questions/" }
+    ],
+    "best": ["junction-table", "foreign-key", "one-to-many-fk", "index-fk"],
+    "acceptable": ["composite-key", "unique-constraint", "lookup-table", "surrogate-key"],
+    "keyIdea": "Posts↔tags is many-to-many → a post_tags junction. Authors→posts is one-to-many. Tags is essentially a lookup table referenced by the junction.",
+    "notes": {
+      "junction-table": "Optimal. post_tags links posts and tags.",
+      "foreign-key": "Optimal. post_tags FKs to posts and tags; posts FK to authors.",
+      "one-to-many-fk": "Optimal. author→posts.",
+      "index-fk": "Optimal. Index both junction FKs to query posts-by-tag and tags-of-post.",
+      "composite-key": "Acceptable. (post_id, tag_id) PK prevents duplicate tagging.",
+      "lookup-table": "Acceptable. tags behaves as a reference table of allowed labels.",
+      "unique-constraint": "Acceptable. UNIQUE(name) on tags; or the composite PK on the junction.",
+      "polymorphic-assoc": "Poor. Tags apply to posts only here; a plain junction is right.",
+      "money-decimal": "Poor. No money involved."
+    },
+    "solution": {
+      "tables": [
+        { "name": "authors", "columns": ["id PK", "name NOT NULL", "email UNIQUE"] },
+        { "name": "posts", "columns": ["id PK", "author_id FK→authors.id NOT NULL", "title NOT NULL", "body", "published_at"] },
+        { "name": "tags", "columns": ["id PK", "name UNIQUE NOT NULL"] },
+        { "name": "post_tags", "columns": ["post_id FK→posts.id", "tag_id FK→tags.id", "PK (post_id, tag_id)"] }
+      ],
+      "notes": "Classic many-to-many. Composite PK on post_tags stops a post being tagged with the same tag twice. UNIQUE(name) keeps the tag vocabulary clean."
+    }
+  },
+  {
+    "id": "rbac-permissions",
+    "title": "Schema: Roles & permissions (RBAC)",
+    "prompt": "Design role-based access control: users have roles, roles grant permissions. A user can have several roles and a role can include many permissions.",
+    "tags": ["Two junctions", "Many-to-many", "Lookup"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "Red-Gate — Top database schema design interview questions", "url": "https://www.red-gate.com/blog/database-schema-design-interview-questions/" },
+      { "label": "InterviewQuery — Database design interview questions", "url": "https://www.interviewquery.com/p/database-design-interview-questions" }
+    ],
+    "best": ["junction-table", "foreign-key", "composite-key", "index-fk"],
+    "acceptable": ["lookup-table", "unique-constraint", "surrogate-key", "not-null"],
+    "keyIdea": "Two many-to-many relationships → two junction tables: user_roles and role_permissions. Roles and permissions are lookup tables; resolve a user's permissions by joining through roles.",
+    "notes": {
+      "junction-table": "Optimal. You need two: user_roles and role_permissions.",
+      "foreign-key": "Optimal. Every link is FK-enforced.",
+      "composite-key": "Optimal. (user_id, role_id) and (role_id, permission_id) as PKs prevent duplicates.",
+      "index-fk": "Optimal. Index the junction FKs for permission-resolution joins.",
+      "lookup-table": "Acceptable. roles and permissions are reference tables.",
+      "unique-constraint": "Acceptable. UNIQUE on role name / permission key.",
+      "polymorphic-assoc": "Poor. Standard junctions with real FKs are correct.",
+      "denormalize": "Trap. Don't precompute a user_permissions cache up front — derive via joins first."
+    },
+    "solution": {
+      "tables": [
+        { "name": "users", "columns": ["id PK", "email UNIQUE NOT NULL"] },
+        { "name": "roles", "columns": ["id PK", "name UNIQUE NOT NULL"] },
+        { "name": "permissions", "columns": ["id PK", "key UNIQUE NOT NULL"] },
+        { "name": "user_roles", "columns": ["user_id FK→users.id", "role_id FK→roles.id", "PK (user_id, role_id)"] },
+        { "name": "role_permissions", "columns": ["role_id FK→roles.id", "permission_id FK→permissions.id", "PK (role_id, permission_id)"] }
+      ],
+      "notes": "A user's effective permissions = users → user_roles → role_permissions → permissions. Two clean junctions; no permission is stored on the user directly."
+    }
+  },
+  {
+    "id": "subscriptions-billing",
+    "title": "Schema: Subscriptions & invoices",
+    "prompt": "Design billing: customers subscribe to a plan; each subscription generates invoices over time; track subscription status changes and store money correctly.",
+    "tags": ["Money", "History", "Lifecycle"],
+    "difficulty": "Advanced",
+    "sources": [
+      { "label": "Hello Interview — Data modeling for system design interviews", "url": "https://www.hellointerview.com/learn/system-design/core-concepts/data-modeling" },
+      { "label": "Red-Gate — Top database schema design interview questions", "url": "https://www.red-gate.com/blog/database-schema-design-interview-questions/" }
+    ],
+    "best": ["one-to-many-fk", "money-decimal", "status-history", "foreign-key"],
+    "acceptable": ["lookup-table", "timestamptz", "index-fk", "check-constraint"],
+    "keyIdea": "customer→subscription→invoices are one-to-many; plans are a lookup; money is DECIMAL/cents; capture subscription state changes in a history table rather than only overwriting a status column.",
+    "notes": {
+      "one-to-many-fk": "Optimal. customer→subscriptions, subscription→invoices.",
+      "money-decimal": "Optimal. Invoice amounts must be exact — DECIMAL or integer minor units.",
+      "status-history": "Optimal. Subscription lifecycle (trialing→active→past_due→canceled) is worth keeping as history.",
+      "foreign-key": "Optimal. All relationships FK-enforced.",
+      "lookup-table": "Acceptable. plans is a reference table with price/interval.",
+      "timestamptz": "Acceptable. Period start/end and billing dates should be UTC timestamps.",
+      "check-constraint": "Acceptable. amount >= 0; period_end > period_start.",
+      "polymorphic-assoc": "Poor. Not needed.",
+      "denormalize": "Trap. A cached 'current_status' is fine alongside history, but don't denormalize totals prematurely."
+    },
+    "solution": {
+      "tables": [
+        { "name": "customers", "columns": ["id PK", "email UNIQUE NOT NULL"] },
+        { "name": "plans", "columns": ["id PK", "name", "price DECIMAL(10,2) NOT NULL", "interval"] },
+        { "name": "subscriptions", "columns": ["id PK", "customer_id FK→customers.id NOT NULL", "plan_id FK→plans.id NOT NULL", "current_status", "started_at", "current_period_end"] },
+        { "name": "subscription_events", "columns": ["id PK", "subscription_id FK→subscriptions.id NOT NULL", "status", "occurred_at timestamptz NOT NULL"] },
+        { "name": "invoices", "columns": ["id PK", "subscription_id FK→subscriptions.id NOT NULL", "amount DECIMAL(10,2) NOT NULL", "status", "issued_at timestamptz"] }
+      ],
+      "notes": "subscription_events keeps the full state timeline; subscriptions.current_status is a cached convenience. Invoices are one-to-many under a subscription. Money is DECIMAL throughout."
+    }
+  },
+  {
+    "id": "category-hierarchy",
+    "title": "Schema: Category hierarchy",
+    "prompt": "Design product categories that nest arbitrarily deep (Electronics → Phones → Smartphones), where products belong to a category.",
+    "tags": ["Hierarchy", "Self-reference"],
+    "difficulty": "Core",
+    "sources": [
+      { "label": "GeeksforGeeks — Database design & modeling interview questions", "url": "https://www.geeksforgeeks.org/gate/database-design-modeling-interview-questions/" },
+      { "label": "InterviewQuery — Database design interview questions", "url": "https://www.interviewquery.com/p/database-design-interview-questions" }
+    ],
+    "best": ["self-referencing-fk", "foreign-key", "one-to-many-fk", "index-fk"],
+    "acceptable": ["surrogate-key", "not-null", "check-constraint", "lookup-table"],
+    "keyIdea": "Model the tree with a self-referencing parent_id on categories (adjacency list). Products reference a category via FK. Mention closure table / path enumeration if deep subtree queries are needed.",
+    "notes": {
+      "self-referencing-fk": "Optimal. categories.parent_id → categories.id models arbitrary nesting.",
+      "foreign-key": "Optimal. products.category_id and the self-FK.",
+      "one-to-many-fk": "Optimal. A category has many products and many child categories.",
+      "index-fk": "Optimal. Index parent_id and products.category_id.",
+      "check-constraint": "Acceptable. Optionally guard against a category being its own parent.",
+      "lookup-table": "Acceptable framing — categories acts as a reference tree.",
+      "junction-table": "Poor here. A product in exactly one category is one-to-many, not many-to-many (only add a junction if products can be in multiple categories).",
+      "polymorphic-assoc": "Poor. No polymorphism needed."
+    },
+    "solution": {
+      "tables": [
+        { "name": "categories", "columns": ["id PK", "name NOT NULL", "parent_id FK→categories.id NULL", "CHECK (parent_id <> id)"] },
+        { "name": "products", "columns": ["id PK", "name NOT NULL", "category_id FK→categories.id NOT NULL", "price DECIMAL(10,2)"] }
+      ],
+      "notes": "Adjacency list (parent_id) is the simplest tree. Root categories have parent_id NULL. For frequent deep-subtree reads, mention a closure table or materialized path as an upgrade — but don't build it prematurely."
+    }
+  }
+]

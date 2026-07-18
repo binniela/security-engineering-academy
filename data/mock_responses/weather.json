@@ -1,0 +1,5 @@
+{
+  "name": "San Francisco",
+  "main": {"temp": 64.2, "humidity": 72},
+  "weather": [{"main": "Clouds", "description": "scattered clouds"}]
+}

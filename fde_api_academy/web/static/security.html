@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="An intermediate, mastery-based security engineering interview course." />
+    <title>Security Engineering Academy</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="academy-security" data-academy="security">
+    <main class="app security-standalone-app">
+      <header class="topbar security-standalone-topbar">
+        <div>
+          <p class="eyebrow">Mastery-based interview course</p>
+          <h2>Security Engineering Academy</h2>
+        </div>
+        <a class="button" href="https://github.com/gracenolan/Notes.git" target="_blank" rel="noreferrer">Source notes</a>
+      </header>
+
+      <section class="security-view" id="securityAcademyView">
+        <div class="security-shell">
+          <aside class="security-nav">
+            <div>
+              <p class="eyebrow">Security track</p>
+              <h3>Mastery Map</h3>
+            </div>
+            <div class="security-progress" id="securityProgress"></div>
+            <div class="security-readiness" id="securityReadiness"></div>
+            <label class="security-search">
+              <span>Find a module</span>
+              <input id="securitySearch" type="search" placeholder="Search topics" autocomplete="off" />
+            </label>
+            <nav id="securityModuleNav"></nav>
+          </aside>
+
+          <article class="security-main">
+            <div class="security-hero">
+              <div>
+                <p class="eyebrow">Based on gracenolan/Notes</p>
+                <h3 id="securityTitle">Loading security course...</h3>
+                <p id="securityIntro"></p>
+              </div>
+              <a class="button" href="https://github.com/gracenolan/Notes.git" target="_blank" rel="noreferrer">Source</a>
+            </div>
+            <div class="security-module-status" id="securityModuleStatus"></div>
+            <div class="security-actions">
+              <button class="button" id="securityPrevious" type="button">Previous</button>
+              <button class="button primary" id="securityNext" type="button">Next Module</button>
+              <button class="button security-reset" id="securityReset" type="button">Reset Progress</button>
+            </div>
+            <div class="security-panels">
+              <section class="security-panel security-learn-panel">
+                <span>Learn</span>
+                <div id="securityObjectives"></div>
+                <div id="securityLearn"></div>
+              </section>
+              <section class="security-panel security-lab-panel">
+                <span>Hands-on Lab</span>
+                <div id="securityLab"></div>
+              </section>
+              <section class="security-panel security-interview-panel">
+                <span>Interview Drill</span>
+                <div id="securityInterview"></div>
+              </section>
+              <section class="security-panel security-test-panel">
+                <span>Knowledge Check</span>
+                <div id="securityAssessment"></div>
+              </section>
+              <details class="security-panel security-source-panel">
+                <summary>Grace Nolan source notes</summary>
+                <div id="securitySource"></div>
+              </details>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <script src="/security.js?v=3"></script>
+  </body>
+</html>

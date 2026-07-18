@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fde-api-academy"
+version = "0.1.0"
+description = "A local interactive academy for FDE-style API, parsing, debugging, and automation practice."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "python-dotenv>=1.0.0",
+  "requests>=2.31.0",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+fde = "fde_api_academy.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fde_api_academy*"]
+exclude = ["data*", "docs*", "exercises*", "tests*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

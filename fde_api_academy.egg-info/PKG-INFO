@@ -1,0 +1,127 @@
+Metadata-Version: 2.4
+Name: fde-api-academy
+Version: 0.1.0
+Summary: A local interactive academy for FDE-style API, parsing, debugging, and automation practice.
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: rich>=13.7.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+
+# FDE API Academy
+
+An interactive local Python learning platform for Founding Engineer / Forward Deployed Engineer interview prep.
+
+It focuses on practical startup engineering:
+
+- REST APIs and HTTP
+- JSON and nested data parsing
+- Authentication and `.env` secrets
+- Debugging broken integrations
+- Automation workflows
+- SQLite storage and reporting
+- Realistic FDE interview simulations
+
+## Quick Start
+
+```bash
+cd /Users/vincentla/Documents/Playground/fde-api-academy
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env
+fde list
+```
+
+## Core Commands
+
+```bash
+fde list
+fde show m01-python-reporting
+fde validate m01-python-reporting
+fde validate m05-github-profile --challenge --minutes 45
+fde mentor m05-github-profile
+fde dashboard
+fde paths
+```
+
+## Web UI
+
+Run the local browser interface:
+
+```bash
+python -m fde_api_academy.web.server
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8765
+```
+
+## How Lessons Work
+
+Each lesson contains an explanation, visual example, example code, guided exercise, challenge exercise, validation test, reflection questions, and mentor hints.
+
+Lessons unlock sequentially. Progress is saved to:
+
+```text
+data/progress/progress.json
+```
+
+## Mentor Mode
+
+When you are stuck, run:
+
+```bash
+fde mentor <lesson-id>
+```
+
+The mentor escalates gradually:
+
+1. Small nudge
+2. More guidance
+3. Detailed guidance
+4. Full solution explanation
+
+## Student Files
+
+Implement exercises in:
+
+```text
+fde_api_academy/student/
+```
+
+The starter files intentionally begin incomplete. Platform tests still pass before you solve them.
+
+## Mock APIs
+
+Mock responses live in:
+
+```text
+data/mock_responses/
+```
+
+The academy uses mocks by default through:
+
+```text
+FDE_ACADEMY_USE_MOCKS=true
+```
+
+## Capstone
+
+The final capstone is the API Operations Dashboard:
+
+```bash
+python -m fde_api_academy.projects.api_operations_dashboard
+```
+
+See [docs/capstone.md](docs/capstone.md).
+
+## Run Tests
+
+```bash
+pytest
+```

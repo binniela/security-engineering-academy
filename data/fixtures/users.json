@@ -1,0 +1,7 @@
+{
+  "users": [
+    {"profile": {"name": "Ada Lovelace"}, "contact": {"email": "ada@example.com", "phone": "555-0100"}, "team": "engineering"},
+    {"profile": {"name": "Grace Hopper"}, "contact": {"email": "grace@example.com"}, "team": "platform"},
+    {"profile": {"name": "Katherine Johnson"}, "contact": {"email": "kj@example.com", "phone": "555-0102"}, "team": "analytics"}
+  ]
+}

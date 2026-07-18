@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+security-dist/
+data/progress/*.db
+data/progress/progress.json
+.DS_Store
