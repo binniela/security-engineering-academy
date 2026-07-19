@@ -1,7 +1,8 @@
 (() => {
   const COURSE_URL = "/data/security_course.json";
   const NOTES_URL = "/data/security_notes.md";
-  const PROGRESS_KEY = "security-academy-progress-v2";
+  const INTERVIEW_BANK_URL = "/data/security_interview_bank.json";
+  const PROGRESS_KEY = "security-academy-progress-v3";
   const standalone = document.body.dataset.academy === "security";
 
   const els = {
@@ -14,7 +15,6 @@
     securityModuleStatus: document.querySelector("#securityModuleStatus"),
     securityObjectives: document.querySelector("#securityObjectives"),
     securityLearn: document.querySelector("#securityLearn"),
-    securityLab: document.querySelector("#securityLab"),
     securityInterview: document.querySelector("#securityInterview"),
     securityAssessment: document.querySelector("#securityAssessment"),
     securitySource: document.querySelector("#securitySource"),
@@ -106,13 +106,13 @@
   }
 
   function emptyProgress() {
-    return { version: 2, selected: "", modules: {} };
+    return { version: 3, selected: "", modules: {} };
   }
 
   function loadProgress() {
     try {
       const parsed = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-      if (!parsed || parsed.version !== 2 || typeof parsed.modules !== "object") return emptyProgress();
+      if (!parsed || parsed.version !== 3 || typeof parsed.modules !== "object") return emptyProgress();
       return parsed;
     } catch {
       return emptyProgress();
@@ -129,20 +129,17 @@
       attempts: 0,
       quizScore: 0,
       quizPassed: false,
-      labComplete: false,
-      notes: "",
     };
   }
 
   function isMastered(moduleId, progress = loadProgress()) {
-    const record = moduleProgress(moduleId, progress);
-    return record.quizPassed && record.labComplete;
+    return moduleProgress(moduleId, progress).quizPassed;
   }
 
   function statusFor(moduleId, progress = loadProgress()) {
     const record = moduleProgress(moduleId, progress);
     if (isMastered(moduleId, progress)) return "mastered";
-    if (record.attempts || record.labComplete || record.notes) return "in-progress";
+    if (record.attempts) return "in-progress";
     return "not-started";
   }
 
@@ -208,11 +205,10 @@
   }
 
   function renderStatus(module, record) {
-    const mastered = record.quizPassed && record.labComplete;
+    const mastered = record.quizPassed;
     els.securityModuleStatus.innerHTML = `
-      <span class="security-status-chip ${mastered ? "complete" : ""}">${mastered ? "Mastered" : "Mastery requires both items"}</span>
-      <span class="security-status-chip ${record.quizPassed ? "complete" : ""}">${record.quizPassed ? "✓" : "1"} Knowledge ${record.quizPassed ? `${record.quizScore}%` : "pending"}</span>
-      <span class="security-status-chip ${record.labComplete ? "complete" : ""}">${record.labComplete ? "✓" : "2"} Lab ${record.labComplete ? "completed" : "pending"}</span>
+      <span class="security-status-chip ${mastered ? "complete" : ""}">${mastered ? "Mastered" : "Knowledge check pending"}</span>
+      <span class="security-status-chip ${record.quizPassed ? "complete" : ""}">${record.quizPassed ? "✓" : "1"} Score ${record.quizPassed ? `${record.quizScore}%` : "pending"}</span>
       <span class="security-status-chip">${record.attempts} quiz attempt${record.attempts === 1 ? "" : "s"}</span>
     `;
   }
@@ -227,6 +223,17 @@
     `;
   }
 
+  function sourceLinks(sourceIds) {
+    return (sourceIds || [])
+      .map((sourceId) => state.course.sources[sourceId])
+      .filter((source) => source && /^https:\/\//.test(source.url))
+      .map(
+        (source) =>
+          `<a href="${esc(source.url)}" target="_blank" rel="noreferrer">${esc(source.label)} <small>${esc(source.kind)}</small></a>`,
+      )
+      .join("");
+  }
+
   function renderLearn(module) {
     els.securityLearn.innerHTML = `
       <div class="security-course-note">
@@ -236,24 +243,22 @@
       <div class="security-concepts">
         ${module.concepts.map((concept) => `<section><h4>${esc(concept.title)}</h4><p>${esc(concept.body)}</p></section>`).join("")}
       </div>
+      <div class="security-deep-dive">
+        <h4>Interview depth</h4>
+        ${module.deep_dive
+          .map(
+            (section) => `
+              <section>
+                <h5>${esc(section.title)}</h5>
+                <p>${esc(section.body)}</p>
+                <div class="security-source-links compact">${sourceLinks(section.sources)}</div>
+              </section>
+            `,
+          )
+          .join("")}
+      </div>
       <div class="security-example"><span>Applied example</span><p>${esc(module.example)}</p></div>
       <div class="security-pitfalls"><h4>Common weak answers</h4><ul>${module.pitfalls.map((item) => `<li>${esc(item)}</li>`).join("")}</ul></div>
-    `;
-  }
-
-  function renderLab(module, record) {
-    els.securityLab.innerHTML = `
-      <h4>${esc(module.lab.title)}</h4>
-      <p class="security-scenario">${esc(module.lab.scenario)}</p>
-      <h5>Required evidence</h5>
-      <ol>${module.lab.deliverables.map((item) => `<li>${esc(item)}</li>`).join("")}</ol>
-      <label class="security-notes-label" for="securityLabNotes">Working notes or artifact link</label>
-      <textarea id="securityLabNotes" rows="6" placeholder="Capture assumptions, findings, pseudocode, or a local artifact path...">${esc(record.notes)}</textarea>
-      <label class="security-lab-check">
-        <input id="securityLabComplete" type="checkbox" ${record.labComplete ? "checked" : ""} />
-        <span>I completed every deliverable and can defend the tradeoffs aloud.</span>
-      </label>
-      <p class="security-integrity-note">This is an honor check. Your notes remain in this browser.</p>
     `;
   }
 
@@ -273,10 +278,10 @@
   function renderAssessment(module, record, result = null) {
     const answers = result?.answers || record.answers || [];
     const resultHtml = result
-      ? `<div class="security-quiz-result ${result.passed ? "pass" : "retry"}"><strong>${result.passed ? "Passed" : "Review and retry"} · ${result.score}%</strong><span>${result.correct}/${module.quiz.length} correct. Both answers are required for mastery.</span></div>`
+      ? `<div class="security-quiz-result ${result.passed ? "pass" : "retry"}"><strong>${result.passed ? "Passed" : "Review and retry"} · ${result.score}%</strong><span>${result.correct}/${module.quiz.length} correct. Pass at ${state.course.pass_score}% or higher.</span></div>`
       : record.quizPassed
         ? `<div class="security-quiz-result pass"><strong>Passed · ${record.quizScore}%</strong><span>You can retake this check at any time.</span></div>`
-        : '<p class="security-test-intro">Answer every question correctly. Feedback explains the reasoning, not just the key.</p>';
+        : `<p class="security-test-intro">Answer ${module.quiz.length} interview-focused questions. Pass at ${state.course.pass_score}% or higher. These are original practice questions informed by public sources; candidate reports are anecdotal, not official company question banks.</p>`;
 
     els.securityAssessment.innerHTML = `
       ${resultHtml}
@@ -300,6 +305,7 @@
                   )
                   .join("")}
                 ${feedback}
+                <div class="security-question-sources"><span>Question basis</span><div class="security-source-links">${sourceLinks(question.sources)}</div></div>
               </fieldset>
             `;
           })
@@ -333,7 +339,6 @@
     renderStatus(module, record);
     renderObjectives(module);
     renderLearn(module);
-    renderLab(module, record);
     renderInterview(module);
     renderAssessment(module, record);
     renderSource(module);
@@ -347,22 +352,41 @@
 
   async function ensureLoaded() {
     if (state.loaded) return;
-    const [courseResponse, notesResponse] = await Promise.all([fetch(COURSE_URL), fetch(NOTES_URL)]);
+    const [courseResponse, notesResponse, interviewBankResponse] = await Promise.all([
+      fetch(COURSE_URL),
+      fetch(NOTES_URL),
+      fetch(INTERVIEW_BANK_URL),
+    ]);
     if (!courseResponse.ok) throw new Error(`Could not load ${COURSE_URL}`);
     if (!notesResponse.ok) throw new Error(`Could not load ${NOTES_URL}`);
+    if (!interviewBankResponse.ok) throw new Error(`Could not load ${INTERVIEW_BANK_URL}`);
     const course = await courseResponse.json();
     const notes = await notesResponse.text();
+    const interviewBank = await interviewBankResponse.json();
     const sourceTitles = course.modules.map((module) => module.source_title).filter(Boolean);
     const sourceNotes = parseNotes(notes, sourceTitles);
 
     if (course.modules.length < 20) throw new Error("Security curriculum is incomplete.");
-    course.modules.forEach((module) => {
+    course.sources = interviewBank.sources;
+    course.modules = course.modules.map((module) => {
+      const moduleBank = interviewBank.modules[module.id];
+      if (!moduleBank) throw new Error(`Missing interview bank: ${module.title}`);
       if (module.source_title && !sourceNotes[module.source_title]) {
         throw new Error(`Missing source section: ${module.source_title}`);
       }
-      if (!Array.isArray(module.quiz) || module.quiz.length < 2) {
+      const quiz = [
+        ...module.quiz.map((question) => ({ ...question, sources: question.sources || moduleBank.default_sources })),
+        ...moduleBank.questions,
+      ];
+      if (quiz.length < 5) {
         throw new Error(`Missing assessment questions: ${module.title}`);
       }
+      [...quiz, ...moduleBank.deep_dive].forEach((item) => {
+        if (!item.sources?.length || item.sources.some((sourceId) => !course.sources[sourceId])) {
+          throw new Error(`Missing source attribution: ${module.title}`);
+        }
+      });
+      return { ...module, quiz, deep_dive: moduleBank.deep_dive };
     });
 
     state.course = course;
@@ -398,19 +422,6 @@
   els.securityPrevious.addEventListener("click", () => selectModule(state.selected - 1));
   els.securityNext.addEventListener("click", () => selectModule(state.selected + 1));
 
-  els.securityLab.addEventListener("input", (event) => {
-    const module = state.modules[state.selected];
-    if (!module) return;
-    if (event.target.id === "securityLabNotes") updateRecord(module.id, { notes: event.target.value });
-  });
-
-  els.securityLab.addEventListener("change", (event) => {
-    if (event.target.id !== "securityLabComplete") return;
-    const module = state.modules[state.selected];
-    updateRecord(module.id, { labComplete: event.target.checked });
-    renderModule();
-  });
-
   els.securityAssessment.addEventListener("submit", (event) => {
     if (event.target.id !== "securityQuizForm") return;
     event.preventDefault();
@@ -444,7 +455,7 @@
   });
 
   els.securityReset.addEventListener("click", () => {
-    if (!window.confirm("Reset all Security Academy scores, lab checks, and working notes?")) return;
+    if (!window.confirm("Reset all Security Academy scores and attempts?")) return;
     saveProgress(emptyProgress());
     state.selected = 0;
     renderModule();

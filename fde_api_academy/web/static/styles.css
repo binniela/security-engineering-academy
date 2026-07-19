@@ -1919,16 +1919,14 @@ body.academy-landing #securityAcademyView {
   gap: 5px;
 }
 
-.security-search span,
-.security-notes-label {
+.security-search span {
   color: #475569;
   font-size: 10.5px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
-.security-search input,
-.security-lab-panel textarea {
+.security-search input {
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -1942,8 +1940,7 @@ body.academy-landing #securityAcademyView {
   padding: 8px 10px;
 }
 
-.security-search input:focus,
-.security-lab-panel textarea:focus {
+.security-search input:focus {
   border-color: #0f766e;
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
   outline: none;
@@ -2184,7 +2181,6 @@ body.academy-landing #securityAcademyView {
 
 .security-objectives ul,
 .security-pitfalls ul,
-.security-lab-panel ol,
 .security-interview-panel ul {
   display: grid;
   gap: 6px;
@@ -2215,6 +2211,37 @@ body.academy-landing #securityAcademyView {
 }
 
 .security-concepts p {
+  margin: 0;
+}
+
+.security-deep-dive {
+  margin: 18px 0;
+  border-block: 1px solid #cbd5e1;
+}
+
+.security-deep-dive > h4 {
+  margin: 0;
+  padding: 12px 0 4px;
+  color: #0f766e;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.security-deep-dive section {
+  padding: 10px 0 14px;
+}
+
+.security-deep-dive section + section {
+  border-top: 1px solid #e2e8f0;
+}
+
+.security-deep-dive h5 {
+  margin: 0 0 5px;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.security-deep-dive p {
   margin: 0;
 }
 
@@ -2255,43 +2282,6 @@ body.academy-landing #securityAcademyView {
   font-weight: 700;
 }
 
-.security-lab-panel textarea {
-  min-height: 130px;
-  margin-top: 6px;
-  padding: 10px;
-  resize: vertical;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.security-notes-label {
-  display: block;
-  margin-top: 18px;
-}
-
-.security-lab-check {
-  display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  gap: 9px;
-  align-items: start;
-  margin-top: 12px;
-  padding: 11px;
-  border: 1px solid #99f6e4;
-  border-radius: 6px;
-  background: #f0fdfa;
-  color: #115e59;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.security-lab-check input {
-  width: 16px;
-  height: 16px;
-  accent-color: #0f766e;
-}
-
-.security-integrity-note,
 .security-source-context,
 .security-original-note {
   color: #64748b !important;
@@ -2382,6 +2372,54 @@ body.academy-landing #securityAcademyView {
 
 .security-question-feedback p {
   margin: 3px 0 0;
+}
+
+.security-question-sources {
+  margin-top: 5px;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.security-question-sources > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.security-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.security-source-links a {
+  padding: 4px 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #f8fafc;
+  color: #0f766e;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.security-source-links a:hover {
+  border-color: #0f766e;
+  background: #f0fdfa;
+}
+
+.security-source-links small {
+  display: block;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.security-source-links.compact {
+  margin-top: 7px;
 }
 
 .security-quiz-result {
@@ -2514,6 +2552,11 @@ body.academy-landing #securityAcademyView {
 
   .security-module-status {
     padding-inline: 14px;
+  }
+
+  .security-nav {
+    max-height: 62vh;
+    overflow: auto;
   }
 
   .security-panels {

@@ -16,7 +16,7 @@ for (const asset of ["styles.css", "security.js"]) {
   await cp(join(staticRoot, asset), join(outputRoot, asset));
 }
 
-for (const asset of ["security_course.json", "security_notes.md"]) {
+for (const asset of ["security_course.json", "security_interview_bank.json", "security_notes.md"]) {
   await cp(join(staticRoot, "data", asset), join(outputRoot, "data", asset));
 }
 

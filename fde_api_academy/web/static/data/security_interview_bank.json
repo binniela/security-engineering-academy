@@ -1,0 +1,306 @@
+{
+  "version": 1,
+  "methodology": "Original academy questions derived from recurring public interview themes and authoritative security guidance. Candidate reports are anecdotal and do not represent official company question banks.",
+  "sources": {
+    "grace-notes": {"label": "Grace Nolan's Security Engineering Notes", "url": "https://github.com/gracenolan/Notes", "kind": "curriculum"},
+    "amazon-prep": {"label": "Amazon Security Engineer interview prep", "url": "https://www.amazon.jobs/content/en/how-we-hire/security-engineer-interview-prep", "kind": "official interview guidance"},
+    "google-role": {"label": "Google Detection & Response Security Engineer role", "url": "https://www.google.com/about/careers/applications/jobs/results/95024417385390790-security-engineer-detection-and-response-infrastructure-threats?hl=en_US", "kind": "official role expectations"},
+    "palantir-process": {"label": "Palantir engineering interview process", "url": "https://www.palantir.com/careers/getting-hired", "kind": "official interview guidance"},
+    "palantir-phone": {"label": "Palantir phone interview guidance", "url": "https://www.palantir.com/careers/getting-hired/the-phone-interview/", "kind": "official interview guidance"},
+    "palantir-appsec": {"label": "Palantir Application Security Engineer role", "url": "https://jobs.lever.co/palantir/205c3184-4272-41a9-a1e2-5352d4d00910", "kind": "official role expectations"},
+    "owasp-top10": {"label": "OWASP Top 10", "url": "https://owasp.org/Top10/", "kind": "technical standard"},
+    "owasp-api": {"label": "OWASP API Security Top 10", "url": "https://owasp.org/www-project-api-security/", "kind": "technical standard"},
+    "nist-ssdf": {"label": "NIST Secure Software Development Framework", "url": "https://csrc.nist.gov/pubs/sp/800/218/final", "kind": "technical standard"},
+    "nist-ir": {"label": "NIST SP 800-61 Rev. 3 Incident Response", "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final", "kind": "technical standard"},
+    "nist-auth": {"label": "NIST SP 800-63B Authentication", "url": "https://pages.nist.gov/800-63-4/sp800-63b.html", "kind": "technical standard"},
+    "mitre-attack": {"label": "MITRE ATT&CK Enterprise Matrix", "url": "https://attack.mitre.org/matrices/enterprise/", "kind": "technical knowledge base"},
+    "kubernetes-security": {"label": "Kubernetes Security Checklist", "url": "https://kubernetes.io/docs/concepts/security/security-checklist/", "kind": "official technical guidance"},
+    "google-glassdoor": {"label": "Google InfoSec interview reports", "url": "https://www.glassdoor.co.uk/Interview/Google-Information-Security-Engineer-Interview-Questions-EI_IE9079.0%2C6_KO7%2C36.htm", "kind": "anecdotal candidate reports"},
+    "google-glassdoor-cyber": {"label": "Google Cyber Security Engineer reports", "url": "https://www.glassdoor.com.au/Interview/Google-Cyber-Security-Engineer-Interview-Questions-EI_IE9079.0%2C6_KO7%2C30.htm", "kind": "anecdotal candidate reports"},
+    "apple-glassdoor": {"label": "Apple Cyber Security Engineer reports", "url": "https://www.glassdoor.co.uk/Interview/Apple-Cyber-Security-Engineer-Interview-Questions-EI_IE1138.0%2C5_KO6%2C29.htm", "kind": "anecdotal candidate reports"},
+    "amazon-glassdoor": {"label": "Amazon Application Security Engineer reports", "url": "https://www.glassdoor.ca/Interview/Amazon-Application-Security-Engineer-Interview-Questions-EI_IE6036.0%2C6_KO7%2C36.htm", "kind": "anecdotal candidate reports"},
+    "appsec-glassdoor": {"label": "Application Security Engineer interview reports", "url": "https://www.glassdoor.com/Interview/application-security-engineer-interview-questions-SRCH_KO0%2C29.htm", "kind": "anecdotal candidate reports"},
+    "google-reddit": {"label": "Google Security Engineer community discussion", "url": "https://www.reddit.com/r/cybersecurity/comments/10d99g2/security_engineer_interview_google/", "kind": "anecdotal community discussion"},
+    "apple-reddit": {"label": "Apple Security Engineer community discussion", "url": "https://www.reddit.com/r/CyberSecurityJobs/comments/1su3s5q/sr_security_engineer_at_apple_interview/", "kind": "anecdotal community discussion"},
+    "amazon-reddit": {"label": "Amazon AppSec community discussion", "url": "https://www.reddit.com/r/developersIndia/comments/1se1dyt/upcoming_security_engineerappsec_interview_with/", "kind": "anecdotal community discussion"},
+    "palantir-reddit": {"label": "Palantir interview community discussion", "url": "https://www.reddit.com/r/cscareerquestionsEU/comments/16do9ml", "kind": "anecdotal community discussion"}
+  },
+  "modules": {
+    "learning-system": {
+      "default_sources": ["grace-notes", "amazon-prep", "palantir-process"],
+      "deep_dive": [
+        {"title": "Train the interview behavior", "body": "A strong plan rehearses the observable loop: clarify an underspecified problem, build a model, choose a defensible action, test edge cases, and communicate tradeoffs. Rotate domains so coding fluency and security judgment improve together.", "sources": ["amazon-prep", "palantir-phone"]},
+        {"title": "Measure transfer, not familiarity", "body": "Use cold prompts and novel variants. A concept is durable when you can recover it without cues, apply it to a different architecture, and revise your answer when the interviewer changes a constraint.", "sources": ["palantir-process", "grace-notes"]}
+      ],
+      "questions": [
+        {"prompt": "An interviewer gives an ambiguous security-design prompt. What is the strongest first move?", "options": ["Assume a standard architecture and begin listing controls", "Ask about assets, actors, trust boundaries, scale, and acceptable failure", "Name every security product you know", "Wait silently for more detail"], "answer": 1, "explanation": "Clarifying the system and risk constraints creates a shared model and demonstrates structured judgment before solutioning.", "sources": ["palantir-phone", "amazon-prep"]},
+        {"prompt": "Which weekly plan best prepares for a mixed security-engineering loop?", "options": ["Complete networking before touching any other domain", "Alternate cold coding, design, investigation, and behavioral practice with review of observed gaps", "Read one security book from start to finish", "Memorize company-specific answers"], "answer": 1, "explanation": "Interleaved practice exposes weak transitions and rehearses the range of competencies evaluated in real loops.", "sources": ["amazon-prep", "palantir-process"]},
+        {"prompt": "After missing a mock question, which note is most useful?", "options": ["I need to study more", "The interviewer was unclear", "I omitted the redirect and DNS-rebinding cases in SSRF; retest tomorrow with a new URL-fetch design", "Review web security sometime"], "answer": 2, "explanation": "A precise failure mode plus a retrieval date and transfer prompt turns feedback into an actionable learning loop.", "sources": ["grace-notes", "palantir-phone"]}
+      ]
+    },
+    "networking": {
+      "default_sources": ["grace-notes", "google-glassdoor", "google-glassdoor-cyber"],
+      "deep_dive": [
+        {"title": "Reason across telemetry layers", "body": "For each hypothesis, separate what DNS, flow, packet, proxy, and endpoint data can prove. Encryption may hide payloads while preserving timing, destination, certificate, process, and byte-shape evidence.", "sources": ["google-role", "google-glassdoor"]},
+        {"title": "Design for evasions", "body": "Threshold detections fail against slow, distributed, or allowlisted activity. State the grouping key and time window, then test low-and-slow scans, NAT, IPv6, retries, and legitimate automation.", "sources": ["google-role", "google-reddit"]}
+      ],
+      "questions": [
+        {"prompt": "A traceroute using UDP receives ICMP Time Exceeded messages. Which mechanism makes that possible?", "options": ["Each router decrypts the UDP payload", "Increasing TTL values expire at successive routers, which return ICMP errors", "DNS returns every router in the path", "TCP sequence numbers encode hop count"], "answer": 1, "explanation": "Traceroute varies the IP TTL; each expiration reveals a hop when that router sends an ICMP Time Exceeded response.", "sources": ["google-glassdoor"]},
+        {"prompt": "You only have network flow logs for TLS traffic. Which claim is defensible?", "options": ["You can prove the HTTP request path", "You can inspect submitted passwords", "You can analyze endpoints, timing, connection state, and byte counts but not encrypted application content", "TLS removes all useful metadata"], "answer": 2, "explanation": "Flow records retain useful connection metadata, but they do not expose encrypted HTTP methods, paths, headers, or bodies.", "sources": ["google-glassdoor-cyber", "google-role"]},
+        {"prompt": "A scanner probes one port per destination every ten minutes. Which change most improves detection?", "options": ["Require more attempts in a one-minute window", "Aggregate by source over a longer window and track destination fan-out", "Alert only on completed TLS sessions", "Block all UDP"], "answer": 1, "explanation": "A longer stateful window and fan-out feature preserve the scan pattern that a short burst threshold misses.", "sources": ["google-role", "google-reddit"]}
+      ]
+    },
+    "operating-systems": {
+      "default_sources": ["grace-notes", "amazon-prep", "google-glassdoor-cyber"],
+      "deep_dive": [
+        {"title": "Model the privilege chain", "body": "Do not stop at the vulnerable process. Trace its effective identity, inherited handles, capabilities, writable paths, reachable services, credential material, and the policy boundary required for each next step.", "sources": ["amazon-prep", "grace-notes"]},
+        {"title": "Separate prevention from containment", "body": "ASLR, non-executable memory, sandboxing, service accounts, and mandatory policy constrain different stages. Explain which exploit primitive or post-compromise action each layer disrupts and what residual path remains.", "sources": ["amazon-prep", "google-glassdoor-cyber"]}
+      ],
+      "questions": [
+        {"prompt": "A compromised service can write a root-owned startup script because its group is writable. What is the key failure?", "options": ["Missing disk encryption", "A filesystem permission creates a privilege-escalation path across trust levels", "The service uses TCP", "ASLR is enabled"], "answer": 1, "explanation": "A lower-privilege process can modify code later executed with higher authority, turning write access into privilege escalation.", "sources": ["grace-notes", "amazon-prep"]},
+        {"prompt": "Why is ASLR not a complete defense against memory corruption?", "options": ["It encrypts only network memory", "Information leaks can reveal addresses, and the underlying unsafe memory operation still exists", "It prevents every code-reuse technique", "It applies only to databases"], "answer": 1, "explanation": "ASLR raises exploitation cost but can be weakened by disclosures and does not remove the vulnerable memory operation.", "sources": ["grace-notes", "google-glassdoor-cyber"]},
+        {"prompt": "Which artifact most directly supports a persistence hypothesis after a Linux web-service compromise?", "options": ["A new systemd unit executing from a web-writable directory", "A normal DNS cache entry", "A completed TLS handshake", "High free disk space"], "answer": 0, "explanation": "The unit establishes an automatic execution mechanism and its web-writable target connects persistence to the compromised service boundary.", "sources": ["grace-notes", "google-role"]}
+      ]
+    },
+    "web-security": {
+      "default_sources": ["owasp-top10", "apple-glassdoor", "appsec-glassdoor"],
+      "deep_dive": [
+        {"title": "Follow authority through the request", "body": "For SSRF, CSRF, injection, and access control, identify who chooses data, which component interprets it, and whose authority executes the result. Then place validation at the interpretation boundary.", "sources": ["owasp-top10", "palantir-appsec"]},
+        {"title": "Review the bypass surface", "body": "A credible fix considers alternate encodings, redirects, parser disagreement, cached DNS answers, browser context, and secondary sinks. Prefer safe APIs and architectural restrictions that remove an entire exploit class.", "sources": ["palantir-appsec", "amazon-glassdoor"]}
+      ],
+      "questions": [
+        {"prompt": "A URL fetcher validates the initial host but follows redirects without revalidation. What remains exploitable?", "options": ["Only reflected XSS", "A redirect can move the server request to an internal or otherwise forbidden destination", "TLS certificate pinning always blocks redirects", "Parameterized SQL prevents the request"], "answer": 1, "explanation": "Destination policy must be enforced after every redirect because each hop can cross a trust boundary.", "sources": ["owasp-top10", "amazon-glassdoor"]},
+        {"prompt": "Which XSS defense must vary with where untrusted data is inserted?", "options": ["Contextual output encoding", "A single global URL blacklist", "Database encryption", "TCP rate limiting"], "answer": 0, "explanation": "HTML text, attributes, URLs, JavaScript, and CSS have different parsing rules, so encoding must match the output context.", "sources": ["owasp-top10", "apple-glassdoor"]},
+        {"prompt": "Why is SameSite alone an incomplete CSRF strategy for a sensitive state change?", "options": ["It disables cookies permanently", "Browser behavior, legacy clients, subdomain relationships, and allowed navigation cases can leave gaps", "It validates object authorization", "It prevents server-side request forgery"], "answer": 1, "explanation": "SameSite is useful defense in depth, while explicit anti-CSRF tokens and origin checks cover important residual cases.", "sources": ["owasp-top10", "appsec-glassdoor"]}
+      ]
+    },
+    "api-security": {
+      "default_sources": ["owasp-api", "amazon-prep", "amazon-glassdoor"],
+      "deep_dive": [
+        {"title": "Build an authorization matrix", "body": "Map principals against tenants, objects, properties, actions, and workflow states. Write negative tests for horizontal, vertical, cross-tenant, and stale-state access instead of testing only unauthenticated calls.", "sources": ["owasp-api", "palantir-appsec"]},
+        {"title": "Treat scale as an attack input", "body": "Valid requests can become harmful through enumeration, expensive filters, batch exports, inventory reservation, or third-party fan-out. Bound cost per actor and per resource, then monitor rejected and near-limit behavior.", "sources": ["owasp-api", "amazon-prep"]}
+      ],
+      "questions": [
+        {"prompt": "An update endpoint accepts an `is_admin` property that the UI never sends. Which control is missing?", "options": ["Property-level authorization and an allowlist of writable fields", "DNSSEC", "Full-disk encryption", "A longer session cookie"], "answer": 0, "explanation": "The API must explicitly authorize writable properties; hiding a field in the client does not prevent mass assignment.", "sources": ["owasp-api", "amazon-glassdoor"]},
+        {"prompt": "A public search endpoint permits expensive wildcard queries. What is the strongest first design response?", "options": ["Rely only on a global requests-per-second limit", "Bound query complexity and result size, add actor/resource quotas, and instrument cost", "Hide the endpoint in JavaScript", "Disable audit logs"], "answer": 1, "explanation": "Resource abuse depends on work performed, so controls should bound computational and downstream cost as well as request count.", "sources": ["owasp-api", "amazon-prep"]},
+        {"prompt": "Which test most directly detects cross-tenant BOLA?", "options": ["Request your own record twice", "Use tenant A's valid token to request a known tenant B object identifier", "Send malformed JSON without authentication", "Measure TLS latency"], "answer": 1, "explanation": "The negative test preserves valid authentication while changing object ownership, isolating the object-authorization decision.", "sources": ["owasp-api", "palantir-appsec"]}
+      ]
+    },
+    "cryptography": {
+      "default_sources": ["grace-notes", "amazon-prep", "google-glassdoor-cyber"],
+      "deep_dive": [
+        {"title": "State the security property first", "body": "Before naming a primitive, define whether the system needs confidentiality, integrity, origin authentication, non-repudiation, password verification, or key agreement. Include the attacker and failure consequence.", "sources": ["amazon-prep", "grace-notes"]},
+        {"title": "Design the lifecycle around the primitive", "body": "Nonce uniqueness, entropy, key separation, access policy, rotation, revocation, backup, and algorithm agility decide whether a sound primitive remains secure in production.", "sources": ["amazon-prep", "grace-notes"]}
+      ],
+      "questions": [
+        {"prompt": "Two services need to verify messages, but only one should be able to create them. Which primitive best fits?", "options": ["A shared-key MAC", "A digital signature verified with a public key", "Base64 encoding", "An unsalted hash"], "answer": 1, "explanation": "A signature separates signing authority from verification; a shared MAC key lets every verifier forge messages.", "sources": ["grace-notes", "amazon-prep"]},
+        {"prompt": "What does forward secrecy limit after a server's long-term private key is stolen?", "options": ["The length of future passwords", "Decryption of previously recorded sessions that used ephemeral key agreement", "The number of DNS queries", "All future software vulnerabilities"], "answer": 1, "explanation": "Ephemeral session secrets are not recoverable solely from the later compromise of the long-term authentication key.", "sources": ["grace-notes", "google-glassdoor-cyber"]},
+        {"prompt": "Why should encryption and signing keys be separated?", "options": ["Keys cannot be stored together", "Different purposes need distinct access, rotation, compromise, and audit boundaries", "Signatures require no key", "Encryption keys never expire"], "answer": 1, "explanation": "Key separation limits cross-protocol misuse and lets each authority follow an appropriate lifecycle and permission model.", "sources": ["grace-notes", "amazon-prep"]}
+      ]
+    },
+    "authentication": {
+      "default_sources": ["nist-auth", "apple-glassdoor", "appsec-glassdoor"],
+      "deep_dive": [
+        {"title": "Threat-model every recovery path", "body": "Strong primary authentication is undermined by weak enrollment, help-desk reset, email recovery, device replacement, or session revocation. Apply equivalent assurance and record high-risk transitions.", "sources": ["nist-auth", "apple-reddit"]},
+        {"title": "Treat sessions as revocable capabilities", "body": "Define audience, scope, lifetime, rotation, binding, storage, replay detection, and revocation for access and refresh tokens. Password change alone may not invalidate an established attacker session.", "sources": ["nist-auth", "appsec-glassdoor"]}
+      ],
+      "questions": [
+        {"prompt": "A passkey assertion is captured on a phishing site. Why should it fail for the legitimate service?", "options": ["Passkeys contain no cryptography", "The assertion is bound to the phishing origin rather than the legitimate relying party", "The username is encrypted", "The browser blocks every copied message"], "answer": 1, "explanation": "WebAuthn signs context tied to the relying party, preventing a valid assertion for one origin from authenticating to another.", "sources": ["nist-auth", "apple-glassdoor"]},
+        {"prompt": "Which refresh-token control best limits replay after theft?", "options": ["Unlimited lifetime", "Rotation with reuse detection and revocation of the token family", "Base64 encoding", "Storing it in every application log"], "answer": 1, "explanation": "Single-use rotation exposes replay when an old token reappears and supports invalidating the related session family.", "sources": ["nist-auth", "appsec-glassdoor"]},
+        {"prompt": "A JWT has a valid signature but an unexpected audience. What should the service do?", "options": ["Accept it because the signature is enough", "Reject it because the token was not issued for this relying service", "Rewrite the audience claim", "Use the subject as an administrator"], "answer": 1, "explanation": "Signature validity does not establish intended use; issuer, audience, time, and other semantic claims must also match policy.", "sources": ["appsec-glassdoor", "amazon-prep"]}
+      ]
+    },
+    "identity-access": {
+      "default_sources": ["grace-notes", "google-role", "amazon-prep"],
+      "deep_dive": [
+        {"title": "Draw identity as a graph", "body": "Include people, groups, workload identities, pipeline roles, federation trust, impersonation rights, secret access, and resource policies. Effective privilege emerges from paths, not one role document.", "sources": ["grace-notes", "google-role"]},
+        {"title": "Control privilege transitions", "body": "Prefer short-lived credentials, just-in-time grants, approval for sensitive elevation, separation of duties, and alerts on unusual assumption paths. Recovery must include revoking sessions and repairing the enabling trust edge.", "sources": ["amazon-prep", "google-role"]}
+      ],
+      "questions": [
+        {"prompt": "A developer can edit a pipeline that assumes a production deployment role. What should the access review conclude?", "options": ["The developer has no production access because they cannot log in directly", "Pipeline modification is an indirect path to production authority and must be governed as such", "Only the source repository matters", "MFA removes the path"], "answer": 1, "explanation": "Effective authorization includes transitive control over code and identities that can exercise production permissions.", "sources": ["grace-notes", "palantir-appsec"]},
+        {"prompt": "Which design most reduces standing administrative privilege?", "options": ["Permanent shared administrator credentials", "Time-bound elevation with approval, scoped permissions, and complete audit events", "A longer password rotation period", "Adding users to more groups"], "answer": 1, "explanation": "Just-in-time elevation narrows duration and scope while preserving attribution and reviewability.", "sources": ["amazon-prep", "google-role"]},
+        {"prompt": "After a service-account key is exposed, which response is incomplete?", "options": ["Revoke the key, inspect use, rotate downstream secrets, and remove the exposure path", "Delete the public copy but leave the credential active", "Review permissions and accessed resources", "Replace the long-lived key with workload identity where possible"], "answer": 1, "explanation": "Removing a visible copy does not invalidate copies already obtained by an attacker or address resulting access.", "sources": ["google-role", "grace-notes"]}
+      ]
+    },
+    "cloud-containers": {
+      "default_sources": ["kubernetes-security", "google-role", "amazon-prep"],
+      "deep_dive": [
+        {"title": "Separate control and data planes", "body": "Cloud investigation requires management audit logs, identity events, workload telemetry, network evidence, and object access logs. State which plane each control protects and how an attacker might cross between them.", "sources": ["google-role", "kubernetes-security"]},
+        {"title": "Constrain the pod after code execution", "body": "Run as non-root, drop capabilities, use read-only filesystems, restrict service-account tokens and egress, pin immutable images, and enforce policy. Each choice reduces a distinct post-exploitation path.", "sources": ["kubernetes-security", "amazon-prep"]}
+      ],
+      "questions": [
+        {"prompt": "Why is a broadly privileged service-account token dangerous inside a public pod?", "options": ["It makes the image larger", "Code execution in the pod can become authenticated control-plane access", "It disables DNS", "It prevents container logging"], "answer": 1, "explanation": "The mounted credential bridges workload compromise to API authority, expanding impact beyond the container.", "sources": ["kubernetes-security", "amazon-prep"]},
+        {"prompt": "Which evidence best investigates an unexpected Kubernetes role binding?", "options": ["Only container stdout", "API-server audit events showing the actor, request, object, and result", "Browser history from an unrelated user", "The image file size"], "answer": 1, "explanation": "Control-plane audit events directly attribute the authorization change and support a timeline of related actions.", "sources": ["kubernetes-security", "google-role"]},
+        {"prompt": "What is the strongest reason to pin images by digest?", "options": ["Digests make containers run as root", "The deployed content is immutable even if a human-readable tag is moved", "It removes all image vulnerabilities", "It encrypts the registry"], "answer": 1, "explanation": "Digest pinning binds deployment to exact bytes and prevents mutable tags from silently selecting different content.", "sources": ["kubernetes-security", "nist-ssdf"]}
+      ]
+    },
+    "secure-development": {
+      "default_sources": ["nist-ssdf", "palantir-appsec", "amazon-prep"],
+      "deep_dive": [
+        {"title": "Protect every release decision", "body": "Map source, dependency resolution, build runner, test results, signing identity, artifact registry, deployment policy, and rollback. Provenance is useful only when a verifier enforces it before release.", "sources": ["nist-ssdf", "palantir-appsec"]},
+        {"title": "Remove vulnerability classes", "body": "Translate repeated findings into safe framework APIs, centralized authorization, language or compiler guarantees, hardened templates, and policy checks. Measure adoption and bypasses, not merely scanner volume.", "sources": ["palantir-appsec", "nist-ssdf"]}
+      ],
+      "questions": [
+        {"prompt": "What gives signed build provenance security value at deployment time?", "options": ["The signature file is stored beside the artifact", "Policy verifies signer, source, builder, and expected parameters before admitting the artifact", "The artifact has a readable tag", "A developer remembers the build"], "answer": 1, "explanation": "Provenance becomes a control when a trusted verifier checks its claims and rejects artifacts outside policy.", "sources": ["nist-ssdf", "palantir-appsec"]},
+        {"prompt": "A recurring SQL injection class appears across services. Which response scales best?", "options": ["Send each developer a reminder", "Provide a parameterized data-access API, migrate callers, and prevent unsafe query construction in CI", "Add more payloads to a blacklist", "Accept the findings as normal"], "answer": 1, "explanation": "A paved-road API plus enforcement changes the default and removes repeated opportunities for the same unsafe pattern.", "sources": ["palantir-appsec", "nist-ssdf"]},
+        {"prompt": "Why should untrusted pull requests not receive production secrets on shared CI runners?", "options": ["Tests run more slowly", "Attacker-controlled code can exfiltrate credentials and persist through contaminated runner state", "Git cannot store branches", "Signing prevents code execution"], "answer": 1, "explanation": "CI executes repository code, so credential exposure and runner reuse can turn a contribution path into supply-chain compromise.", "sources": ["nist-ssdf", "palantir-appsec"]}
+      ]
+    },
+    "vulnerability-management": {
+      "default_sources": ["nist-ssdf", "amazon-prep", "palantir-appsec"],
+      "deep_dive": [
+        {"title": "Prioritize reachable risk", "body": "Combine exploitability, exposure, asset value, privilege gained, active exploitation, compensating controls, and remediation cost. A severe score on an unreachable dormant image can rank below a moderate exposed control-plane flaw.", "sources": ["nist-ssdf", "amazon-prep"]},
+        {"title": "Close with evidence", "body": "A ticket is not remediation. Reproduce before the fix, verify the patched path and likely bypasses, confirm deployment coverage, monitor recurrence, and record the root cause or accepted exception owner.", "sources": ["palantir-appsec", "nist-ssdf"]}
+      ],
+      "questions": [
+        {"prompt": "Which finding should usually receive higher priority?", "options": ["CVSS 9.8 in an unused, unreachable image", "Actively exploited authorization bypass on an internet-facing customer API", "A missing header on an internal static page", "An expired certificate in a test fixture"], "answer": 1, "explanation": "Observed exploitation, reachability, customer data, and authorization impact outweigh a severity score detached from runtime context.", "sources": ["nist-ssdf", "amazon-prep"]},
+        {"prompt": "What is the strongest evidence that an authorization flaw is remediated?", "options": ["The ticket is closed", "The developer says the check was added", "Cross-tenant negative tests fail safely in every deployed path and telemetry shows no bypass", "The endpoint was renamed"], "answer": 2, "explanation": "Reproduction-based tests and deployment evidence validate behavior rather than administrative status.", "sources": ["palantir-appsec", "nist-ssdf"]},
+        {"prompt": "A risk exception is necessary. Which element is essential?", "options": ["No expiration so the team is not interrupted", "Named owner, scoped rationale, compensating controls, review date, and exit criteria", "Removing the finding from dashboards", "A verbal agreement only"], "answer": 1, "explanation": "A bounded, owned exception makes residual risk explicit and creates a path back to remediation.", "sources": ["nist-ssdf", "amazon-prep"]}
+      ]
+    },
+    "threat-modeling": {
+      "default_sources": ["amazon-prep", "palantir-appsec", "amazon-glassdoor"],
+      "deep_dive": [
+        {"title": "Start from system truth", "body": "Identify assets, actors, entry points, data flows, identities, dependencies, and trust boundaries before generating threats. Ask which authority changes at every boundary and what evidence records the transition.", "sources": ["amazon-prep", "palantir-appsec"]},
+        {"title": "Turn threats into decisions", "body": "A useful finding names preconditions, attack path, affected property, plausible impact, existing controls, recommended change, detection, and residual risk. Rank it so the team can act rather than admire a long threat list.", "sources": ["amazon-glassdoor", "palantir-appsec"]}
+      ],
+      "questions": [
+        {"prompt": "In a smart-home design, which is the clearest trust-boundary question?", "options": ["Which logo should the mobile app use?", "Can a cloud command for household A be authorized and delivered to a device in household B?", "How many colors does the device support?", "Which database is most popular?"], "answer": 1, "explanation": "The question follows identity and command authority across tenant, cloud, and device boundaries with concrete impact.", "sources": ["amazon-glassdoor", "amazon-prep"]},
+        {"prompt": "Which threat-model output is most actionable?", "options": ["Attackers may attack the system", "An unauthenticated webhook registration can target private IPs; validate each resolved hop and isolate dispatcher egress", "Use zero trust", "Add security everywhere"], "answer": 1, "explanation": "It identifies a specific path, precondition, boundary, and controls that engineering can implement and test.", "sources": ["palantir-appsec", "amazon-prep"]},
+        {"prompt": "When requirements change to permit third-party plugins, what should be revisited first?", "options": ["Only the color palette", "Data flows, execution authority, plugin identity, update path, and new trust boundaries", "The previous threat list without the architecture", "Nothing if TLS is enabled"], "answer": 1, "explanation": "Plugins introduce executable third-party authority and supply-chain paths that materially change the system model.", "sources": ["palantir-appsec", "amazon-prep"]}
+      ]
+    },
+    "exploitation": {
+      "default_sources": ["grace-notes", "amazon-prep", "google-glassdoor-cyber"],
+      "deep_dive": [
+        {"title": "Separate primitive from impact", "body": "A crash, read, write, control-flow change, sandbox escape, credential theft, and remote code execution are different claims. State evidence, required preconditions, reliability, privilege, and containment for each escalation.", "sources": ["grace-notes", "amazon-prep"]},
+        {"title": "Validate safely", "body": "Use authorized isolated targets, minimal proof, synthetic data, snapshots, egress restrictions, and stop conditions. The objective is to establish risk without creating persistence, uncontrolled access, or unnecessary payloads.", "sources": ["amazon-prep", "google-glassdoor-cyber"]}
+      ],
+      "questions": [
+        {"prompt": "A malformed file reliably crashes a parser. What has been demonstrated?", "options": ["Guaranteed remote code execution", "A denial-of-service primitive, with stronger impact still requiring evidence", "Kernel compromise", "Credential theft"], "answer": 1, "explanation": "A crash proves availability impact; code execution, control, and boundary crossing remain separate hypotheses to validate.", "sources": ["grace-notes", "amazon-prep"]},
+        {"prompt": "A reverse shell payload cannot reach the internet due to egress policy. What does that show?", "options": ["The initial code execution never occurred", "A containment layer disrupted command-and-control, though local impact may remain", "The vulnerability is fixed", "The process has kernel privileges"], "answer": 1, "explanation": "Egress restriction can limit remote control without removing the code-execution primitive or local credential and data access.", "sources": ["grace-notes", "google-glassdoor-cyber"]},
+        {"prompt": "Why is unsafe deserialization often more dangerous than ordinary data parsing?", "options": ["Serialized data is always encrypted", "Object reconstruction may invoke types or behavior chosen through untrusted input", "It cannot cross a network", "It prevents memory allocation"], "answer": 1, "explanation": "Deserialization frameworks can turn attacker-controlled structure into dangerous object creation, callbacks, or gadget chains.", "sources": ["amazon-glassdoor", "owasp-top10"]}
+      ]
+    },
+    "malware-analysis": {
+      "default_sources": ["grace-notes", "google-role", "google-glassdoor-cyber"],
+      "deep_dive": [
+        {"title": "Ask behavior questions in order", "body": "Begin with hashes, metadata, strings, signing, imports, and structure; then use an isolated instrumented environment to observe processes, files, registry or persistence, network, evasion, and child behavior.", "sources": ["grace-notes", "google-role"]},
+        {"title": "Promote durable detections", "body": "Hashes and domains support immediate scoping but decay quickly. Extract process relationships, persistence mechanisms, protocol shape, credential access, and invariant execution behaviors for longer-lived coverage.", "sources": ["google-role", "mitre-attack"]}
+      ],
+      "questions": [
+        {"prompt": "A sample's hash is new, but it creates the same scheduled task and process chain as a known family. Which detection is more durable?", "options": ["The exact file hash only", "The persistence and process behavior with appropriate context", "The filename only", "The download timestamp only"], "answer": 1, "explanation": "Behavioral relationships survive recompilation and small binary changes better than exact indicators.", "sources": ["google-role", "mitre-attack"]},
+        {"prompt": "Why inspect a suspicious document statically before opening it dynamically?", "options": ["Static analysis proves every runtime action", "It can reveal structure and indicators while reducing unnecessary execution risk and guiding instrumentation", "Dynamic analysis never works", "Documents contain no code"], "answer": 1, "explanation": "Static triage safely develops hypotheses and informs what to watch when controlled execution is justified.", "sources": ["grace-notes", "google-glassdoor-cyber"]},
+        {"prompt": "Which observation most supports process injection?", "options": ["A signed process reads its own configuration", "An unrelated process opens another process, writes executable memory, and starts a remote thread", "A browser resolves DNS", "A service rotates a log"], "answer": 1, "explanation": "Cross-process handle access, memory modification, and execution form a strong behavioral chain for injection.", "sources": ["mitre-attack", "google-role"]}
+      ]
+    },
+    "attack-lifecycle": {
+      "default_sources": ["mitre-attack", "google-role", "grace-notes"],
+      "deep_dive": [
+        {"title": "Build a hypothesis, not a checklist", "body": "Connect actions through actor objective, identity, asset, technique, evidence, confidence, and alternative explanation. ATT&CK labels organize observations but do not prove attribution or chronology.", "sources": ["mitre-attack", "google-role"]},
+        {"title": "Look for durable access", "body": "New credentials, OAuth grants, federation changes, scheduled execution, cloud keys, and trusted applications can outlive password reset. Containment must break each demonstrated persistence path.", "sources": ["mitre-attack", "google-role"]}
+      ],
+      "questions": [
+        {"prompt": "A compromised user creates a malicious OAuth grant before password reset. Why can access persist?", "options": ["OAuth grants are always public", "The application grant or refresh token may remain valid independently of the new password", "Password reset disables TLS", "OAuth cannot access data"], "answer": 1, "explanation": "Delegated application authority can survive a credential change unless grants, tokens, and sessions are explicitly revoked.", "sources": ["mitre-attack", "google-role"]},
+        {"prompt": "What is the correct use of an ATT&CK technique in an investigation?", "options": ["Treat the label as proof of a specific threat actor", "Use it to structure observed behavior, coverage, and investigative pivots while preserving evidence and confidence", "Replace the timeline with technique IDs", "Assume every technique occurred"], "answer": 1, "explanation": "ATT&CK supplies a shared behavior vocabulary; evidence still determines what happened and with what confidence.", "sources": ["mitre-attack", "google-role"]},
+        {"prompt": "Which containment sequence best avoids leaving cloud persistence?", "options": ["Reset one password and close the case", "Inventory sessions, keys, grants, roles, and federation changes; preserve evidence; revoke paths; then restore trusted access", "Delete all logs first", "Block a single IP address"], "answer": 1, "explanation": "Identity compromise can create multiple durable paths, so containment must be evidence-led and comprehensive.", "sources": ["google-role", "nist-ir"]}
+      ]
+    },
+    "mitigations": {
+      "default_sources": ["grace-notes", "nist-ssdf", "palantir-appsec"],
+      "deep_dive": [
+        {"title": "Make layers independent", "body": "For each attack step, select controls with different assumptions: memory-safe implementation, sandbox, least privilege, egress policy, signed content, and detection. Shared dependencies can turn apparent depth into one failure.", "sources": ["grace-notes", "palantir-appsec"]},
+        {"title": "Prefer secure defaults", "body": "A control that every team must remember to enable will drift. Put safety in templates, libraries, platform policy, and deployment admission, while defining exceptions and observability for bypasses.", "sources": ["nist-ssdf", "palantir-appsec"]}
+      ],
+      "questions": [
+        {"prompt": "Which pair provides more independent defense against a document-parser exploit?", "options": ["Two scanners using the same signature feed", "A memory-safe parser plus a least-privilege sandbox with restricted egress", "Two identical WAF rules", "A warning banner plus user training"], "answer": 1, "explanation": "The implementation and containment layers rely on different mechanisms and interrupt different stages of the attack path.", "sources": ["grace-notes", "palantir-appsec"]},
+        {"prompt": "Why is a secure platform default stronger than a checklist item?", "options": ["It requires every developer to remember more", "New services inherit the control automatically and deviations become explicit", "It removes the need for monitoring", "It makes exceptions impossible"], "answer": 1, "explanation": "Defaults scale consistently and turn insecure configurations into visible exceptions instead of silent omissions.", "sources": ["nist-ssdf", "palantir-appsec"]},
+        {"prompt": "What should accompany a temporary compensating control?", "options": ["A claim that risk is zero", "Residual-risk statement, owner, telemetry, rollback, expiration, and permanent remediation plan", "Removal of the original finding", "No success metric"], "answer": 1, "explanation": "A compensating control changes but rarely eliminates risk, so ownership and evidence are needed until the root cause is fixed.", "sources": ["nist-ssdf", "amazon-prep"]}
+      ]
+    },
+    "detection-engineering": {
+      "default_sources": ["google-role", "mitre-attack", "google-reddit"],
+      "deep_dive": [
+        {"title": "Specify the detection contract", "body": "Write the threat hypothesis, required fields, grouping key, time semantics, threshold, expected output, triage context, known benign cases, and failure behavior when telemetry is late or absent.", "sources": ["google-role", "google-glassdoor"]},
+        {"title": "Test the pipeline, not only the query", "body": "Use positive, negative, boundary, malformed, delayed, duplicate, and high-volume fixtures. Monitor field null rates, source lag, rule executions, alert volume, and known-signal canaries.", "sources": ["google-role", "google-reddit"]}
+      ],
+      "questions": [
+        {"prompt": "A rule detects ten login failures followed by success. Which grouping choice is most important to state?", "options": ["The dashboard color", "Whether events are grouped by account, source, device, application, or a combination", "The analyst's job title", "The log file extension"], "answer": 1, "explanation": "The grouping key defines the behavior being measured and whether distributed or shared-source activity is visible.", "sources": ["google-role", "google-glassdoor"]},
+        {"prompt": "A detection produces zero alerts for a week. What is the first engineering question?", "options": ["Can we declare the environment safe?", "Did expected telemetry arrive with the required fields, and did the rule execute successfully?", "Should all thresholds be zero?", "Can we delete the rule?"], "answer": 1, "explanation": "Silence can indicate a broken source, schema drift, or execution failure, so detection health must be established before interpreting absence.", "sources": ["google-role", "google-reddit"]},
+        {"prompt": "Which fixture most tests a password-spray detector's evasion resistance?", "options": ["One account fails 100 times from one IP", "Many accounts each fail once from rotating sources over a longer window", "One successful local login", "A DNS response"], "answer": 1, "explanation": "Distributed low-frequency attempts challenge grouping and window assumptions that simple per-source burst rules often make.", "sources": ["google-role", "mitre-attack"]}
+      ]
+    },
+    "incident-response": {
+      "default_sources": ["nist-ir", "google-role", "amazon-prep"],
+      "deep_dive": [
+        {"title": "Lead with objectives and decisions", "body": "Define incident scope, commander, technical leads, communications owner, evidence owner, decision log, update cadence, and containment criteria. Separate facts, hypotheses, actions, and business impact.", "sources": ["nist-ir", "amazon-prep"]},
+        {"title": "Sequence containment deliberately", "body": "Balance stopping harm against evidence loss and attacker adaptation. Preserve volatile facts where feasible, revoke demonstrated access paths, validate that containment worked, and keep rollback available.", "sources": ["nist-ir", "google-role"]}
+      ],
+      "questions": [
+        {"prompt": "A privileged cloud key is actively exfiltrating data. What is the best immediate objective?", "options": ["Finish a perfect root-cause report before acting", "Stop ongoing harm while preserving essential evidence and establishing replacement trusted access", "Delete the account and all logs", "Notify every customer before scoping"], "answer": 1, "explanation": "Containment should reduce active impact without making recovery impossible or unnecessarily destroying the evidence needed for scope.", "sources": ["nist-ir", "google-role"]},
+        {"prompt": "Which statement belongs in an executive incident update?", "options": ["A dump of every raw event", "Known impact, current confidence, actions taken, key risks, decisions needed, and next update time", "Unverified attribution stated as fact", "Only the malware hash"], "answer": 1, "explanation": "Executives need decision-relevant impact, uncertainty, response status, and timing rather than an undigested technical timeline.", "sources": ["nist-ir", "amazon-prep"]},
+        {"prompt": "Containment appears successful. What validates it?", "options": ["Alert volume decreased once", "Revoked paths fail, replacement identities behave normally, monitored attacker indicators cease, and no alternate persistence is found", "The incident channel is quiet", "The affected host rebooted"], "answer": 1, "explanation": "Validation tests the intended control effect and searches for alternate access rather than inferring success from one weak signal.", "sources": ["nist-ir", "google-role"]}
+      ]
+    },
+    "digital-forensics": {
+      "default_sources": ["grace-notes", "google-role", "nist-ir"],
+      "deep_dive": [
+        {"title": "Normalize time with uncertainty", "body": "Preserve original timestamps, timezone, clock source, collection method, ingestion delay, and known skew. A precise-looking merged timeline can be false if these transformations are hidden.", "sources": ["grace-notes", "nist-ir"]},
+        {"title": "Choose evidence by volatility and question", "body": "Collect identity sessions, processes, connections, memory, cloud state, logs, files, and durable images according to how quickly they change and which investigative hypothesis each can confirm or reject.", "sources": ["google-role", "nist-ir"]}
+      ],
+      "questions": [
+        {"prompt": "Two log sources disagree by seven minutes. What is the strongest timeline practice?", "options": ["Silently edit one source", "Preserve originals, document clock source and skew, normalize explicitly, and retain uncertainty", "Discard both sources", "Sort by filename"], "answer": 1, "explanation": "Transparent normalization prevents false ordering while allowing analysts to reason about bounded timing uncertainty.", "sources": ["grace-notes", "nist-ir"]},
+        {"prompt": "Which evidence should normally be collected before powering down a suspect host?", "options": ["Volatile process, connection, logged-on user, and memory state when safe and relevant", "A photograph of the monitor only", "Archived policy documents", "The replacement laptop serial number"], "answer": 0, "explanation": "Live state can disappear on shutdown and may reveal execution, credentials, connections, and injected code unavailable from disk alone.", "sources": ["google-role", "grace-notes"]},
+        {"prompt": "What does chain of custody primarily establish?", "options": ["That evidence proves attribution", "Who handled evidence, when, why, and how integrity was preserved", "That every timestamp is accurate", "That the incident is closed"], "answer": 1, "explanation": "Documented possession and integrity support confidence that evidence remained identifiable and unaltered through handling.", "sources": ["nist-ir", "grace-notes"]}
+      ]
+    },
+    "coding-algorithms": {
+      "default_sources": ["palantir-phone", "google-glassdoor", "google-reddit"],
+      "deep_dive": [
+        {"title": "Make the contract explicit", "body": "Clarify input shape, event ordering, malformed records, memory limits, output semantics, and scale. State a simple correct approach, test examples, then optimize the actual bottleneck.", "sources": ["palantir-phone", "google-reddit"]},
+        {"title": "Use security-relevant fixtures", "body": "For log parsers and detectors, include duplicate, delayed, out-of-order, Unicode, oversized, missing-field, boundary-window, and adversarial grouping cases. Explain time and space complexity in operational terms.", "sources": ["google-glassdoor", "google-role"]}
+      ],
+      "questions": [
+        {"prompt": "You must count failed logins per source in one pass. Which core structure is appropriate?", "options": ["A map from source to count", "A binary tree containing only timestamps", "A constant with the final answer", "A recursive DNS query"], "answer": 0, "explanation": "A hash map supports expected constant-time updates per event and linear overall processing time.", "sources": ["google-glassdoor", "palantir-phone"]},
+        {"prompt": "For a rolling-window detector over time-ordered events, what does a deque enable?", "options": ["Efficiently remove expired events from the front while appending new events", "Automatic decryption", "Constant memory regardless of event rate", "SQL query generation"], "answer": 0, "explanation": "A deque supports amortized constant-time insertion and expiration while retaining only events in the active window.", "sources": ["google-reddit", "google-role"]},
+        {"prompt": "During a coding interview, when should optimization begin?", "options": ["Before clarifying input", "After presenting a simple correct approach and identifying constraints that require improvement", "Only after writing production deployment code", "Never discuss complexity"], "answer": 1, "explanation": "A correct baseline exposes assumptions and gives optimization a concrete target, matching official guidance to think aloud and expand deliberately.", "sources": ["palantir-phone", "palantir-process"]}
+      ]
+    },
+    "security-projects": {
+      "default_sources": ["palantir-appsec", "google-role", "nist-ssdf"],
+      "deep_dive": [
+        {"title": "Show an engineering decision", "body": "A strong portfolio artifact has a threat model, input contract, tested behavior, failure modes, safe operating boundary, measurable result, and an honest tradeoff. Small and complete beats broad and unverifiable.", "sources": ["palantir-appsec", "google-role"]},
+        {"title": "Design for hostile inputs", "body": "Fixtures should include malformed, oversized, duplicate, delayed, encoded, and adversarial samples. Bound CPU, memory, output, and network behavior so the security tool does not create a new operational risk.", "sources": ["nist-ssdf", "google-role"]}
+      ],
+      "questions": [
+        {"prompt": "Which project description is strongest in an interview?", "options": ["I built a security scanner", "I built a bounded log detector, tested six evasion cases, measured false positives, and can explain the grouping tradeoff", "I cloned a tool without changes", "The code is confidential, so I cannot discuss any decision"], "answer": 1, "explanation": "The answer demonstrates ownership, validation, operational judgment, and a specific technical tradeoff.", "sources": ["palantir-process", "google-role"]},
+        {"prompt": "What should a security automation README state explicitly?", "options": ["Only installation steps", "Threat model, authorized scope, inputs, outputs, safeguards, tests, limitations, and failure behavior", "That the tool has no limitations", "Private credentials for a demo"], "answer": 1, "explanation": "Operational and safety contracts make the artifact reviewable and show that the author considered misuse and failure.", "sources": ["nist-ssdf", "palantir-appsec"]},
+        {"prompt": "A detector works on one sample. What most improves portfolio credibility?", "options": ["A larger logo", "Positive, negative, boundary, malformed, and evasion fixtures plus measured behavior", "Removing test output", "Claiming production readiness"], "answer": 1, "explanation": "Diverse fixtures show the implementation handles realistic variation and that its limitations are understood.", "sources": ["google-role", "nist-ssdf"]}
+      ]
+    },
+    "interview-execution": {
+      "default_sources": ["amazon-prep", "palantir-phone", "palantir-process"],
+      "deep_dive": [
+        {"title": "Expose your reasoning", "body": "Interviewers can redirect a visible model. State assumptions, identify the highest-risk unknown, choose an approach, and check it against abuse cases. Silence hides both good judgment and correctable mistakes.", "sources": ["palantir-phone", "amazon-prep"]},
+        {"title": "Use evidence in behavioral answers", "body": "Describe the situation and your responsibility briefly, spend time on decisions and actions, quantify security and engineering outcomes, and close with what changed in the system or your judgment.", "sources": ["amazon-prep", "palantir-process"]}
+      ],
+      "questions": [
+        {"prompt": "You do not know a protocol detail during an interview. What is the strongest response?", "options": ["Invent a confident answer", "State the uncertainty, reason from known invariants, explain how you would verify it, and continue", "End the interview", "Change the subject"], "answer": 1, "explanation": "Transparent uncertainty plus disciplined reasoning demonstrates judgment without presenting speculation as fact.", "sources": ["palantir-phone", "amazon-prep"]},
+        {"prompt": "Which behavioral answer best demonstrates impact?", "options": ["I care deeply about security", "I replaced repeated manual reviews with a tested policy check, cut review time, caught two bypasses, and documented exceptions", "My team used many tools", "The project was difficult"], "answer": 1, "explanation": "The answer connects personal action to measurable engineering and security outcomes with concrete evidence.", "sources": ["amazon-prep", "palantir-process"]},
+        {"prompt": "An interviewer changes a key constraint midway through your design. What should you do?", "options": ["Ignore it to preserve the original answer", "Restate the changed assumption, identify affected decisions, and revise the design and tradeoffs", "Start over without explanation", "Argue that constraints cannot change"], "answer": 1, "explanation": "Adapting the model visibly demonstrates learning, decomposition, and collaboration under evolving requirements.", "sources": ["palantir-process", "palantir-reddit"]}
+      ]
+    },
+    "capstone": {
+      "default_sources": ["amazon-prep", "google-role", "palantir-appsec"],
+      "deep_dive": [
+        {"title": "Connect the entire attack path", "body": "Tie support-account compromise to OAuth persistence, cross-tenant authorization failure, storage export, detection gaps, containment choices, and root-cause controls. Mark facts, hypotheses, confidence, and missing evidence.", "sources": ["google-role", "mitre-attack"]},
+        {"title": "Defend decisions for two audiences", "body": "The technical narrative should support reproduction and remediation; the executive narrative should explain impact, uncertainty, business decisions, recovery criteria, and next update without unsupported attribution.", "sources": ["nist-ir", "amazon-prep"]}
+      ],
+      "questions": [
+        {"prompt": "Cross-tenant reads and a new OAuth grant appear after a support-account login. What is the strongest initial hypothesis?", "options": ["The OAuth grant proves a named actor", "Account compromise may have created durable delegated access and exercised an authorization flaw; each link needs evidence", "The storage service must be malware", "Password reset alone resolves all risk"], "answer": 1, "explanation": "The hypothesis connects observed behaviors while preserving uncertainty and identifies persistence and authorization paths to validate.", "sources": ["google-role", "mitre-attack"]},
+        {"prompt": "Which remediation best addresses root cause after a cross-tenant export?", "options": ["Block the observed IP", "Centralize tenant-aware authorization, add negative tests and audit context, repair OAuth/session controls, and verify historical access", "Rename the export endpoint", "Reduce log retention"], "answer": 1, "explanation": "The response fixes the authorization class, improves preventive assurance, addresses persistence, and supports impact scoping.", "sources": ["palantir-appsec", "owasp-api"]},
+        {"prompt": "What should determine recovery completion?", "options": ["The incident has lasted one day", "Trusted identities and data paths are restored, persistence is removed, controls are verified, monitoring is stable, and owners accept residual risk", "The attacker IP is offline", "All employees changed browser themes"], "answer": 1, "explanation": "Recovery is evidence-based restoration of trustworthy operation, not elapsed time or disappearance of one indicator.", "sources": ["nist-ir", "google-role"]}
+      ]
+    }
+  }
+}

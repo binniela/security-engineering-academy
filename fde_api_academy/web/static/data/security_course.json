@@ -1,7 +1,7 @@
 {
-  "version": 2,
+  "version": 3,
   "source_commit": "50f05f6f1ffd782f06f3150b1be305adcfa7af46",
-  "pass_score": 100,
+  "pass_score": 80,
   "modules": [
     {
       "id": "learning-system",
@@ -10,13 +10,63 @@
       "phase": "Orientation",
       "minutes": 50,
       "why": "Intermediate interviews demand recall, synthesis, and calm reasoning under pressure. Passive recognition is not enough.",
-      "objectives": ["Create a study loop driven by weak areas", "Use retrieval and spaced review instead of rereading", "Define observable evidence of interview readiness"],
-      "concepts": [{"title": "Retrieval before review", "body": "Attempt an explanation or solution before opening notes. The gap between your attempt and the reference is the useful learning signal."}, {"title": "Interleave the bar", "body": "Mix coding, systems, security design, investigation, and behavioral practice every week so one comfortable domain cannot hide another."}, {"title": "Track evidence", "body": "A topic is ready when you can explain it cold, apply it to a novel scenario, handle a follow-up, and name tradeoffs."}],
+      "objectives": [
+        "Create a study loop driven by weak areas",
+        "Use retrieval and spaced review instead of rereading",
+        "Define observable evidence of interview readiness"
+      ],
+      "concepts": [
+        {
+          "title": "Retrieval before review",
+          "body": "Attempt an explanation or solution before opening notes. The gap between your attempt and the reference is the useful learning signal."
+        },
+        {
+          "title": "Interleave the bar",
+          "body": "Mix coding, systems, security design, investigation, and behavioral practice every week so one comfortable domain cannot hide another."
+        },
+        {
+          "title": "Track evidence",
+          "body": "A topic is ready when you can explain it cold, apply it to a novel scenario, handle a follow-up, and name tradeoffs."
+        }
+      ],
       "example": "Instead of rereading DNS, close the notes and trace a request aloud, diagnose a tunneling alert, then write a detector. Record exactly where the explanation failed.",
-      "pitfalls": ["Counting reading time as mastery", "Studying favorite topics while avoiding coding or systems gaps"],
-      "lab": {"title": "Create a readiness baseline", "scenario": "You have four weeks before a mixed security-engineering loop.", "deliverables": ["Score yourself from 0-3 in coding, systems, application security, cloud, detection, and incident response", "Write one piece of evidence supporting every score", "Create a seven-day schedule that spends the most time on the two lowest scores"]},
-      "interview": {"prompt": "Tell me how you would prepare for an unfamiliar security domain in two weeks.", "rubric": ["Defines the target role and interview signals", "Uses retrieval, practice, and feedback", "Prioritizes weak areas", "Measures progress with observable outputs"]},
-      "quiz": [{"prompt": "Which activity gives the strongest evidence that a topic is interview-ready?", "options": ["Rereading the notes twice", "Recognizing all terms in a glossary", "Explaining and applying it cold to a new scenario", "Watching a complete conference talk"], "answer": 2, "explanation": "Recall plus transfer to a novel scenario is stronger evidence than recognition."}, {"prompt": "What should determine the first topic in a study session?", "options": ["The shortest module", "The weakest role-relevant skill", "The most interesting subject", "The module with the most links"], "answer": 1, "explanation": "Role relevance and demonstrated weakness should drive priority."}]
+      "pitfalls": [
+        "Counting reading time as mastery",
+        "Studying favorite topics while avoiding coding or systems gaps"
+      ],
+      "interview": {
+        "prompt": "Tell me how you would prepare for an unfamiliar security domain in two weeks.",
+        "rubric": [
+          "Defines the target role and interview signals",
+          "Uses retrieval, practice, and feedback",
+          "Prioritizes weak areas",
+          "Measures progress with observable outputs"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which activity gives the strongest evidence that a topic is interview-ready?",
+          "options": [
+            "Rereading the notes twice",
+            "Recognizing all terms in a glossary",
+            "Explaining and applying it cold to a new scenario",
+            "Watching a complete conference talk"
+          ],
+          "answer": 2,
+          "explanation": "Recall plus transfer to a novel scenario is stronger evidence than recognition."
+        },
+        {
+          "prompt": "What should determine the first topic in a study session?",
+          "options": [
+            "The shortest module",
+            "The weakest role-relevant skill",
+            "The most interesting subject",
+            "The module with the most links"
+          ],
+          "answer": 1,
+          "explanation": "Role relevance and demonstrated weakness should drive priority."
+        }
+      ]
     },
     {
       "id": "networking",
@@ -25,13 +75,63 @@
       "phase": "Foundations",
       "minutes": 120,
       "why": "Network facts connect user actions, host behavior, service boundaries, and attacker infrastructure.",
-      "objectives": ["Trace traffic from DNS through TLS and HTTP", "Interpret TCP, UDP, routing, and common protocol evidence", "Distinguish normal traffic from reconnaissance and exfiltration"],
-      "concepts": [{"title": "Follow the packet", "body": "Reason layer by layer: name resolution, route, transport state, encrypted session, application request, and response. At each layer ask what can be logged or spoofed."}, {"title": "State creates evidence", "body": "TCP handshakes, resolver queries, proxy requests, and flow records expose different facts. No single telemetry source tells the whole story."}, {"title": "Shape matters", "body": "Beacon intervals, fan-out, failed handshakes, byte ratios, entropy, and destination rarity often matter more than one IP address."}],
+      "objectives": [
+        "Trace traffic from DNS through TLS and HTTP",
+        "Interpret TCP, UDP, routing, and common protocol evidence",
+        "Distinguish normal traffic from reconnaissance and exfiltration"
+      ],
+      "concepts": [
+        {
+          "title": "Follow the packet",
+          "body": "Reason layer by layer: name resolution, route, transport state, encrypted session, application request, and response. At each layer ask what can be logged or spoofed."
+        },
+        {
+          "title": "State creates evidence",
+          "body": "TCP handshakes, resolver queries, proxy requests, and flow records expose different facts. No single telemetry source tells the whole story."
+        },
+        {
+          "title": "Shape matters",
+          "body": "Beacon intervals, fan-out, failed handshakes, byte ratios, entropy, and destination rarity often matter more than one IP address."
+        }
+      ],
       "example": "Long high-entropy subdomains sent every sixty seconds suggest DNS tunneling. Validate with resolver logs, query length and uniqueness, host process telemetry, and egress volume before containing.",
-      "pitfalls": ["Treating ports as proof of application protocol", "Assuming an IP address reliably identifies a person or physical location"],
-      "lab": {"title": "Triage suspicious DNS", "scenario": "A workstation sends 400 unique subdomains to one newly observed domain during an hour.", "deliverables": ["List the DNS, network, and endpoint fields you need", "Write detection pseudocode with a threshold and time window", "Name three benign causes and how you would eliminate them"]},
-      "interview": {"prompt": "Design a detector for internal port scanning without blocking legitimate administration.", "rubric": ["Clarifies available telemetry and network shape", "Defines source, destination, window, and threshold", "Handles distributed and slow scans", "Discusses baselines, allowlists, and false positives"]},
-      "quiz": [{"prompt": "Which signal most directly supports a TCP SYN scan hypothesis?", "options": ["Many completed TLS sessions to one host", "One source sends SYNs to many ports with few completed handshakes", "Repeated DNS TXT responses", "Large outbound UDP payloads to one resolver"], "answer": 1, "explanation": "Broad SYN attempts with few completed handshakes are characteristic scan evidence."}, {"prompt": "Why combine DNS and endpoint telemetry during suspected DNS exfiltration?", "options": ["DNS logs contain process hashes", "Endpoint data can identify the process generating suspicious queries", "Endpoint data decrypts all DNS traffic", "DNS cannot carry encoded data"], "answer": 1, "explanation": "Resolver telemetry shows the query; endpoint telemetry can attribute it to a process and user context."}]
+      "pitfalls": [
+        "Treating ports as proof of application protocol",
+        "Assuming an IP address reliably identifies a person or physical location"
+      ],
+      "interview": {
+        "prompt": "Design a detector for internal port scanning without blocking legitimate administration.",
+        "rubric": [
+          "Clarifies available telemetry and network shape",
+          "Defines source, destination, window, and threshold",
+          "Handles distributed and slow scans",
+          "Discusses baselines, allowlists, and false positives"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which signal most directly supports a TCP SYN scan hypothesis?",
+          "options": [
+            "Many completed TLS sessions to one host",
+            "One source sends SYNs to many ports with few completed handshakes",
+            "Repeated DNS TXT responses",
+            "Large outbound UDP payloads to one resolver"
+          ],
+          "answer": 1,
+          "explanation": "Broad SYN attempts with few completed handshakes are characteristic scan evidence."
+        },
+        {
+          "prompt": "Why combine DNS and endpoint telemetry during suspected DNS exfiltration?",
+          "options": [
+            "DNS logs contain process hashes",
+            "Endpoint data can identify the process generating suspicious queries",
+            "Endpoint data decrypts all DNS traffic",
+            "DNS cannot carry encoded data"
+          ],
+          "answer": 1,
+          "explanation": "Resolver telemetry shows the query; endpoint telemetry can attribute it to a process and user context."
+        }
+      ]
     },
     {
       "id": "operating-systems",
@@ -40,13 +140,63 @@
       "phase": "Foundations",
       "minutes": 100,
       "why": "Processes, memory, permissions, filesystems, and kernels define what exploitation and host investigation actually mean.",
-      "objectives": ["Explain user/kernel boundaries and process execution", "Compare discretionary and mandatory access controls", "Identify useful Linux, Windows, and macOS artifacts"],
-      "concepts": [{"title": "Authority follows context", "body": "A process acts with an identity, token, capabilities, namespaces, environment, open handles, and inherited resources. Compromise impact depends on that context."}, {"title": "Isolation is layered", "body": "Permissions, ACLs, MAC policy, sandboxing, memory protections, and least privilege reduce different paths; no one control is a complete boundary."}, {"title": "Execution leaves artifacts", "body": "Process ancestry, command lines, loaded modules, file metadata, persistence locations, and authentication logs help reconstruct host activity."}],
+      "objectives": [
+        "Explain user/kernel boundaries and process execution",
+        "Compare discretionary and mandatory access controls",
+        "Identify useful Linux, Windows, and macOS artifacts"
+      ],
+      "concepts": [
+        {
+          "title": "Authority follows context",
+          "body": "A process acts with an identity, token, capabilities, namespaces, environment, open handles, and inherited resources. Compromise impact depends on that context."
+        },
+        {
+          "title": "Isolation is layered",
+          "body": "Permissions, ACLs, MAC policy, sandboxing, memory protections, and least privilege reduce different paths; no one control is a complete boundary."
+        },
+        {
+          "title": "Execution leaves artifacts",
+          "body": "Process ancestry, command lines, loaded modules, file metadata, persistence locations, and authentication logs help reconstruct host activity."
+        }
+      ],
       "example": "A web process writing to a privileged startup location suggests both application compromise and a broken host boundary. Investigate process ancestry, token privileges, file metadata, and persistence execution.",
-      "pitfalls": ["Equating administrator access with kernel execution", "Naming tools without explaining the artifact or question they answer"],
-      "lab": {"title": "Host compromise evidence map", "scenario": "An internet-facing Linux service spawned a shell and wrote a scheduled task.", "deliverables": ["Draw the process and privilege chain", "List volatile and durable artifacts in collection order", "Recommend three controls mapped to distinct failure points"]},
-      "interview": {"prompt": "A service running as root is exploited. Explain impact, investigation, and prevention.", "rubric": ["Separates initial execution from persistence and escalation", "Names concrete process, auth, and filesystem artifacts", "Prioritizes containment without destroying evidence", "Uses service isolation and least privilege in prevention"]},
-      "quiz": [{"prompt": "Which statement best distinguishes DAC from MAC?", "options": ["DAC is encrypted; MAC is hashed", "DAC lets object owners influence permissions; MAC enforces centrally defined labels or policy", "DAC only exists on Windows", "MAC replaces process identity"], "answer": 1, "explanation": "DAC commonly permits owner-controlled access, while MAC applies centrally enforced policy."}, {"prompt": "Why collect process and network state early in a host investigation?", "options": ["They are usually more volatile than disk artifacts", "They are always legally admissible", "Disk images include no process information", "They automatically identify root cause"], "answer": 0, "explanation": "Live process, connection, and memory state can disappear during shutdown or containment."}]
+      "pitfalls": [
+        "Equating administrator access with kernel execution",
+        "Naming tools without explaining the artifact or question they answer"
+      ],
+      "interview": {
+        "prompt": "A service running as root is exploited. Explain impact, investigation, and prevention.",
+        "rubric": [
+          "Separates initial execution from persistence and escalation",
+          "Names concrete process, auth, and filesystem artifacts",
+          "Prioritizes containment without destroying evidence",
+          "Uses service isolation and least privilege in prevention"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which statement best distinguishes DAC from MAC?",
+          "options": [
+            "DAC is encrypted; MAC is hashed",
+            "DAC lets object owners influence permissions; MAC enforces centrally defined labels or policy",
+            "DAC only exists on Windows",
+            "MAC replaces process identity"
+          ],
+          "answer": 1,
+          "explanation": "DAC commonly permits owner-controlled access, while MAC applies centrally enforced policy."
+        },
+        {
+          "prompt": "Why collect process and network state early in a host investigation?",
+          "options": [
+            "They are usually more volatile than disk artifacts",
+            "They are always legally admissible",
+            "Disk images include no process information",
+            "They automatically identify root cause"
+          ],
+          "answer": 0,
+          "explanation": "Live process, connection, and memory state can disappear during shutdown or containment."
+        }
+      ]
     },
     {
       "id": "web-security",
@@ -55,13 +205,63 @@
       "phase": "Application Security",
       "minutes": 120,
       "why": "Browser trust boundaries, untrusted input, session authority, and backend interpreters create recurring high-impact failures.",
-      "objectives": ["Trace browser, API, and server trust boundaries", "Compare injection, XSS, CSRF, SSRF, and access-control failures", "Design layered fixes instead of single-filter patches"],
-      "concepts": [{"title": "Authority and interpretation", "body": "Ask who supplies data, which component interprets it, and whose authority the resulting action uses. This model unifies injection, SSRF, CSRF, and confused-deputy failures."}, {"title": "Authorization belongs server-side", "body": "Authentication establishes identity; every object and action still requires authorization independent of client controls."}, {"title": "Fix the class", "body": "Prefer parameterization, contextual output encoding, safe APIs, allowlisted destinations, and centralized authorization over payload blacklists."}],
+      "objectives": [
+        "Trace browser, API, and server trust boundaries",
+        "Compare injection, XSS, CSRF, SSRF, and access-control failures",
+        "Design layered fixes instead of single-filter patches"
+      ],
+      "concepts": [
+        {
+          "title": "Authority and interpretation",
+          "body": "Ask who supplies data, which component interprets it, and whose authority the resulting action uses. This model unifies injection, SSRF, CSRF, and confused-deputy failures."
+        },
+        {
+          "title": "Authorization belongs server-side",
+          "body": "Authentication establishes identity; every object and action still requires authorization independent of client controls."
+        },
+        {
+          "title": "Fix the class",
+          "body": "Prefer parameterization, contextual output encoding, safe APIs, allowlisted destinations, and centralized authorization over payload blacklists."
+        }
+      ],
       "example": "A URL-fetch feature can become SSRF when the server follows user-controlled destinations with internal network authority. Validate schemes and destinations, block private ranges, constrain redirects, and isolate egress.",
-      "pitfalls": ["Describing CORS as an authorization control", "Fixing injection with a blacklist instead of removing unsafe interpretation"],
-      "lab": {"title": "Threat-model a file upload", "scenario": "Users upload images that are transformed, scanned, stored, and shared by URL.", "deliverables": ["Draw the trust boundaries and data flow", "Find at least six threats across upload, parsing, storage, and retrieval", "Choose controls and logs for the three highest-risk threats"]},
-      "interview": {"prompt": "Explain how you would secure a URL-preview service against SSRF.", "rubric": ["Identifies server authority and internal destinations", "Covers parsing, redirects, DNS changes, and alternate address forms", "Uses egress isolation and least privilege", "Adds useful logging and abuse controls"]},
-      "quiz": [{"prompt": "What is the core security failure in IDOR/BOLA?", "options": ["Missing TLS", "Server-side object authorization is absent or incorrect", "The browser accepts cookies", "An SQL query is slow"], "answer": 1, "explanation": "The server permits access to an object without validating the caller's authorization for it."}, {"prompt": "Which control most directly prevents SQL injection?", "options": ["Escaping HTML", "Parameterized queries", "SameSite cookies", "A restrictive CORS policy"], "answer": 1, "explanation": "Parameterized queries separate data from SQL syntax."}]
+      "pitfalls": [
+        "Describing CORS as an authorization control",
+        "Fixing injection with a blacklist instead of removing unsafe interpretation"
+      ],
+      "interview": {
+        "prompt": "Explain how you would secure a URL-preview service against SSRF.",
+        "rubric": [
+          "Identifies server authority and internal destinations",
+          "Covers parsing, redirects, DNS changes, and alternate address forms",
+          "Uses egress isolation and least privilege",
+          "Adds useful logging and abuse controls"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What is the core security failure in IDOR/BOLA?",
+          "options": [
+            "Missing TLS",
+            "Server-side object authorization is absent or incorrect",
+            "The browser accepts cookies",
+            "An SQL query is slow"
+          ],
+          "answer": 1,
+          "explanation": "The server permits access to an object without validating the caller's authorization for it."
+        },
+        {
+          "prompt": "Which control most directly prevents SQL injection?",
+          "options": [
+            "Escaping HTML",
+            "Parameterized queries",
+            "SameSite cookies",
+            "A restrictive CORS policy"
+          ],
+          "answer": 1,
+          "explanation": "Parameterized queries separate data from SQL syntax."
+        }
+      ]
     },
     {
       "id": "api-security",
@@ -69,13 +269,63 @@
       "phase": "Application Security",
       "minutes": 100,
       "why": "Modern systems expose business authority and sensitive data through APIs, where authorization and workflow abuse dominate.",
-      "objectives": ["Apply object, property, and function authorization", "Control resource consumption and sensitive business flows", "Secure outbound API consumption and maintain inventory"],
-      "concepts": [{"title": "Authorize every dimension", "body": "Check the caller, action, object, property, tenant, and workflow state. Endpoint-level authentication alone misses most API authorization failures."}, {"title": "Abuse can be valid syntax", "body": "Scalping, account creation, scraping, and enumeration may use legitimate requests at harmful scale. Model business limits, not only malformed input."}, {"title": "Treat integrations as untrusted", "body": "Third-party responses need timeouts, size limits, schema validation, redirect policy, and safe downstream handling."}],
+      "objectives": [
+        "Apply object, property, and function authorization",
+        "Control resource consumption and sensitive business flows",
+        "Secure outbound API consumption and maintain inventory"
+      ],
+      "concepts": [
+        {
+          "title": "Authorize every dimension",
+          "body": "Check the caller, action, object, property, tenant, and workflow state. Endpoint-level authentication alone misses most API authorization failures."
+        },
+        {
+          "title": "Abuse can be valid syntax",
+          "body": "Scalping, account creation, scraping, and enumeration may use legitimate requests at harmful scale. Model business limits, not only malformed input."
+        },
+        {
+          "title": "Treat integrations as untrusted",
+          "body": "Third-party responses need timeouts, size limits, schema validation, redirect policy, and safe downstream handling."
+        }
+      ],
       "example": "A user can change another customer's shipping address by swapping an object ID. The correct fix is centralized object authorization and tenant scoping, supported by negative tests and audit logs.",
-      "pitfalls": ["Testing only unauthenticated requests", "Trusting third-party API data because the provider is reputable"],
-      "lab": {"title": "Review an order API", "scenario": "An API supports order lookup, cancellation, address updates, exports, and webhook integrations.", "deliverables": ["Create an authorization matrix for roles, objects, properties, and actions", "Identify abuse cases and resource limits", "Write five negative security tests including cross-tenant access"]},
-      "interview": {"prompt": "Design authorization for a multi-tenant document API.", "rubric": ["Separates authentication from authorization", "Models tenant, object, property, and action checks", "Uses deny-by-default centralized policy", "Covers enumeration resistance, auditability, and tests"]},
-      "quiz": [{"prompt": "Which flaw allows a user to read another tenant's record by changing an ID?", "options": ["Broken object-level authorization", "CSRF", "Cryptographic failure", "DNS rebinding"], "answer": 0, "explanation": "The server failed to verify authorization for the referenced object."}, {"prompt": "What best mitigates unsafe consumption of a third-party API?", "options": ["Trust responses over TLS without validation", "Validate schemas, constrain redirects, limit resources, and set timeouts", "Disable authentication", "Expose the integration directly to browsers"], "answer": 1, "explanation": "Transport security does not make remote data trustworthy or bounded."}]
+      "pitfalls": [
+        "Testing only unauthenticated requests",
+        "Trusting third-party API data because the provider is reputable"
+      ],
+      "interview": {
+        "prompt": "Design authorization for a multi-tenant document API.",
+        "rubric": [
+          "Separates authentication from authorization",
+          "Models tenant, object, property, and action checks",
+          "Uses deny-by-default centralized policy",
+          "Covers enumeration resistance, auditability, and tests"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which flaw allows a user to read another tenant's record by changing an ID?",
+          "options": [
+            "Broken object-level authorization",
+            "CSRF",
+            "Cryptographic failure",
+            "DNS rebinding"
+          ],
+          "answer": 0,
+          "explanation": "The server failed to verify authorization for the referenced object."
+        },
+        {
+          "prompt": "What best mitigates unsafe consumption of a third-party API?",
+          "options": [
+            "Trust responses over TLS without validation",
+            "Validate schemas, constrain redirects, limit resources, and set timeouts",
+            "Disable authentication",
+            "Expose the integration directly to browsers"
+          ],
+          "answer": 1,
+          "explanation": "Transport security does not make remote data trustworthy or bounded."
+        }
+      ]
     },
     {
       "id": "cryptography",
@@ -84,13 +334,63 @@
       "phase": "Trust and Identity",
       "minutes": 100,
       "why": "Security engineers must select primitives by security goal and recognize implementation failures without inventing cryptography.",
-      "objectives": ["Map primitives to confidentiality, integrity, and authenticity", "Explain key agreement, authenticated encryption, hashing, and signatures", "Recognize nonce, randomness, key, and downgrade failures"],
-      "concepts": [{"title": "Start with the property", "body": "Encoding changes representation. Hashing creates a one-way digest. Encryption protects confidentiality. MACs and signatures provide different forms of authenticity."}, {"title": "Protocols compose primitives", "body": "TLS combines authentication, key agreement, symmetric authenticated encryption, transcript integrity, and downgrade protection."}, {"title": "Key lifecycle is the system", "body": "Generation, storage, access, rotation, revocation, backup, and destruction often matter more than algorithm trivia."}],
+      "objectives": [
+        "Map primitives to confidentiality, integrity, and authenticity",
+        "Explain key agreement, authenticated encryption, hashing, and signatures",
+        "Recognize nonce, randomness, key, and downgrade failures"
+      ],
+      "concepts": [
+        {
+          "title": "Start with the property",
+          "body": "Encoding changes representation. Hashing creates a one-way digest. Encryption protects confidentiality. MACs and signatures provide different forms of authenticity."
+        },
+        {
+          "title": "Protocols compose primitives",
+          "body": "TLS combines authentication, key agreement, symmetric authenticated encryption, transcript integrity, and downgrade protection."
+        },
+        {
+          "title": "Key lifecycle is the system",
+          "body": "Generation, storage, access, rotation, revocation, backup, and destruction often matter more than algorithm trivia."
+        }
+      ],
       "example": "For stored API credentials, use a managed key service, envelope encryption, scoped decrypt permission, rotation, audit logs, and a revocation plan rather than embedding a key in configuration.",
-      "pitfalls": ["Calling base64 encryption", "Choosing an algorithm without designing key and nonce lifecycle"],
-      "lab": {"title": "Design secret storage", "scenario": "A service must store customer integration tokens and decrypt them during jobs.", "deliverables": ["Draw key hierarchy and trust boundaries", "Define access, rotation, revocation, and audit behavior", "Explain blast radius for three compromise scenarios"]},
-      "interview": {"prompt": "Why does TLS use both asymmetric and symmetric cryptography?", "rubric": ["Explains authentication and key agreement", "Explains symmetric performance", "Mentions transcript integrity and authenticated encryption", "Avoids claiming RSA simply encrypts all traffic"]},
-      "quiz": [{"prompt": "Which primitive is appropriate for storing user passwords?", "options": ["Reversible encryption with a global key", "A fast general-purpose hash", "A salted, adaptive password-hashing function", "Base64 encoding"], "answer": 2, "explanation": "Passwords should use a salted, deliberately expensive password-hashing function."}, {"prompt": "What can happen if a nonce is reused with certain AEAD modes?", "options": ["Only slower encryption", "Confidentiality and integrity can fail catastrophically", "The key automatically rotates", "The ciphertext becomes compressed"], "answer": 1, "explanation": "Nonce uniqueness is a core requirement for common AEAD constructions."}]
+      "pitfalls": [
+        "Calling base64 encryption",
+        "Choosing an algorithm without designing key and nonce lifecycle"
+      ],
+      "interview": {
+        "prompt": "Why does TLS use both asymmetric and symmetric cryptography?",
+        "rubric": [
+          "Explains authentication and key agreement",
+          "Explains symmetric performance",
+          "Mentions transcript integrity and authenticated encryption",
+          "Avoids claiming RSA simply encrypts all traffic"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which primitive is appropriate for storing user passwords?",
+          "options": [
+            "Reversible encryption with a global key",
+            "A fast general-purpose hash",
+            "A salted, adaptive password-hashing function",
+            "Base64 encoding"
+          ],
+          "answer": 2,
+          "explanation": "Passwords should use a salted, deliberately expensive password-hashing function."
+        },
+        {
+          "prompt": "What can happen if a nonce is reused with certain AEAD modes?",
+          "options": [
+            "Only slower encryption",
+            "Confidentiality and integrity can fail catastrophically",
+            "The key automatically rotates",
+            "The ciphertext becomes compressed"
+          ],
+          "answer": 1,
+          "explanation": "Nonce uniqueness is a core requirement for common AEAD constructions."
+        }
+      ]
     },
     {
       "id": "authentication",
@@ -99,13 +399,63 @@
       "phase": "Trust and Identity",
       "minutes": 105,
       "why": "Account takeover and token theft turn authentication design mistakes into durable attacker access.",
-      "objectives": ["Compare sessions, bearer tokens, federation, and phishing-resistant MFA", "Model token issuance, storage, rotation, revocation, and recovery", "Distinguish authentication, authorization, and session management"],
-      "concepts": [{"title": "Credentials are capabilities", "body": "Cookies, bearer tokens, refresh tokens, API keys, and certificates grant authority when presented. Protect them according to lifetime and scope."}, {"title": "Authentication is a lifecycle", "body": "Enrollment, login, step-up, recovery, device changes, revocation, and deprovisioning each create attack paths."}, {"title": "Phishing resistance is protocol-level", "body": "WebAuthn/passkeys bind authentication to the legitimate origin and resist replay better than codes or approval prompts."}],
+      "objectives": [
+        "Compare sessions, bearer tokens, federation, and phishing-resistant MFA",
+        "Model token issuance, storage, rotation, revocation, and recovery",
+        "Distinguish authentication, authorization, and session management"
+      ],
+      "concepts": [
+        {
+          "title": "Credentials are capabilities",
+          "body": "Cookies, bearer tokens, refresh tokens, API keys, and certificates grant authority when presented. Protect them according to lifetime and scope."
+        },
+        {
+          "title": "Authentication is a lifecycle",
+          "body": "Enrollment, login, step-up, recovery, device changes, revocation, and deprovisioning each create attack paths."
+        },
+        {
+          "title": "Phishing resistance is protocol-level",
+          "body": "WebAuthn/passkeys bind authentication to the legitimate origin and resist replay better than codes or approval prompts."
+        }
+      ],
       "example": "After refresh-token theft, changing a password may be insufficient. Revoke token families, inspect issuance and use, terminate sessions, and fix the storage path that exposed it.",
-      "pitfalls": ["Treating JWT validation as authorization", "Building strong login while leaving account recovery weak"],
-      "lab": {"title": "Review an auth system", "scenario": "A SaaS app supports passwords, passkeys, SSO, recovery email, and long-lived mobile sessions.", "deliverables": ["Draw credential and token lifecycles", "Threat-model enrollment, recovery, and revocation", "Define logs and response steps for token theft"]},
-      "interview": {"prompt": "Design authentication for an administrative console.", "rubric": ["Clarifies threat model and user population", "Uses phishing-resistant MFA and secure recovery", "Scopes sessions and high-risk step-up", "Covers revocation, audit logs, and break-glass access"]},
-      "quiz": [{"prompt": "What property makes WebAuthn more phishing-resistant than one-time codes?", "options": ["It uses longer usernames", "Credentials are bound to the relying-party origin", "It disables TLS", "It stores the private key on the server"], "answer": 1, "explanation": "Origin binding prevents a credential assertion from being replayed to a lookalike origin."}, {"prompt": "What must happen when validating a JWT?", "options": ["Decode its payload only", "Verify algorithm, signature, issuer, audience, and relevant time claims", "Trust any token with three segments", "Use its subject as authorization without policy"], "answer": 1, "explanation": "A decoded token is not trusted until its cryptographic and semantic claims are validated."}]
+      "pitfalls": [
+        "Treating JWT validation as authorization",
+        "Building strong login while leaving account recovery weak"
+      ],
+      "interview": {
+        "prompt": "Design authentication for an administrative console.",
+        "rubric": [
+          "Clarifies threat model and user population",
+          "Uses phishing-resistant MFA and secure recovery",
+          "Scopes sessions and high-risk step-up",
+          "Covers revocation, audit logs, and break-glass access"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What property makes WebAuthn more phishing-resistant than one-time codes?",
+          "options": [
+            "It uses longer usernames",
+            "Credentials are bound to the relying-party origin",
+            "It disables TLS",
+            "It stores the private key on the server"
+          ],
+          "answer": 1,
+          "explanation": "Origin binding prevents a credential assertion from being replayed to a lookalike origin."
+        },
+        {
+          "prompt": "What must happen when validating a JWT?",
+          "options": [
+            "Decode its payload only",
+            "Verify algorithm, signature, issuer, audience, and relevant time claims",
+            "Trust any token with three segments",
+            "Use its subject as authorization without policy"
+          ],
+          "answer": 1,
+          "explanation": "A decoded token is not trusted until its cryptographic and semantic claims are validated."
+        }
+      ]
     },
     {
       "id": "identity-access",
@@ -114,13 +464,63 @@
       "phase": "Trust and Identity",
       "minutes": 110,
       "why": "Enterprise and cloud compromise often follows indirect identity edges rather than a software exploit.",
-      "objectives": ["Model users, workloads, roles, resources, and delegation as a graph", "Find privilege-escalation and impersonation paths", "Design least privilege, review, and break-glass controls"],
-      "concepts": [{"title": "Permissions compose", "body": "A harmless-looking permission can become powerful when chained with token creation, role modification, secret access, or workload deployment."}, {"title": "Human and workload identity differ", "body": "Automation needs short-lived, attributable workload identity rather than exported user-like credentials."}, {"title": "Lifecycle prevents drift", "body": "Provisioning, access review, separation of duties, just-in-time elevation, and deprovisioning limit accumulated privilege."}],
+      "objectives": [
+        "Model users, workloads, roles, resources, and delegation as a graph",
+        "Find privilege-escalation and impersonation paths",
+        "Design least privilege, review, and break-glass controls"
+      ],
+      "concepts": [
+        {
+          "title": "Permissions compose",
+          "body": "A harmless-looking permission can become powerful when chained with token creation, role modification, secret access, or workload deployment."
+        },
+        {
+          "title": "Human and workload identity differ",
+          "body": "Automation needs short-lived, attributable workload identity rather than exported user-like credentials."
+        },
+        {
+          "title": "Lifecycle prevents drift",
+          "body": "Provisioning, access review, separation of duties, just-in-time elevation, and deprovisioning limit accumulated privilege."
+        }
+      ],
       "example": "A CI principal cannot read production directly but can modify a deployment that runs as a production service account. That deployment edge is an effective privilege-escalation path.",
-      "pitfalls": ["Reviewing roles individually instead of traversing privilege paths", "Using long-lived service-account keys where workload federation is available"],
-      "lab": {"title": "Find the privilege path", "scenario": "A developer can edit a pipeline, the pipeline deploys a workload, and the workload can read production secrets.", "deliverables": ["Draw the identity and permission graph", "Identify the shortest escalation path and required conditions", "Propose preventive, detective, and recovery controls"]},
-      "interview": {"prompt": "How would you secure service accounts in a cloud environment?", "rubric": ["Prefers short-lived workload identity", "Scopes permissions and trust relationships", "Covers key inventory and rotation where keys remain", "Includes monitoring, review, and incident revocation"]},
-      "quiz": [{"prompt": "Why can permission to deploy a workload be equivalent to service-account impersonation?", "options": ["Deployments always disable audit logs", "The workload may execute using that service account's authority", "Containers contain no identity", "Deployment permissions automatically grant billing access"], "answer": 1, "explanation": "Controlling code that runs under a privileged identity can provide its effective authority."}, {"prompt": "What most reduces risk from exported service-account keys?", "options": ["Making key names secret", "Replacing them with short-lived workload identity where possible", "Sharing one key across services", "Encoding keys before committing them"], "answer": 1, "explanation": "Short-lived federated identity removes durable exported credentials and improves attribution."}]
+      "pitfalls": [
+        "Reviewing roles individually instead of traversing privilege paths",
+        "Using long-lived service-account keys where workload federation is available"
+      ],
+      "interview": {
+        "prompt": "How would you secure service accounts in a cloud environment?",
+        "rubric": [
+          "Prefers short-lived workload identity",
+          "Scopes permissions and trust relationships",
+          "Covers key inventory and rotation where keys remain",
+          "Includes monitoring, review, and incident revocation"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Why can permission to deploy a workload be equivalent to service-account impersonation?",
+          "options": [
+            "Deployments always disable audit logs",
+            "The workload may execute using that service account's authority",
+            "Containers contain no identity",
+            "Deployment permissions automatically grant billing access"
+          ],
+          "answer": 1,
+          "explanation": "Controlling code that runs under a privileged identity can provide its effective authority."
+        },
+        {
+          "prompt": "What most reduces risk from exported service-account keys?",
+          "options": [
+            "Making key names secret",
+            "Replacing them with short-lived workload identity where possible",
+            "Sharing one key across services",
+            "Encoding keys before committing them"
+          ],
+          "answer": 1,
+          "explanation": "Short-lived federated identity removes durable exported credentials and improves attribution."
+        }
+      ]
     },
     {
       "id": "cloud-containers",
@@ -129,13 +529,63 @@
       "phase": "Platform Security",
       "minutes": 130,
       "why": "Cloud control planes, workload identity, orchestration, and shared kernels create distinct attack paths and containment boundaries.",
-      "objectives": ["Compare VM, container, cluster, and cloud-account boundaries", "Secure Kubernetes identity, workloads, network, and admission", "Trace metadata, control-plane, image, and cross-account attack paths"],
-      "concepts": [{"title": "Control plane is production authority", "body": "Cloud and Kubernetes APIs can create workloads, attach identities, read secrets, and change policy. Protect their credentials as privileged code execution."}, {"title": "Containers share a kernel", "body": "Namespaces, cgroups, capabilities, seccomp, MAC, and runtime configuration reduce risk but do not create a VM boundary."}, {"title": "Default paths matter", "body": "Metadata endpoints, mounted tokens, permissive RBAC, public control planes, mutable images, and open egress turn one workload compromise into a platform incident."}],
+      "objectives": [
+        "Compare VM, container, cluster, and cloud-account boundaries",
+        "Secure Kubernetes identity, workloads, network, and admission",
+        "Trace metadata, control-plane, image, and cross-account attack paths"
+      ],
+      "concepts": [
+        {
+          "title": "Control plane is production authority",
+          "body": "Cloud and Kubernetes APIs can create workloads, attach identities, read secrets, and change policy. Protect their credentials as privileged code execution."
+        },
+        {
+          "title": "Containers share a kernel",
+          "body": "Namespaces, cgroups, capabilities, seccomp, MAC, and runtime configuration reduce risk but do not create a VM boundary."
+        },
+        {
+          "title": "Default paths matter",
+          "body": "Metadata endpoints, mounted tokens, permissive RBAC, public control planes, mutable images, and open egress turn one workload compromise into a platform incident."
+        }
+      ],
       "example": "An SSRF bug reaches a metadata service, steals workload credentials, lists secrets, and creates a privileged pod. Prevent each edge with destination controls, scoped identity, RBAC, admission policy, and network isolation.",
-      "pitfalls": ["Calling a container a security boundary without qualification", "Focusing on workload CVEs while ignoring control-plane authorization"],
-      "lab": {"title": "Harden a Kubernetes workload", "scenario": "A public API pod runs as root, mounts a broad service-account token, has unrestricted egress, and uses a mutable image tag.", "deliverables": ["Rank the weaknesses by plausible attack path", "Write a hardened workload and policy checklist", "Define audit and runtime signals for attempted escalation"]},
-      "interview": {"prompt": "A container is compromised. How do you determine whether the cluster is compromised too?", "rubric": ["Scopes identity, mounts, capabilities, host access, and network reach", "Inspects API audit and cloud control-plane logs", "Checks persistence and other workloads", "Contains credentials and workload while preserving evidence"]},
-      "quiz": [{"prompt": "Which Kubernetes condition most directly enables host compromise?", "options": ["A read-only root filesystem", "A privileged pod mounting the host filesystem", "A namespace label", "A ClusterIP service"], "answer": 1, "explanation": "Privileged host-mounted workloads can cross the container boundary and modify the node."}, {"prompt": "Why should default service-account token mounting be minimized?", "options": ["Tokens make images larger", "A compromised workload may use the token against the Kubernetes API", "Tokens disable DNS", "Kubernetes cannot rotate tokens"], "answer": 1, "explanation": "Mounted credentials create a control-plane attack path from workload compromise."}]
+      "pitfalls": [
+        "Calling a container a security boundary without qualification",
+        "Focusing on workload CVEs while ignoring control-plane authorization"
+      ],
+      "interview": {
+        "prompt": "A container is compromised. How do you determine whether the cluster is compromised too?",
+        "rubric": [
+          "Scopes identity, mounts, capabilities, host access, and network reach",
+          "Inspects API audit and cloud control-plane logs",
+          "Checks persistence and other workloads",
+          "Contains credentials and workload while preserving evidence"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which Kubernetes condition most directly enables host compromise?",
+          "options": [
+            "A read-only root filesystem",
+            "A privileged pod mounting the host filesystem",
+            "A namespace label",
+            "A ClusterIP service"
+          ],
+          "answer": 1,
+          "explanation": "Privileged host-mounted workloads can cross the container boundary and modify the node."
+        },
+        {
+          "prompt": "Why should default service-account token mounting be minimized?",
+          "options": [
+            "Tokens make images larger",
+            "A compromised workload may use the token against the Kubernetes API",
+            "Tokens disable DNS",
+            "Kubernetes cannot rotate tokens"
+          ],
+          "answer": 1,
+          "explanation": "Mounted credentials create a control-plane attack path from workload compromise."
+        }
+      ]
     },
     {
       "id": "secure-development",
@@ -143,13 +593,63 @@
       "phase": "Platform Security",
       "minutes": 115,
       "why": "Product security reduces vulnerability classes and protects the systems that build, sign, and distribute software.",
-      "objectives": ["Place security requirements and verification throughout delivery", "Threat-model source, CI/CD, dependencies, artifacts, and deployment", "Use provenance, review, isolation, and secure defaults to reduce systemic risk"],
-      "concepts": [{"title": "Secure the factory", "body": "Developer endpoints, source control, CI runners, package sources, artifact stores, signing keys, and deployment identities form a high-value production system."}, {"title": "Prevent classes", "body": "Safe frameworks, memory-safe languages, centralized authorization, secure defaults, and paved roads remove recurring defects more effectively than repeated findings."}, {"title": "Evidence travels with artifacts", "body": "Pinned dependencies, SBOMs, provenance, signatures, isolated builds, and policy verification help establish what was built and from which inputs."}],
+      "objectives": [
+        "Place security requirements and verification throughout delivery",
+        "Threat-model source, CI/CD, dependencies, artifacts, and deployment",
+        "Use provenance, review, isolation, and secure defaults to reduce systemic risk"
+      ],
+      "concepts": [
+        {
+          "title": "Secure the factory",
+          "body": "Developer endpoints, source control, CI runners, package sources, artifact stores, signing keys, and deployment identities form a high-value production system."
+        },
+        {
+          "title": "Prevent classes",
+          "body": "Safe frameworks, memory-safe languages, centralized authorization, secure defaults, and paved roads remove recurring defects more effectively than repeated findings."
+        },
+        {
+          "title": "Evidence travels with artifacts",
+          "body": "Pinned dependencies, SBOMs, provenance, signatures, isolated builds, and policy verification help establish what was built and from which inputs."
+        }
+      ],
       "example": "A stolen CI token modifies a release and signs it with a broadly accessible key. Separate build and signing authority, isolate runners, require reviewed changes, use short-lived identity, and verify provenance at deployment.",
-      "pitfalls": ["Treating SAST as the secure development program", "Collecting an SBOM without ownership or vulnerability response"],
-      "lab": {"title": "Threat-model a release pipeline", "scenario": "Pull requests trigger third-party actions, build containers, sign images, and deploy automatically.", "deliverables": ["Draw identities, trust boundaries, inputs, and artifacts", "Find at least eight tampering or credential paths", "Design controls for review, runner isolation, provenance, signing, and deployment policy"]},
-      "interview": {"prompt": "How would you improve security across a large engineering organization?", "rubric": ["Starts with risk and developer workflow", "Prioritizes reusable paved roads and secure defaults", "Combines prevention, verification, and response", "Defines adoption and outcome metrics"]},
-      "quiz": [{"prompt": "What does artifact provenance primarily help establish?", "options": ["That software has no vulnerabilities", "Where and how an artifact was built from declared inputs", "That every dependency is licensed", "That production needs no runtime controls"], "answer": 1, "explanation": "Provenance provides verifiable information about build process and inputs, not a guarantee of bug-free software."}, {"prompt": "Which approach best prevents an entire vulnerability class?", "options": ["Telling every developer to remember a checklist", "A secure framework API that makes the unsafe operation unavailable", "Scanning production once per year", "Hiding error messages"], "answer": 1, "explanation": "Safe abstractions and defaults remove repeated opportunities to make the same mistake."}]
+      "pitfalls": [
+        "Treating SAST as the secure development program",
+        "Collecting an SBOM without ownership or vulnerability response"
+      ],
+      "interview": {
+        "prompt": "How would you improve security across a large engineering organization?",
+        "rubric": [
+          "Starts with risk and developer workflow",
+          "Prioritizes reusable paved roads and secure defaults",
+          "Combines prevention, verification, and response",
+          "Defines adoption and outcome metrics"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What does artifact provenance primarily help establish?",
+          "options": [
+            "That software has no vulnerabilities",
+            "Where and how an artifact was built from declared inputs",
+            "That every dependency is licensed",
+            "That production needs no runtime controls"
+          ],
+          "answer": 1,
+          "explanation": "Provenance provides verifiable information about build process and inputs, not a guarantee of bug-free software."
+        },
+        {
+          "prompt": "Which approach best prevents an entire vulnerability class?",
+          "options": [
+            "Telling every developer to remember a checklist",
+            "A secure framework API that makes the unsafe operation unavailable",
+            "Scanning production once per year",
+            "Hiding error messages"
+          ],
+          "answer": 1,
+          "explanation": "Safe abstractions and defaults remove repeated opportunities to make the same mistake."
+        }
+      ]
     },
     {
       "id": "vulnerability-management",
@@ -157,13 +657,63 @@
       "phase": "Platform Security",
       "minutes": 90,
       "why": "Security engineers must turn noisy findings into risk-informed remediation and verify that fixes remove root causes.",
-      "objectives": ["Prioritize using exploitability, exposure, asset value, and compensating controls", "Distinguish finding, vulnerability, exploit path, and systemic cause", "Drive remediation, exception, verification, and disclosure workflows"],
-      "concepts": [{"title": "Severity is not priority", "body": "CVSS describes characteristics; operational priority also depends on reachability, active exploitation, privileges, business impact, and available mitigations."}, {"title": "Ownership closes findings", "body": "Every finding needs an owner, deadline, evidence, exception path, and verification method."}, {"title": "Fix roots, not instances", "body": "After patching one endpoint, find sibling paths, add regression tests, improve frameworks, and measure recurrence."}],
+      "objectives": [
+        "Prioritize using exploitability, exposure, asset value, and compensating controls",
+        "Distinguish finding, vulnerability, exploit path, and systemic cause",
+        "Drive remediation, exception, verification, and disclosure workflows"
+      ],
+      "concepts": [
+        {
+          "title": "Severity is not priority",
+          "body": "CVSS describes characteristics; operational priority also depends on reachability, active exploitation, privileges, business impact, and available mitigations."
+        },
+        {
+          "title": "Ownership closes findings",
+          "body": "Every finding needs an owner, deadline, evidence, exception path, and verification method."
+        },
+        {
+          "title": "Fix roots, not instances",
+          "body": "After patching one endpoint, find sibling paths, add regression tests, improve frameworks, and measure recurrence."
+        }
+      ],
       "example": "A critical library CVE in an unreachable test image may rank below a high-severity internet-facing flaw with known exploitation. Document the decision and continuously re-evaluate exposure.",
-      "pitfalls": ["Sorting the backlog only by CVSS", "Closing tickets when code merges rather than when remediation is deployed and verified"],
-      "lab": {"title": "Prioritize a vulnerability queue", "scenario": "You have ten findings across an exposed gateway, internal admin tool, dormant image, and developer laptop fleet.", "deliverables": ["Define a transparent prioritization model", "Rank the findings and defend the top three", "Specify remediation evidence, deadlines, and exception criteria"]},
-      "interview": {"prompt": "Engineering cannot fix every vulnerability this quarter. What do you do?", "rubric": ["Builds a risk model beyond scanner severity", "Identifies active exploitation and critical paths", "Uses compensating controls and explicit exceptions", "Measures time-to-remediate and recurrence"]},
-      "quiz": [{"prompt": "Which factor most directly changes practical urgency beyond base severity?", "options": ["The scanner logo", "Known exploitation on an internet-reachable asset", "The finding title length", "The number of comments on the ticket"], "answer": 1, "explanation": "Active exploitation and exposure materially increase practical risk."}, {"prompt": "When is a vulnerability remediation complete?", "options": ["When a ticket is created", "When the fix is deployed and independently verified", "When a developer acknowledges it", "When the scanner is muted"], "answer": 1, "explanation": "Completion requires deployed remediation and verification, not administrative closure."}]
+      "pitfalls": [
+        "Sorting the backlog only by CVSS",
+        "Closing tickets when code merges rather than when remediation is deployed and verified"
+      ],
+      "interview": {
+        "prompt": "Engineering cannot fix every vulnerability this quarter. What do you do?",
+        "rubric": [
+          "Builds a risk model beyond scanner severity",
+          "Identifies active exploitation and critical paths",
+          "Uses compensating controls and explicit exceptions",
+          "Measures time-to-remediate and recurrence"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which factor most directly changes practical urgency beyond base severity?",
+          "options": [
+            "The scanner logo",
+            "Known exploitation on an internet-reachable asset",
+            "The finding title length",
+            "The number of comments on the ticket"
+          ],
+          "answer": 1,
+          "explanation": "Active exploitation and exposure materially increase practical risk."
+        },
+        {
+          "prompt": "When is a vulnerability remediation complete?",
+          "options": [
+            "When a ticket is created",
+            "When the fix is deployed and independently verified",
+            "When a developer acknowledges it",
+            "When the scanner is muted"
+          ],
+          "answer": 1,
+          "explanation": "Completion requires deployed remediation and verification, not administrative closure."
+        }
+      ]
     },
     {
       "id": "threat-modeling",
@@ -172,13 +722,63 @@
       "phase": "Security Design",
       "minutes": 110,
       "why": "Threat modeling converts architecture and attacker goals into prioritized design decisions before incidents occur.",
-      "objectives": ["Create data-flow diagrams with identities, assets, and trust boundaries", "Generate threats systematically and abuse cases creatively", "Prioritize mitigations with explicit assumptions and residual risk"],
-      "concepts": [{"title": "Model the real system", "body": "Include control planes, administrators, CI/CD, third parties, support workflows, logs, and recovery paths, not only the request path."}, {"title": "Frameworks prompt thinking", "body": "STRIDE and ATT&CK are lenses, not answers. Tie every threat to a concrete component, precondition, impact, and control."}, {"title": "Prioritize decisions", "body": "A useful model produces owners and design changes. Record assumptions, residual risk, and triggers for review."}],
+      "objectives": [
+        "Create data-flow diagrams with identities, assets, and trust boundaries",
+        "Generate threats systematically and abuse cases creatively",
+        "Prioritize mitigations with explicit assumptions and residual risk"
+      ],
+      "concepts": [
+        {
+          "title": "Model the real system",
+          "body": "Include control planes, administrators, CI/CD, third parties, support workflows, logs, and recovery paths, not only the request path."
+        },
+        {
+          "title": "Frameworks prompt thinking",
+          "body": "STRIDE and ATT&CK are lenses, not answers. Tie every threat to a concrete component, precondition, impact, and control."
+        },
+        {
+          "title": "Prioritize decisions",
+          "body": "A useful model produces owners and design changes. Record assumptions, residual risk, and triggers for review."
+        }
+      ],
       "example": "For file upload, model parser execution, metadata, decompression, object storage, sharing links, malware scanning, lifecycle deletion, and the identities crossing each boundary.",
-      "pitfalls": ["Producing a generic threat checklist detached from architecture", "Assigning subjective scores without explaining likelihood and impact"],
-      "lab": {"title": "Threat-model a webhook platform", "scenario": "Customers register URLs; the service sends signed events and retries failures.", "deliverables": ["Draw the complete data flow and trust boundaries", "Generate threats for registration, dispatch, signing, retries, and operations", "Rank the top five and propose preventive and detective controls"]},
-      "interview": {"prompt": "Threat-model a service that generates image previews from user-supplied URLs.", "rubric": ["Clarifies assets, users, scale, and assumptions", "Draws data flow and trust boundaries", "Finds SSRF, parser, resource, storage, and abuse risks", "Prioritizes layered controls and observability"]},
-      "quiz": [{"prompt": "What makes a threat-model finding actionable?", "options": ["It names a STRIDE category only", "It connects a concrete path and impact to an owner and mitigation", "It lists every possible CVE", "It avoids assumptions"], "answer": 1, "explanation": "Actionable findings connect system-specific risk to a decision and accountable owner."}, {"prompt": "Which STRIDE category maps most directly to unauthorized privilege gain?", "options": ["Repudiation", "Information disclosure", "Elevation of privilege", "Denial of service"], "answer": 2, "explanation": "Elevation of privilege covers violations of authorization boundaries."}]
+      "pitfalls": [
+        "Producing a generic threat checklist detached from architecture",
+        "Assigning subjective scores without explaining likelihood and impact"
+      ],
+      "interview": {
+        "prompt": "Threat-model a service that generates image previews from user-supplied URLs.",
+        "rubric": [
+          "Clarifies assets, users, scale, and assumptions",
+          "Draws data flow and trust boundaries",
+          "Finds SSRF, parser, resource, storage, and abuse risks",
+          "Prioritizes layered controls and observability"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What makes a threat-model finding actionable?",
+          "options": [
+            "It names a STRIDE category only",
+            "It connects a concrete path and impact to an owner and mitigation",
+            "It lists every possible CVE",
+            "It avoids assumptions"
+          ],
+          "answer": 1,
+          "explanation": "Actionable findings connect system-specific risk to a decision and accountable owner."
+        },
+        {
+          "prompt": "Which STRIDE category maps most directly to unauthorized privilege gain?",
+          "options": [
+            "Repudiation",
+            "Information disclosure",
+            "Elevation of privilege",
+            "Denial of service"
+          ],
+          "answer": 2,
+          "explanation": "Elevation of privilege covers violations of authorization boundaries."
+        }
+      ]
     },
     {
       "id": "exploitation",
@@ -187,13 +787,63 @@
       "phase": "Adversary Reasoning",
       "minutes": 95,
       "why": "Understanding exploit preconditions and primitives helps you reason about impact without memorizing individual CVEs.",
-      "objectives": ["Separate vulnerability, exploit primitive, precondition, and impact", "Compare local, remote, client-side, social, and physical paths", "Explain shells, persistence, privilege escalation, and egress constraints"],
-      "concepts": [{"title": "Build the chain", "body": "An exploit path combines reachability, vulnerable behavior, attacker-controlled input, a useful primitive, privileges, and post-exploitation opportunity."}, {"title": "Primitive is not outcome", "body": "Read, write, crash, redirect, disclose, and execute primitives have different value depending on process authority and environment."}, {"title": "Environment shapes reliability", "body": "Memory protections, versions, architecture, sandboxing, egress, and monitoring determine whether a proof becomes a practical attack."}],
+      "objectives": [
+        "Separate vulnerability, exploit primitive, precondition, and impact",
+        "Compare local, remote, client-side, social, and physical paths",
+        "Explain shells, persistence, privilege escalation, and egress constraints"
+      ],
+      "concepts": [
+        {
+          "title": "Build the chain",
+          "body": "An exploit path combines reachability, vulnerable behavior, attacker-controlled input, a useful primitive, privileges, and post-exploitation opportunity."
+        },
+        {
+          "title": "Primitive is not outcome",
+          "body": "Read, write, crash, redirect, disclose, and execute primitives have different value depending on process authority and environment."
+        },
+        {
+          "title": "Environment shapes reliability",
+          "body": "Memory protections, versions, architecture, sandboxing, egress, and monitoring determine whether a proof becomes a practical attack."
+        }
+      ],
       "example": "A memory disclosure may expose a session secret, which enables account takeover without code execution. Trace impact from primitive rather than ranking only by exploit label.",
-      "pitfalls": ["Equating every crash with remote code execution", "Explaining an exploit without stating reachability and privileges"],
-      "lab": {"title": "Analyze an exploit chain", "scenario": "A public parser crashes on crafted input and runs in a sandboxed low-privilege service.", "deliverables": ["List known facts, unknowns, and required preconditions", "Describe possible primitives and how you would validate them safely", "Map containment layers and telemetry to each step"]},
-      "interview": {"prompt": "What is the difference between a reverse shell and a bind shell, and why does it matter?", "rubric": ["Explains connection direction and listener", "Connects choice to ingress and egress policy", "Discusses process identity and network telemetry", "Avoids presenting shell access as automatic root compromise"]},
-      "quiz": [{"prompt": "A file-read primitive in a web process is most valuable to an attacker when it can access what?", "options": ["Only public static assets", "Secrets or credentials enabling another trust boundary", "A health-check response", "The current timestamp"], "answer": 1, "explanation": "Exploit value depends on reachable sensitive data and the next edge in the attack chain."}, {"prompt": "Why might an attacker choose a reverse shell?", "options": ["It requires no code execution", "Outbound connectivity may be allowed when inbound connectivity is blocked", "It encrypts traffic automatically", "It cannot be logged"], "answer": 1, "explanation": "Reverse shells initiate outbound connections, which may traverse restrictive ingress environments."}]
+      "pitfalls": [
+        "Equating every crash with remote code execution",
+        "Explaining an exploit without stating reachability and privileges"
+      ],
+      "interview": {
+        "prompt": "What is the difference between a reverse shell and a bind shell, and why does it matter?",
+        "rubric": [
+          "Explains connection direction and listener",
+          "Connects choice to ingress and egress policy",
+          "Discusses process identity and network telemetry",
+          "Avoids presenting shell access as automatic root compromise"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "A file-read primitive in a web process is most valuable to an attacker when it can access what?",
+          "options": [
+            "Only public static assets",
+            "Secrets or credentials enabling another trust boundary",
+            "A health-check response",
+            "The current timestamp"
+          ],
+          "answer": 1,
+          "explanation": "Exploit value depends on reachable sensitive data and the next edge in the attack chain."
+        },
+        {
+          "prompt": "Why might an attacker choose a reverse shell?",
+          "options": [
+            "It requires no code execution",
+            "Outbound connectivity may be allowed when inbound connectivity is blocked",
+            "It encrypts traffic automatically",
+            "It cannot be logged"
+          ],
+          "answer": 1,
+          "explanation": "Reverse shells initiate outbound connections, which may traverse restrictive ingress environments."
+        }
+      ]
     },
     {
       "id": "malware-analysis",
@@ -202,13 +852,63 @@
       "phase": "Adversary Reasoning",
       "minutes": 105,
       "why": "Security engineers should extract behavior, capabilities, and durable detection opportunities from suspicious software.",
-      "objectives": ["Choose safe static, dynamic, and memory-analysis approaches", "Recognize persistence, injection, evasion, C2, and collection behavior", "Turn observations into scoped indicators and behavioral detections"],
-      "concepts": [{"title": "Start safely and cheaply", "body": "Hash, identify format, inspect strings and imports, and gather context before executing a sample in an isolated instrumented environment."}, {"title": "Behavior outlives indicators", "body": "Domains and hashes rotate quickly; process relationships, credential access, persistence, and protocol patterns can produce more durable detections."}, {"title": "Analysis is hypothesis-driven", "body": "Ask what capability you need to confirm, choose instrumentation, and record confidence and alternative explanations."}],
+      "objectives": [
+        "Choose safe static, dynamic, and memory-analysis approaches",
+        "Recognize persistence, injection, evasion, C2, and collection behavior",
+        "Turn observations into scoped indicators and behavioral detections"
+      ],
+      "concepts": [
+        {
+          "title": "Start safely and cheaply",
+          "body": "Hash, identify format, inspect strings and imports, and gather context before executing a sample in an isolated instrumented environment."
+        },
+        {
+          "title": "Behavior outlives indicators",
+          "body": "Domains and hashes rotate quickly; process relationships, credential access, persistence, and protocol patterns can produce more durable detections."
+        },
+        {
+          "title": "Analysis is hypothesis-driven",
+          "body": "Ask what capability you need to confirm, choose instrumentation, and record confidence and alternative explanations."
+        }
+      ],
       "example": "A sample creates a scheduled task, injects into a signed process, and beacons with domain generation. Preserve the sample, observe safely, extract configuration, and detect the behaviors as well as the hash.",
-      "pitfalls": ["Executing an unknown sample on a normal workstation", "Publishing broad signatures without checking false positives or provenance"],
-      "lab": {"title": "Plan safe malware triage", "scenario": "An attachment was quarantined after execution on one laptop.", "deliverables": ["Write the collection and isolation plan", "Choose static and dynamic questions in order", "Produce a hypothetical IOC package plus two behavior-based detections"]},
-      "interview": {"prompt": "How would you analyze a suspicious binary you received from incident response?", "rubric": ["Starts with authorization, preservation, and isolation", "Uses staged static and dynamic analysis", "Connects observations to capabilities and scope", "Produces detections with confidence and limitations"]},
-      "quiz": [{"prompt": "Why are behavior-based detections often more durable than file hashes?", "options": ["Hashes never identify files", "Attackers can change a file hash while retaining core behavior", "Behavior cannot create false positives", "Behavior always reveals attribution"], "answer": 1, "explanation": "Minor binary changes rotate hashes, while operational behavior may remain stable."}, {"prompt": "What should happen before dynamically executing an unknown sample?", "options": ["Upload it to production", "Establish an isolated, instrumented environment and preservation plan", "Disable all logging", "Rename the file"], "answer": 1, "explanation": "Dynamic analysis requires controlled isolation, instrumentation, and evidence handling."}]
+      "pitfalls": [
+        "Executing an unknown sample on a normal workstation",
+        "Publishing broad signatures without checking false positives or provenance"
+      ],
+      "interview": {
+        "prompt": "How would you analyze a suspicious binary you received from incident response?",
+        "rubric": [
+          "Starts with authorization, preservation, and isolation",
+          "Uses staged static and dynamic analysis",
+          "Connects observations to capabilities and scope",
+          "Produces detections with confidence and limitations"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Why are behavior-based detections often more durable than file hashes?",
+          "options": [
+            "Hashes never identify files",
+            "Attackers can change a file hash while retaining core behavior",
+            "Behavior cannot create false positives",
+            "Behavior always reveals attribution"
+          ],
+          "answer": 1,
+          "explanation": "Minor binary changes rotate hashes, while operational behavior may remain stable."
+        },
+        {
+          "prompt": "What should happen before dynamically executing an unknown sample?",
+          "options": [
+            "Upload it to production",
+            "Establish an isolated, instrumented environment and preservation plan",
+            "Disable all logging",
+            "Rename the file"
+          ],
+          "answer": 1,
+          "explanation": "Dynamic analysis requires controlled isolation, instrumentation, and evidence handling."
+        }
+      ]
     },
     {
       "id": "attack-lifecycle",
@@ -217,13 +917,63 @@
       "phase": "Adversary Reasoning",
       "minutes": 95,
       "why": "Lifecycle reasoning keeps broad incident and design answers coherent from initial access through impact.",
-      "objectives": ["Narrate realistic multi-stage attack paths", "Map actions to ATT&CK techniques without treating the framework as a checklist", "Identify evidence and intervention opportunities at each stage"],
-      "concepts": [{"title": "Attackers pursue objectives", "body": "Techniques are means to gain access, authority, knowledge, persistence, collection, or impact. Start from objectives and constraints."}, {"title": "Edges matter", "body": "The transition between stages often depends on credentials, trust relationships, network paths, or operational mistakes."}, {"title": "Coverage is layered", "body": "Prevent, detect, contain, and recover across the chain. Avoid assuming one blocked technique ends the campaign."}],
+      "objectives": [
+        "Narrate realistic multi-stage attack paths",
+        "Map actions to ATT&CK techniques without treating the framework as a checklist",
+        "Identify evidence and intervention opportunities at each stage"
+      ],
+      "concepts": [
+        {
+          "title": "Attackers pursue objectives",
+          "body": "Techniques are means to gain access, authority, knowledge, persistence, collection, or impact. Start from objectives and constraints."
+        },
+        {
+          "title": "Edges matter",
+          "body": "The transition between stages often depends on credentials, trust relationships, network paths, or operational mistakes."
+        },
+        {
+          "title": "Coverage is layered",
+          "body": "Prevent, detect, contain, and recover across the chain. Avoid assuming one blocked technique ends the campaign."
+        }
+      ],
       "example": "A phish steals a session, mailbox rules establish persistence, cloud discovery reveals an app registration, delegated authority enables collection, and a storage service enables exfiltration.",
-      "pitfalls": ["Forcing every incident into a perfectly linear kill chain", "Listing ATT&CK IDs without explaining evidence or system context"],
-      "lab": {"title": "Build an attack narrative", "scenario": "A contractor account logs in from new infrastructure, creates an OAuth grant, accesses shared drives, and uploads archives.", "deliverables": ["Create a timestamped attack hypothesis", "Map each action to objective, technique, evidence, and confidence", "Choose containment steps and explain where they could alert the actor"]},
-      "interview": {"prompt": "Walk through a realistic cloud account compromise from initial access to exfiltration.", "rubric": ["States assumptions and target assets", "Uses plausible identity and control-plane edges", "Names logs and evidence throughout", "Includes containment, evasion, and recovery tradeoffs"]},
-      "quiz": [{"prompt": "What is the most useful way to apply ATT&CK during investigation?", "options": ["Treat missing technique IDs as proof nothing happened", "Use techniques to structure hypotheses, evidence, and coverage", "Replace the incident timeline with the matrix", "Assume all actors use every tactic"], "answer": 1, "explanation": "ATT&CK organizes behavior and hypotheses; it does not replace evidence or context."}, {"prompt": "Which artifact best supports persistence through OAuth consent?", "options": ["A new delegated application grant", "A DNS cache miss", "A changed screen resolution", "A full disk"], "answer": 0, "explanation": "A malicious or unexpected application grant can preserve API access beyond an interactive session."}]
+      "pitfalls": [
+        "Forcing every incident into a perfectly linear kill chain",
+        "Listing ATT&CK IDs without explaining evidence or system context"
+      ],
+      "interview": {
+        "prompt": "Walk through a realistic cloud account compromise from initial access to exfiltration.",
+        "rubric": [
+          "States assumptions and target assets",
+          "Uses plausible identity and control-plane edges",
+          "Names logs and evidence throughout",
+          "Includes containment, evasion, and recovery tradeoffs"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What is the most useful way to apply ATT&CK during investigation?",
+          "options": [
+            "Treat missing technique IDs as proof nothing happened",
+            "Use techniques to structure hypotheses, evidence, and coverage",
+            "Replace the incident timeline with the matrix",
+            "Assume all actors use every tactic"
+          ],
+          "answer": 1,
+          "explanation": "ATT&CK organizes behavior and hypotheses; it does not replace evidence or context."
+        },
+        {
+          "prompt": "Which artifact best supports persistence through OAuth consent?",
+          "options": [
+            "A new delegated application grant",
+            "A DNS cache miss",
+            "A changed screen resolution",
+            "A full disk"
+          ],
+          "answer": 0,
+          "explanation": "A malicious or unexpected application grant can preserve API access beyond an interactive session."
+        }
+      ]
     },
     {
       "id": "mitigations",
@@ -232,13 +982,63 @@
       "phase": "Defense Engineering",
       "minutes": 90,
       "why": "Strong candidates choose controls that break concrete attack paths while preserving system usability and reliability.",
-      "objectives": ["Map controls to specific threats and failure points", "Use prevention, detection, response, and recovery together", "Explain residual risk, cost, usability, and operational tradeoffs"],
-      "concepts": [{"title": "Controls need mechanisms", "body": "Do not say 'validate input' or 'use least privilege' alone. State where, against what policy, with which failure behavior, and how it is tested."}, {"title": "Layer independent failures", "body": "Defense in depth is useful when layers fail differently, not when five products depend on the same identity or configuration."}, {"title": "Prefer secure defaults", "body": "Move responsibility toward platform design so normal use is safe and exceptions are explicit, narrow, temporary, and visible."}],
+      "objectives": [
+        "Map controls to specific threats and failure points",
+        "Use prevention, detection, response, and recovery together",
+        "Explain residual risk, cost, usability, and operational tradeoffs"
+      ],
+      "concepts": [
+        {
+          "title": "Controls need mechanisms",
+          "body": "Do not say 'validate input' or 'use least privilege' alone. State where, against what policy, with which failure behavior, and how it is tested."
+        },
+        {
+          "title": "Layer independent failures",
+          "body": "Defense in depth is useful when layers fail differently, not when five products depend on the same identity or configuration."
+        },
+        {
+          "title": "Prefer secure defaults",
+          "body": "Move responsibility toward platform design so normal use is safe and exceptions are explicit, narrow, temporary, and visible."
+        }
+      ],
       "example": "For credential theft, combine phishing-resistant authentication, scoped sessions, device and risk signals, secure recovery, rapid revocation, and investigation telemetry.",
-      "pitfalls": ["Naming a control without the attack step it breaks", "Adding user friction when a system-level safe default is available"],
-      "lab": {"title": "Design layered mitigations", "scenario": "A legacy parser handles untrusted documents with a history of memory-corruption bugs.", "deliverables": ["Map the attack path and highest-impact assets", "Design independent preventive and containment layers", "Define residual risk, monitoring, rollback, and long-term replacement"]},
-      "interview": {"prompt": "What mitigations would you use for memory-corruption risk in a network service?", "rubric": ["Covers elimination or memory-safe replacement", "Uses patching, compiler, OS, sandbox, and privilege controls", "Addresses exposure and egress", "Includes detection and operational tradeoffs"]},
-      "quiz": [{"prompt": "Which is the best example of independent defense in depth?", "options": ["Two alerts fed by the same missing log", "Input-safe parsing plus sandboxing plus low-privilege execution", "Three copies of one password", "A longer policy document"], "answer": 1, "explanation": "These controls act at different failure points and reduce impact if one fails."}, {"prompt": "What should accompany a temporary security exception?", "options": ["An undocumented permanent bypass", "Owner, scope, compensating controls, expiry, and review", "Removal of monitoring", "A shared administrator credential"], "answer": 1, "explanation": "Explicit ownership, bounds, controls, and expiration prevent exceptions from silently becoming defaults."}]
+      "pitfalls": [
+        "Naming a control without the attack step it breaks",
+        "Adding user friction when a system-level safe default is available"
+      ],
+      "interview": {
+        "prompt": "What mitigations would you use for memory-corruption risk in a network service?",
+        "rubric": [
+          "Covers elimination or memory-safe replacement",
+          "Uses patching, compiler, OS, sandbox, and privilege controls",
+          "Addresses exposure and egress",
+          "Includes detection and operational tradeoffs"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which is the best example of independent defense in depth?",
+          "options": [
+            "Two alerts fed by the same missing log",
+            "Input-safe parsing plus sandboxing plus low-privilege execution",
+            "Three copies of one password",
+            "A longer policy document"
+          ],
+          "answer": 1,
+          "explanation": "These controls act at different failure points and reduce impact if one fails."
+        },
+        {
+          "prompt": "What should accompany a temporary security exception?",
+          "options": [
+            "An undocumented permanent bypass",
+            "Owner, scope, compensating controls, expiry, and review",
+            "Removal of monitoring",
+            "A shared administrator credential"
+          ],
+          "answer": 1,
+          "explanation": "Explicit ownership, bounds, controls, and expiration prevent exceptions from silently becoming defaults."
+        }
+      ]
     },
     {
       "id": "detection-engineering",
@@ -247,13 +1047,63 @@
       "phase": "Defense Engineering",
       "minutes": 125,
       "why": "Detection engineering turns attacker behavior and available telemetry into testable, maintainable signals.",
-      "objectives": ["Write detections with hypothesis, data requirements, logic, and tests", "Measure false positives, coverage, latency, and operational value", "Use threat hunting to validate visibility and discover behavior"],
-      "concepts": [{"title": "Detection is software", "body": "Version logic, test it against positive and negative fixtures, review changes, monitor data quality, and assign ownership."}, {"title": "Context creates fidelity", "body": "Identity, asset criticality, process ancestry, destination rarity, and sequence often outperform a single IOC."}, {"title": "Design for evasion", "body": "Ask how an attacker slows down, distributes activity, uses valid accounts, tampers with telemetry, or blends into administration."}],
+      "objectives": [
+        "Write detections with hypothesis, data requirements, logic, and tests",
+        "Measure false positives, coverage, latency, and operational value",
+        "Use threat hunting to validate visibility and discover behavior"
+      ],
+      "concepts": [
+        {
+          "title": "Detection is software",
+          "body": "Version logic, test it against positive and negative fixtures, review changes, monitor data quality, and assign ownership."
+        },
+        {
+          "title": "Context creates fidelity",
+          "body": "Identity, asset criticality, process ancestry, destination rarity, and sequence often outperform a single IOC."
+        },
+        {
+          "title": "Design for evasion",
+          "body": "Ask how an attacker slows down, distributes activity, uses valid accounts, tampers with telemetry, or blends into administration."
+        }
+      ],
       "example": "A password-spray detector counts failures across many users per source, suppresses known identity tests, raises severity after a success, and joins device and geolocation context.",
-      "pitfalls": ["Alerting on every suspicious event without a response decision", "Ignoring data loss, schema changes, and delayed ingestion"],
-      "lab": {"title": "Write and test a detection", "scenario": "Authentication logs include timestamp, source, user, result, device, and application.", "deliverables": ["Define a password-spray hypothesis and required fields", "Write pseudocode or a query with positive and negative fixtures", "Document triage steps, false positives, evasion, and health metrics"]},
-      "interview": {"prompt": "Design a detector for DNS exfiltration.", "rubric": ["Clarifies resolver and endpoint telemetry", "Combines length, entropy, uniqueness, volume, and rarity", "Builds baselines and benign exclusions", "Covers process attribution, evasion, testing, and triage"]},
-      "quiz": [{"prompt": "What makes a detection production-ready?", "options": ["It fires on one attack sample", "It has data contracts, tests, triage guidance, ownership, and health monitoring", "It uses machine learning", "It creates the most alerts"], "answer": 1, "explanation": "Operational quality requires reliable data, validated logic, response context, and lifecycle ownership."}, {"prompt": "Why join a successful login after repeated failures?", "options": ["Success proves the user is malicious", "It can raise confidence that guessing or spraying achieved access", "It eliminates all false positives", "It identifies malware family"], "answer": 1, "explanation": "A success after suspicious failures can indicate progression from attempt to account compromise."}]
+      "pitfalls": [
+        "Alerting on every suspicious event without a response decision",
+        "Ignoring data loss, schema changes, and delayed ingestion"
+      ],
+      "interview": {
+        "prompt": "Design a detector for DNS exfiltration.",
+        "rubric": [
+          "Clarifies resolver and endpoint telemetry",
+          "Combines length, entropy, uniqueness, volume, and rarity",
+          "Builds baselines and benign exclusions",
+          "Covers process attribution, evasion, testing, and triage"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What makes a detection production-ready?",
+          "options": [
+            "It fires on one attack sample",
+            "It has data contracts, tests, triage guidance, ownership, and health monitoring",
+            "It uses machine learning",
+            "It creates the most alerts"
+          ],
+          "answer": 1,
+          "explanation": "Operational quality requires reliable data, validated logic, response context, and lifecycle ownership."
+        },
+        {
+          "prompt": "Why join a successful login after repeated failures?",
+          "options": [
+            "Success proves the user is malicious",
+            "It can raise confidence that guessing or spraying achieved access",
+            "It eliminates all false positives",
+            "It identifies malware family"
+          ],
+          "answer": 1,
+          "explanation": "A success after suspicious failures can indicate progression from attempt to account compromise."
+        }
+      ]
     },
     {
       "id": "incident-response",
@@ -262,13 +1112,63 @@
       "phase": "Security Operations",
       "minutes": 115,
       "why": "Incident interviews test technical judgment, prioritization, communication, evidence handling, and recovery under uncertainty.",
-      "objectives": ["Run preparation, identification, containment, eradication, recovery, and learning", "Assign command, operations, communications, and documentation roles", "Balance rapid containment with evidence, business, legal, and attacker-awareness concerns"],
-      "concepts": [{"title": "Stabilize the system", "body": "Define incident scope, severity, objectives, roles, cadence, source of truth, and decision authority early."}, {"title": "Contain with hypotheses", "body": "Actions should break likely attacker access while preserving evidence and anticipating alternate persistence."}, {"title": "Recovery proves trust", "body": "Rotate affected authority, rebuild where needed, validate controls, monitor recurrence, and communicate residual uncertainty."}],
+      "objectives": [
+        "Run preparation, identification, containment, eradication, recovery, and learning",
+        "Assign command, operations, communications, and documentation roles",
+        "Balance rapid containment with evidence, business, legal, and attacker-awareness concerns"
+      ],
+      "concepts": [
+        {
+          "title": "Stabilize the system",
+          "body": "Define incident scope, severity, objectives, roles, cadence, source of truth, and decision authority early."
+        },
+        {
+          "title": "Contain with hypotheses",
+          "body": "Actions should break likely attacker access while preserving evidence and anticipating alternate persistence."
+        },
+        {
+          "title": "Recovery proves trust",
+          "body": "Rotate affected authority, rebuild where needed, validate controls, monitor recurrence, and communicate residual uncertainty."
+        }
+      ],
       "example": "For stolen cloud credentials, revoke active tokens and persistence grants, preserve control-plane logs, scope resource access, rotate downstream secrets, validate recovery, and investigate the original theft path.",
-      "pitfalls": ["Immediately reimaging the only affected host before volatile collection", "Confusing the first alert with root cause or full scope"],
-      "lab": {"title": "Command a cloud incident", "scenario": "A privileged account created new credentials and accessed sensitive storage before the alert fired.", "deliverables": ["Write the first 30-minute objectives, roles, and decisions", "Build a containment and evidence plan with sequencing", "Draft executive update, recovery criteria, and lessons-learned questions"]},
-      "interview": {"prompt": "You suspect a senior engineer's account is compromised. Walk through the incident.", "rubric": ["Establishes severity, roles, and communication", "Preserves evidence and scopes identity activity", "Contains sessions, credentials, and persistence", "Handles privacy, business impact, recovery, and root cause"]},
-      "quiz": [{"prompt": "Why can immediate containment be risky?", "options": ["Containment is never useful", "It may destroy evidence or alert the actor before scope is understood", "It always violates privacy law", "It prevents recovery"], "answer": 1, "explanation": "Containment timing should weigh ongoing harm, evidence, scope, and attacker reaction."}, {"prompt": "What distinguishes root cause from symptom?", "options": ["Root cause is the first alert", "Root cause explains the underlying failure that enabled the incident", "Symptoms require no evidence", "Root cause is always one person"], "answer": 1, "explanation": "Root cause addresses the enabling systemic or technical failure, not only its visible effect."}]
+      "pitfalls": [
+        "Immediately reimaging the only affected host before volatile collection",
+        "Confusing the first alert with root cause or full scope"
+      ],
+      "interview": {
+        "prompt": "You suspect a senior engineer's account is compromised. Walk through the incident.",
+        "rubric": [
+          "Establishes severity, roles, and communication",
+          "Preserves evidence and scopes identity activity",
+          "Contains sessions, credentials, and persistence",
+          "Handles privacy, business impact, recovery, and root cause"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Why can immediate containment be risky?",
+          "options": [
+            "Containment is never useful",
+            "It may destroy evidence or alert the actor before scope is understood",
+            "It always violates privacy law",
+            "It prevents recovery"
+          ],
+          "answer": 1,
+          "explanation": "Containment timing should weigh ongoing harm, evidence, scope, and attacker reaction."
+        },
+        {
+          "prompt": "What distinguishes root cause from symptom?",
+          "options": [
+            "Root cause is the first alert",
+            "Root cause explains the underlying failure that enabled the incident",
+            "Symptoms require no evidence",
+            "Root cause is always one person"
+          ],
+          "answer": 1,
+          "explanation": "Root cause addresses the enabling systemic or technical failure, not only its visible effect."
+        }
+      ]
     },
     {
       "id": "digital-forensics",
@@ -277,13 +1177,63 @@
       "phase": "Security Operations",
       "minutes": 110,
       "why": "Forensics provides disciplined methods to preserve, recover, correlate, and explain evidence during an investigation.",
-      "objectives": ["Prioritize collection by volatility and investigative value", "Build timelines across host, network, identity, and cloud artifacts", "Preserve provenance, integrity, and chain of custody"],
-      "concepts": [{"title": "Question drives collection", "body": "Collect evidence that can confirm or refute hypotheses while accounting for volatility, cost, authority, and system impact."}, {"title": "Time needs normalization", "body": "Record source clock, timezone, skew, ingestion delay, and timestamp semantics before correlating events."}, {"title": "Preservation supports trust", "body": "Document who collected what, when, how, with which tools and hashes, and every transfer or transformation."}],
+      "objectives": [
+        "Prioritize collection by volatility and investigative value",
+        "Build timelines across host, network, identity, and cloud artifacts",
+        "Preserve provenance, integrity, and chain of custody"
+      ],
+      "concepts": [
+        {
+          "title": "Question drives collection",
+          "body": "Collect evidence that can confirm or refute hypotheses while accounting for volatility, cost, authority, and system impact."
+        },
+        {
+          "title": "Time needs normalization",
+          "body": "Record source clock, timezone, skew, ingestion delay, and timestamp semantics before correlating events."
+        },
+        {
+          "title": "Preservation supports trust",
+          "body": "Document who collected what, when, how, with which tools and hashes, and every transfer or transformation."
+        }
+      ],
       "example": "A timeline joins identity-provider login, cloud audit, endpoint process, browser history, and object-storage access while recording clock skew and confidence for each event.",
-      "pitfalls": ["Assuming log ingestion time equals event time", "Collecting everything without an investigative question or legal authority"],
-      "lab": {"title": "Construct an incident timeline", "scenario": "You receive endpoint, authentication, DNS, and cloud events with different timestamp formats and delays.", "deliverables": ["Normalize timestamps and document assumptions", "Create a timeline separating facts from hypotheses", "Identify missing evidence and the next three investigative pivots"]},
-      "interview": {"prompt": "How would you investigate suspected data theft from an employee laptop?", "rubric": ["Clarifies authority, scope, and data sensitivity", "Prioritizes volatile and remote evidence", "Builds a multi-source timeline", "Preserves chain of custody and avoids overclaiming attribution"]},
-      "quiz": [{"prompt": "Why document clock skew in a forensic timeline?", "options": ["To make every event simultaneous", "To avoid incorrect ordering and causal conclusions", "To encrypt the evidence", "To identify the attacker automatically"], "answer": 1, "explanation": "Different clocks and ingestion delays can create misleading event order."}, {"prompt": "What does chain of custody establish?", "options": ["That evidence proves guilt", "Documented control and handling of evidence over time", "That no forensic tool has bugs", "That collection was complete"], "answer": 1, "explanation": "Chain of custody records possession, transfer, and handling so evidence integrity can be evaluated."}]
+      "pitfalls": [
+        "Assuming log ingestion time equals event time",
+        "Collecting everything without an investigative question or legal authority"
+      ],
+      "interview": {
+        "prompt": "How would you investigate suspected data theft from an employee laptop?",
+        "rubric": [
+          "Clarifies authority, scope, and data sensitivity",
+          "Prioritizes volatile and remote evidence",
+          "Builds a multi-source timeline",
+          "Preserves chain of custody and avoids overclaiming attribution"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Why document clock skew in a forensic timeline?",
+          "options": [
+            "To make every event simultaneous",
+            "To avoid incorrect ordering and causal conclusions",
+            "To encrypt the evidence",
+            "To identify the attacker automatically"
+          ],
+          "answer": 1,
+          "explanation": "Different clocks and ingestion delays can create misleading event order."
+        },
+        {
+          "prompt": "What does chain of custody establish?",
+          "options": [
+            "That evidence proves guilt",
+            "Documented control and handling of evidence over time",
+            "That no forensic tool has bugs",
+            "That collection was complete"
+          ],
+          "answer": 1,
+          "explanation": "Chain of custody records possession, transfer, and handling so evidence integrity can be evaluated."
+        }
+      ]
     },
     {
       "id": "coding-algorithms",
@@ -292,13 +1242,63 @@
       "phase": "Engineering Bar",
       "minutes": 140,
       "why": "Coding is a continuous interview bar: candidates must turn vague security data problems into correct, tested, explainable programs.",
-      "objectives": ["Clarify inputs, outputs, constraints, and abuse cases", "Use appropriate collections, parsing, sorting, search, and graph traversal", "Test edge cases and explain time and space complexity"],
-      "concepts": [{"title": "Model before typing", "body": "Restate the problem, define examples, choose data structures, write pseudocode, and identify complexity before implementation."}, {"title": "Security data is messy", "body": "Expect malformed rows, mixed timezones, missing fields, duplicates, untrusted sizes, and adversarial input."}, {"title": "Communicate the tradeoff", "body": "A correct simple solution with tests and clear complexity is stronger than an unfinished clever solution."}],
+      "objectives": [
+        "Clarify inputs, outputs, constraints, and abuse cases",
+        "Use appropriate collections, parsing, sorting, search, and graph traversal",
+        "Test edge cases and explain time and space complexity"
+      ],
+      "concepts": [
+        {
+          "title": "Model before typing",
+          "body": "Restate the problem, define examples, choose data structures, write pseudocode, and identify complexity before implementation."
+        },
+        {
+          "title": "Security data is messy",
+          "body": "Expect malformed rows, mixed timezones, missing fields, duplicates, untrusted sizes, and adversarial input."
+        },
+        {
+          "title": "Communicate the tradeoff",
+          "body": "A correct simple solution with tests and clear complexity is stronger than an unfinished clever solution."
+        }
+      ],
       "example": "For failed-login bursts, parse records defensively, group by source and sliding window, retain only necessary timestamps, test boundaries, then discuss distributed evasion.",
-      "pitfalls": ["Coding silently before agreeing on requirements", "Ignoring malformed input, memory bounds, and test cases"],
-      "lab": {"title": "Implement an auth-log detector", "scenario": "Read newline-delimited auth events and flag sources exceeding a failure threshold within a rolling window.", "deliverables": ["Write examples, assumptions, and pseudocode", "Implement the detector with malformed-input handling", "Add tests and explain complexity plus distributed-attack limitations"]},
-      "interview": {"prompt": "Given logs, return users who authenticated from more than three countries in one hour.", "rubric": ["Clarifies ordering, timestamp, and geolocation assumptions", "Chooses suitable maps and window state", "Tests duplicates, boundaries, and malformed records", "Explains complexity and data-quality limitations"]},
-      "quiz": [{"prompt": "What is the average lookup complexity of a well-behaved hash map?", "options": ["O(1)", "O(log n!)", "O(n squared)", "O(2^n)"], "answer": 0, "explanation": "Hash maps provide average constant-time lookup, with caveats for collisions and implementation."}, {"prompt": "What should happen before coding an ambiguous interview problem?", "options": ["Select the most complex algorithm", "Clarify requirements and work through examples", "Ignore malformed input", "Optimize without a baseline"], "answer": 1, "explanation": "Clarification and examples expose requirements and guide a correct data model."}]
+      "pitfalls": [
+        "Coding silently before agreeing on requirements",
+        "Ignoring malformed input, memory bounds, and test cases"
+      ],
+      "interview": {
+        "prompt": "Given logs, return users who authenticated from more than three countries in one hour.",
+        "rubric": [
+          "Clarifies ordering, timestamp, and geolocation assumptions",
+          "Chooses suitable maps and window state",
+          "Tests duplicates, boundaries, and malformed records",
+          "Explains complexity and data-quality limitations"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What is the average lookup complexity of a well-behaved hash map?",
+          "options": [
+            "O(1)",
+            "O(log n!)",
+            "O(n squared)",
+            "O(2^n)"
+          ],
+          "answer": 0,
+          "explanation": "Hash maps provide average constant-time lookup, with caveats for collisions and implementation."
+        },
+        {
+          "prompt": "What should happen before coding an ambiguous interview problem?",
+          "options": [
+            "Select the most complex algorithm",
+            "Clarify requirements and work through examples",
+            "Ignore malformed input",
+            "Optimize without a baseline"
+          ],
+          "answer": 1,
+          "explanation": "Clarification and examples expose requirements and guide a correct data model."
+        }
+      ]
     },
     {
       "id": "security-projects",
@@ -307,13 +1307,63 @@
       "phase": "Engineering Bar",
       "minutes": 180,
       "why": "Small, finished defensive tools provide evidence that you can frame, build, test, and explain security work.",
-      "objectives": ["Define bounded defensive tools with clear inputs and outputs", "Use fixtures, tests, metrics, and safe execution boundaries", "Explain limitations, false positives, and operational next steps"],
-      "concepts": [{"title": "Choose an observable problem", "body": "A useful project answers a concrete question: which hosts scanned, which records violate policy, or which artifacts match a rule."}, {"title": "Fixtures make work credible", "body": "Include representative positive, negative, malformed, and boundary cases with deterministic expected results."}, {"title": "Safety is part of design", "body": "Keep scanners and credential simulations on authorized localhost fixtures. Prefer detection and analysis objectives over uncontrolled offensive automation."}],
+      "objectives": [
+        "Define bounded defensive tools with clear inputs and outputs",
+        "Use fixtures, tests, metrics, and safe execution boundaries",
+        "Explain limitations, false positives, and operational next steps"
+      ],
+      "concepts": [
+        {
+          "title": "Choose an observable problem",
+          "body": "A useful project answers a concrete question: which hosts scanned, which records violate policy, or which artifacts match a rule."
+        },
+        {
+          "title": "Fixtures make work credible",
+          "body": "Include representative positive, negative, malformed, and boundary cases with deterministic expected results."
+        },
+        {
+          "title": "Safety is part of design",
+          "body": "Keep scanners and credential simulations on authorized localhost fixtures. Prefer detection and analysis objectives over uncontrolled offensive automation."
+        }
+      ],
       "example": "Build a web-log analyzer that flags path enumeration, includes sample logs and unit tests, reports why each alert fired, and documents evasion and false positives.",
-      "pitfalls": ["Building offensive automation without authorization boundaries", "Publishing unfinished code without fixtures, tests, or explanation"],
-      "lab": {"title": "Ship one portfolio artifact", "scenario": "Choose a log parser, scan detector, metadata extractor, policy checker, or signature matcher.", "deliverables": ["Define threat model, input contract, output, and safety boundary", "Implement a tested minimum version with fixtures", "Write a concise README covering design, complexity, limitations, and next iteration"]},
-      "interview": {"prompt": "Walk me through a security tool you built and one decision you would change.", "rubric": ["Frames the user and security problem", "Explains architecture and key tradeoffs", "Shows tests, evidence, and limitations", "Reflects honestly on improvement and operations"]},
-      "quiz": [{"prompt": "What most improves the interview value of a small security project?", "options": ["A large dependency count", "Clear scope, fixtures, tests, tradeoffs, and limitations", "An offensive name", "No documentation"], "answer": 1, "explanation": "Evidence of disciplined engineering matters more than project size or novelty."}, {"prompt": "Where should a port-scanning exercise run?", "options": ["Across arbitrary internet hosts", "Only against explicitly authorized local or lab targets", "Against employer infrastructure without notice", "Anywhere if the rate is low"], "answer": 1, "explanation": "Active testing requires explicit authorization and controlled scope."}]
+      "pitfalls": [
+        "Building offensive automation without authorization boundaries",
+        "Publishing unfinished code without fixtures, tests, or explanation"
+      ],
+      "interview": {
+        "prompt": "Walk me through a security tool you built and one decision you would change.",
+        "rubric": [
+          "Frames the user and security problem",
+          "Explains architecture and key tradeoffs",
+          "Shows tests, evidence, and limitations",
+          "Reflects honestly on improvement and operations"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What most improves the interview value of a small security project?",
+          "options": [
+            "A large dependency count",
+            "Clear scope, fixtures, tests, tradeoffs, and limitations",
+            "An offensive name",
+            "No documentation"
+          ],
+          "answer": 1,
+          "explanation": "Evidence of disciplined engineering matters more than project size or novelty."
+        },
+        {
+          "prompt": "Where should a port-scanning exercise run?",
+          "options": [
+            "Across arbitrary internet hosts",
+            "Only against explicitly authorized local or lab targets",
+            "Against employer infrastructure without notice",
+            "Anywhere if the rate is low"
+          ],
+          "answer": 1,
+          "explanation": "Active testing requires explicit authorization and controlled scope."
+        }
+      ]
     },
     {
       "id": "interview-execution",
@@ -322,13 +1372,63 @@
       "phase": "Interview Readiness",
       "minutes": 90,
       "why": "Interviewers can evaluate only the reasoning you expose: assumptions, models, tradeoffs, corrections, and collaboration.",
-      "objectives": ["Structure ambiguous technical and scenario answers", "Think aloud without narrating noise", "Recover productively when knowledge is incomplete"],
-      "concepts": [{"title": "Clarify the decision", "body": "Repeat the problem, identify the goal, ask for constraints and available telemetry, then state remaining assumptions."}, {"title": "Build from first principles", "body": "Start with assets, identities, trust boundaries, data flow, attacker goals, and observable behavior before naming products."}, {"title": "Close the loop", "body": "Summarize the design, test it against abuse and failure, discuss tradeoffs, and state what you would verify next."}],
+      "objectives": [
+        "Structure ambiguous technical and scenario answers",
+        "Think aloud without narrating noise",
+        "Recover productively when knowledge is incomplete"
+      ],
+      "concepts": [
+        {
+          "title": "Clarify the decision",
+          "body": "Repeat the problem, identify the goal, ask for constraints and available telemetry, then state remaining assumptions."
+        },
+        {
+          "title": "Build from first principles",
+          "body": "Start with assets, identities, trust boundaries, data flow, attacker goals, and observable behavior before naming products."
+        },
+        {
+          "title": "Close the loop",
+          "body": "Summarize the design, test it against abuse and failure, discuss tradeoffs, and state what you would verify next."
+        }
+      ],
       "example": "For a vague detection prompt: clarify logs and environment, define the behavior, propose simple logic, test benign cases, consider evasion, and describe triage and measurement.",
-      "pitfalls": ["Jumping directly to a favorite tool", "Going silent when unsure instead of exposing useful adjacent reasoning"],
-      "lab": {"title": "Record a mock answer", "scenario": "Choose one design, detection, incident, and coding prompt from completed modules.", "deliverables": ["Record four timed answers using clarify-model-solve-test-tradeoff", "Score each against its module rubric", "Rewrite the weakest answer and list three recurring communication habits"]},
-      "interview": {"prompt": "You are asked about a protocol you do not know. What do you do?", "rubric": ["States the knowledge boundary honestly", "Connects known adjacent principles", "Asks clarifying questions", "Builds a tentative model and explains how to verify it"]},
-      "quiz": [{"prompt": "What is the best first response to a vague security-design question?", "options": ["Name a vendor product", "Clarify goals, assets, actors, constraints, and assumptions", "List every vulnerability you know", "Refuse to make assumptions"], "answer": 1, "explanation": "Clarification establishes the system and decision before solutions are evaluated."}, {"prompt": "What should you do when you do not know an exact technical detail?", "options": ["Invent certainty", "State the gap, reason from known principles, and explain verification", "Stop speaking", "Change the subject without permission"], "answer": 1, "explanation": "Honest boundaries plus first-principles reasoning still provide strong interview signal."}]
+      "pitfalls": [
+        "Jumping directly to a favorite tool",
+        "Going silent when unsure instead of exposing useful adjacent reasoning"
+      ],
+      "interview": {
+        "prompt": "You are asked about a protocol you do not know. What do you do?",
+        "rubric": [
+          "States the knowledge boundary honestly",
+          "Connects known adjacent principles",
+          "Asks clarifying questions",
+          "Builds a tentative model and explains how to verify it"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "What is the best first response to a vague security-design question?",
+          "options": [
+            "Name a vendor product",
+            "Clarify goals, assets, actors, constraints, and assumptions",
+            "List every vulnerability you know",
+            "Refuse to make assumptions"
+          ],
+          "answer": 1,
+          "explanation": "Clarification establishes the system and decision before solutions are evaluated."
+        },
+        {
+          "prompt": "What should you do when you do not know an exact technical detail?",
+          "options": [
+            "Invent certainty",
+            "State the gap, reason from known principles, and explain verification",
+            "Stop speaking",
+            "Change the subject without permission"
+          ],
+          "answer": 1,
+          "explanation": "Honest boundaries plus first-principles reasoning still provide strong interview signal."
+        }
+      ]
     },
     {
       "id": "capstone",
@@ -336,13 +1436,63 @@
       "phase": "Interview Readiness",
       "minutes": 240,
       "why": "The capstone proves that you can integrate architecture, identity, attack paths, detection, response, coding, and communication.",
-      "objectives": ["Threat-model and harden a realistic SaaS architecture", "Investigate a multi-stage identity and API incident", "Communicate technical decisions to engineering and leadership"],
-      "concepts": [{"title": "Synthesis over trivia", "body": "Strong security engineering connects technical facts to business assets, attacker paths, observable evidence, and practical decisions."}, {"title": "Defend your assumptions", "body": "There is no single answer. State constraints, choose priorities, and explain what new evidence would change the plan."}, {"title": "Produce artifacts", "body": "A diagram, attack path, detection query, timeline, remediation plan, and executive update make reasoning inspectable."}],
+      "objectives": [
+        "Threat-model and harden a realistic SaaS architecture",
+        "Investigate a multi-stage identity and API incident",
+        "Communicate technical decisions to engineering and leadership"
+      ],
+      "concepts": [
+        {
+          "title": "Synthesis over trivia",
+          "body": "Strong security engineering connects technical facts to business assets, attacker paths, observable evidence, and practical decisions."
+        },
+        {
+          "title": "Defend your assumptions",
+          "body": "There is no single answer. State constraints, choose priorities, and explain what new evidence would change the plan."
+        },
+        {
+          "title": "Produce artifacts",
+          "body": "A diagram, attack path, detection query, timeline, remediation plan, and executive update make reasoning inspectable."
+        }
+      ],
       "example": "A stolen support session accesses a tenant API, creates an integration token, enumerates storage, and exports data through a trusted workflow. Your job is to design, detect, investigate, contain, and prevent recurrence.",
-      "pitfalls": ["Treating the incident as one isolated bad request", "Providing controls without owners, evidence, or validation"],
-      "lab": {"title": "Complete the interview packet", "scenario": "A multi-tenant SaaS platform has suspicious support-account activity, a new OAuth integration, cross-tenant API reads, and unusual storage exports.", "deliverables": ["Architecture and trust-boundary diagram plus prioritized threat model", "Attack narrative, detection logic, evidence plan, and incident timeline", "Containment and root-cause remediation plan with executive update", "A tested script that detects one behavior from supplied or self-created fixtures", "A 15-minute spoken walkthrough scored against every completed-module rubric"]},
-      "interview": {"prompt": "Present your capstone as a security review followed by an incident response briefing.", "rubric": ["Explains architecture, assets, identities, and assumptions", "Connects attack path to evidence and detections", "Prioritizes containment and systemic remediation", "Communicates uncertainty, tradeoffs, ownership, and metrics"]},
-      "quiz": [{"prompt": "Which capstone answer best demonstrates intermediate security engineering?", "options": ["A list of security products", "A reasoned attack path tied to evidence, controls, tradeoffs, and owners", "A claim that every risk can be eliminated", "A diagram with no identities"], "answer": 1, "explanation": "Integrated reasoning and actionable ownership demonstrate engineering judgment."}, {"prompt": "What should happen after the immediate incident is contained?", "options": ["Delete the timeline", "Validate recovery, determine root cause, prevent recurrence, and measure follow-up", "Restore every credential unchanged", "Close the incident before communicating"], "answer": 1, "explanation": "Recovery and learning complete the response and reduce repeated failure."}]
+      "pitfalls": [
+        "Treating the incident as one isolated bad request",
+        "Providing controls without owners, evidence, or validation"
+      ],
+      "interview": {
+        "prompt": "Present your capstone as a security review followed by an incident response briefing.",
+        "rubric": [
+          "Explains architecture, assets, identities, and assumptions",
+          "Connects attack path to evidence and detections",
+          "Prioritizes containment and systemic remediation",
+          "Communicates uncertainty, tradeoffs, ownership, and metrics"
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Which capstone answer best demonstrates intermediate security engineering?",
+          "options": [
+            "A list of security products",
+            "A reasoned attack path tied to evidence, controls, tradeoffs, and owners",
+            "A claim that every risk can be eliminated",
+            "A diagram with no identities"
+          ],
+          "answer": 1,
+          "explanation": "Integrated reasoning and actionable ownership demonstrate engineering judgment."
+        },
+        {
+          "prompt": "What should happen after the immediate incident is contained?",
+          "options": [
+            "Delete the timeline",
+            "Validate recovery, determine root cause, prevent recurrence, and measure follow-up",
+            "Restore every credential unchanged",
+            "Close the incident before communicating"
+          ],
+          "answer": 1,
+          "explanation": "Recovery and learning complete the response and reduce repeated failure."
+        }
+      ]
     }
   ]
 }

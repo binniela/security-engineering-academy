@@ -63,7 +63,7 @@ The localhost landing screen lets you choose between:
 - **FDE API Academy** for Python, APIs, system design, and customer simulations.
 - **Security Engineering Academy** for a 23-module intermediate security curriculum based on Grace Nolan's interview notes and expanded for the current engineering bar.
 
-The Security Engineering Academy includes current concept lessons, applied examples, common weak answers, hands-on lab deliverables, interview rubrics, source notes, and scored knowledge checks. A security module is mastered only after both its lab and knowledge check are complete. Scores, notes, attempts, search state, and phase readiness stay local to the browser.
+The Security Engineering Academy includes current concept lessons, deeper interview explanations, applied examples, common weak answers, interview rubrics, source notes, and scored five-question knowledge checks. Each question links to the official guidance or public candidate-report theme that informed it; candidate reports are clearly labeled as anecdotal. A security module is mastered at 80% or higher. Scores, attempts, search state, and phase readiness stay local to the browser.
 
 ## Deploy Security Academy to Vercel
 
