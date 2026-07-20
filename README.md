@@ -63,7 +63,9 @@ The localhost landing screen lets you choose between:
 - **FDE API Academy** for Python, APIs, system design, and customer simulations.
 - **Security Engineering Academy** for a 23-module intermediate security curriculum based on Grace Nolan's interview notes and expanded for the current engineering bar.
 
-The Security Engineering Academy includes current concept lessons, deeper interview explanations, applied examples, common weak answers, interview rubrics, source notes, and scored five-question knowledge checks. Each question links to the official guidance or public candidate-report theme that informed it; candidate reports are clearly labeled as anecdotal. A security module is mastered at 80% or higher. Scores, attempts, search state, and phase readiness stay local to the browser.
+The Security Engineering Academy includes current concept lessons, deeper interview explanations, applied examples, common weak answers, interview rubrics, and source notes. Multiple-choice checks have been replaced by open-ended oral boards: each module presents a realistic scenario, five interviewer follow-ups, a written response, and a six-part self-review bar. Core, common, and role-specific labels help prioritize likely interview material. A module is mastered after a substantive response clears its complete review bar. Answers, attempts, search state, and phase readiness stay local to the browser.
+
+The separate Security Coding Lab adds eight company-attributed Python interview challenges reported for Google, Amazon, Sucuri, Kaedim, and Security Compass roles. It provides a LeetCode-style editor, visible and hidden cases, Run and Submit grading, hints, source evidence, and local completion tracking. Python executes in a time-limited browser Web Worker through Pyodide, so the deployed coding lab still requires no backend.
 
 ## Deploy Security Academy to Vercel
 

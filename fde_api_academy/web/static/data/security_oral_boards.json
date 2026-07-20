@@ -1,0 +1,287 @@
+{
+  "version": 1,
+  "methodology": "Open-ended oral-board scenarios emphasize recurring security-engineering interview work: tracing systems, modeling abuse, choosing controls, designing telemetry, responding to compromise, and defending tradeoffs. Frequency labels are directional and role-dependent, not guarantees.",
+  "minimum_words": 120,
+  "modules": {
+    "networking": {
+      "frequency": "Core",
+      "prompt": "A user types `https://app.example.com/login` into a managed laptop and the page eventually returns an authenticated response. Walk the request from name resolution through the application response, then explain where you would collect evidence and enforce security controls.",
+      "probes": [
+        "Trace DNS, routing, TCP, TLS, HTTP, proxy/load balancer, and application handling in the correct order.",
+        "At each hop, distinguish what is authenticated, encrypted, observable, and spoofable.",
+        "A stolen laptop begins beaconing over DNS while normal browser traffic continues. How do you separate the two?",
+        "Your only sources are resolver, flow, proxy, and endpoint logs. State what each can and cannot prove.",
+        "How do NAT, IPv6, encrypted DNS, retries, and clock skew change your investigation or detector?"
+      ],
+      "rubric": [
+        "Builds a coherent packet-to-application flow instead of listing protocol definitions.",
+        "Separates confidentiality, integrity, peer authentication, and application authorization.",
+        "Maps concrete telemetry fields to specific hypotheses.",
+        "Handles ambiguity such as NAT, shared infrastructure, missing payloads, and time skew.",
+        "Proposes layered controls at endpoint, network, identity, and application boundaries.",
+        "Explains false positives, evasion paths, and the next investigative pivot."
+      ],
+      "sources": ["google-glassdoor", "google-role", "grace-notes"]
+    },
+    "operating-systems": {
+      "frequency": "Core",
+      "prompt": "An internet-facing Linux service running in a container spawns `/bin/sh`, reads a cloud credential, and writes a systemd unit on the host. Explain exactly what must have been true at each boundary, how you would contain it, and how you would establish root cause.",
+      "probes": [
+        "Trace process ancestry, effective identity, namespaces, capabilities, mounts, and credential access.",
+        "What evidence is volatile, and what collection order avoids destroying it?",
+        "How could a container process reach a host systemd path? Give multiple plausible paths and evidence for each.",
+        "Which controls prevent initial execution, container escape, credential use, persistence, and command-and-control independently?",
+        "What would make you conclude this was misconfiguration rather than a kernel or runtime escape?"
+      ],
+      "rubric": [
+        "Separates application execution, container boundary crossing, host privilege, and persistence.",
+        "Names concrete process, filesystem, kernel, identity, and audit artifacts.",
+        "Preserves volatile evidence while stopping active harm.",
+        "States competing hypotheses and evidence that would discriminate between them.",
+        "Maps independent controls to each attack step and identifies residual risk.",
+        "Includes credential revocation, scope analysis, recovery validation, and root-cause repair."
+      ],
+      "sources": ["amazon-prep", "google-role", "kubernetes-security"]
+    },
+    "web-security": {
+      "frequency": "Core",
+      "prompt": "Design and review a production URL-preview feature that fetches arbitrary customer links, follows redirects, renders metadata, and stores thumbnails. Assume attackers want cloud credentials, internal services, cross-tenant data, and code execution.",
+      "probes": [
+        "Draw the browser, API, fetch worker, DNS, network, parser, storage, and rendering trust boundaries.",
+        "Explain bypasses involving redirects, DNS rebinding, alternate IP forms, IPv6, parser disagreement, and cached answers.",
+        "What does destination validation miss that egress isolation and workload identity address?",
+        "Threat-model HTML parsing, image transformation, stored metadata, and later rendering—not only the initial fetch.",
+        "Define logs, abuse limits, test cases, and a rollout plan that can detect bypasses without exposing fetched secrets."
+      ],
+      "rubric": [
+        "Models server authority and the complete multi-stage data flow.",
+        "Handles normalization, resolution, redirects, races, and multiple parser interpretations.",
+        "Uses network isolation, least privilege, resource limits, and hardened parsing as independent layers.",
+        "Covers stored and downstream injection or content risks.",
+        "Provides concrete negative tests and operational telemetry.",
+        "Prioritizes controls and explains cost, usability, and residual risk."
+      ],
+      "sources": ["owasp-top10", "amazon-glassdoor", "palantir-appsec"]
+    },
+    "api-security": {
+      "frequency": "Core",
+      "prompt": "You are reviewing a multi-tenant document API with read, edit, share, export, admin impersonation, and webhook features. Design authorization and abuse controls, then explain how you would prove they work across every path.",
+      "probes": [
+        "Build an authorization matrix across principal, tenant, object, property, action, and workflow state.",
+        "How do support impersonation, stale group membership, shared links, and background jobs change the model?",
+        "A valid tenant-A token can export tenant-B documents. Walk triage, containment, scope, and customer impact analysis.",
+        "Distinguish authentication, object authorization, function authorization, property authorization, and business-flow abuse.",
+        "Define centralized enforcement, negative tests, audit context, and controls against enumeration and resource exhaustion."
+      ],
+      "rubric": [
+        "Models every authorization dimension and denies by default.",
+        "Handles human, service, delegated, support, and asynchronous identities.",
+        "Uses centralized policy without treating it as a substitute for correct resource context.",
+        "Provides horizontal, vertical, cross-tenant, stale-state, and bulk-operation tests.",
+        "Designs audit events that identify actor, subject, tenant, object, policy, and decision.",
+        "Includes incident scope, historical lookback, remediation verification, and abuse limits."
+      ],
+      "sources": ["owasp-api", "amazon-glassdoor", "palantir-appsec"]
+    },
+    "authentication": {
+      "frequency": "Core",
+      "prompt": "Walk me through what happens when a user logs into a modern web application, from entering an identifier through receiving and using an authenticated session. Then design the flow securely for passwords, passkeys, MFA, SSO, recovery, and compromised-session response.",
+      "probes": [
+        "Trace browser, TLS termination, edge controls, authentication service, credential verifier, MFA or IdP, risk engine, session store, cookie issuance, and the first authorized request.",
+        "Explain password hashing and comparison, user-enumeration resistance, credential-stuffing controls, rate limiting, lockout denial-of-service, and phishing-resistant MFA.",
+        "Specify session identifier generation, rotation after authentication, cookie attributes, CSRF protection, idle and absolute lifetime, step-up, concurrent sessions, and logout or revocation.",
+        "Now assume a refresh token or session cookie is stolen. What can password reset fix, what survives it, how do you scope the theft, and how do you revoke safely?",
+        "Design enrollment and account recovery so they do not become weaker alternate login paths. Include telemetry, user notification, support operations, and break-glass access."
+      ],
+      "rubric": [
+        "Explains the complete identity and session lifecycle in correct system order.",
+        "Separates authentication, session establishment, authorization, and re-authentication.",
+        "Uses modern credential storage, enumeration resistance, adaptive abuse controls, and phishing-resistant options.",
+        "Defines secure cookie or token lifecycle, rotation, audience and scope, replay controls, and revocation.",
+        "Treats enrollment, recovery, device change, help-desk reset, and logout as security-critical flows.",
+        "Includes actionable logs, detection, incident response, usability tradeoffs, and residual risks."
+      ],
+      "sources": ["amazon-login-report", "zywave-login-report", "owasp-auth", "owasp-session", "owasp-forgot", "nist-auth", "oauth-bcp"]
+    },
+    "identity-access": {
+      "frequency": "Core",
+      "prompt": "A developer can edit a deployment pipeline; the pipeline assumes a production role; the workload can read customer secrets and impersonate another service. Determine the developer's effective access and redesign the identity path.",
+      "probes": [
+        "Draw human, group, repository, runner, deployment, workload, service, and resource-policy trust edges.",
+        "What transitive permissions turn apparently harmless edit rights into production authority?",
+        "How would you discover the shortest escalation paths across identity and resource policies at scale?",
+        "Redesign with short-lived identity, approvals, separation of duties, workload identity, and scoped delegation.",
+        "A malicious commit deployed yesterday. What do you revoke, rotate, review, and monitor before restoring the pipeline?"
+      ],
+      "rubric": [
+        "Reasons about effective and transitive privilege rather than direct role assignments only.",
+        "Models human and workload identities, trust policies, impersonation, and resource policies.",
+        "Identifies concrete privilege-escalation paths and their preconditions.",
+        "Reduces standing access, credential lifetime, scope, and unaudited delegation.",
+        "Designs preventive policy and useful alerts on sensitive trust-edge changes.",
+        "Includes compromise scoping, session revocation, downstream rotation, and trusted recovery."
+      ],
+      "sources": ["google-role", "palantir-appsec", "amazon-prep"]
+    },
+    "cloud-containers": {
+      "frequency": "Core",
+      "prompt": "Threat-model a public Kubernetes API workload that uses a cloud workload identity, processes customer uploads, and deploys through CI. Assume application code execution is possible and design for bounded blast radius.",
+      "probes": [
+        "Separate cloud control plane, Kubernetes control plane, node, pod, network, registry, and CI trust boundaries.",
+        "After pod code execution, enumerate realistic paths to service-account abuse, node access, neighboring workloads, metadata, secrets, and customer data.",
+        "Explain pod security context, token mounting, RBAC, admission, egress, network policy, image identity, and secret delivery as distinct controls.",
+        "Which audit and runtime events establish who changed a role, launched a privileged pod, or accessed sensitive storage?",
+        "How do you rotate identity and recover workloads without redeploying compromised artifacts or destroying incident evidence?"
+      ],
+      "rubric": [
+        "Models control-plane, workload, supply-chain, network, and data boundaries distinctly.",
+        "Assumes code execution and traces concrete post-exploitation paths.",
+        "Applies least privilege to pod, identity, node, network, storage, and CI layers.",
+        "Uses immutable artifact identity and admission enforcement.",
+        "Names control-plane and runtime telemetry with investigative purpose.",
+        "Explains containment order, credential rotation, clean rebuild, and validation."
+      ],
+      "sources": ["kubernetes-security", "google-role", "nist-ssdf"]
+    },
+    "secure-development": {
+      "frequency": "Core",
+      "prompt": "Design a secure release pipeline for hundreds of services where pull requests run third-party actions, build containers, produce provenance, sign artifacts, and deploy automatically to production.",
+      "probes": [
+        "Map every principal, input, secret, runner, dependency, artifact, signature, policy decision, and deployment boundary.",
+        "How can an untrusted pull request steal credentials, poison runner state, alter dependencies, or publish an artifact that was never reviewed?",
+        "What exactly should provenance assert, who signs it, and what must deployment verify before trust is meaningful?",
+        "A signing identity is compromised. Explain blast radius, revocation, historical verification, and recovery without stopping every team indefinitely.",
+        "How would you eliminate repeated vulnerability classes and measure whether the paved road is actually adopted?"
+      ],
+      "rubric": [
+        "Builds an end-to-end source-to-production trust model.",
+        "Separates untrusted execution from credentialed release operations.",
+        "Defines artifact identity, provenance claims, signing authority, and enforcement.",
+        "Handles dependencies, mutable references, runner persistence, and insider paths.",
+        "Provides compromise response and trustworthy rebuild criteria.",
+        "Scales through secure defaults, reusable controls, adoption metrics, and explicit exceptions."
+      ],
+      "sources": ["nist-ssdf", "palantir-appsec", "amazon-prep"]
+    },
+    "vulnerability-management": {
+      "frequency": "Common",
+      "prompt": "You inherit 30,000 findings across internet services, internal tools, container images, endpoints, and cloud configuration. Build a program that identifies what can actually hurt the company and proves remediation rather than moving tickets.",
+      "probes": [
+        "Define a prioritization model using reachability, exploit path, asset value, privilege, active exploitation, compensating controls, and confidence.",
+        "How do you handle a critical dormant image versus a moderate authorization bypass on a public API?",
+        "Design ownership, service-level objectives, exception criteria, and escalation without incentivizing teams to hide assets.",
+        "What evidence closes a finding, and how do you catch incomplete rollout, alternate paths, regression, or scanner disagreement?",
+        "How do you turn recurring classes into engineering changes and measure risk reduction rather than finding volume?"
+      ],
+      "rubric": [
+        "Prioritizes contextual attack paths rather than severity scores alone.",
+        "Accounts for exposure, exploitability, business impact, control strength, and uncertainty.",
+        "Creates fair ownership, deadlines, bounded exceptions, and escalation.",
+        "Requires reproducible remediation and deployment evidence.",
+        "Tracks coverage gaps, recurrence, aging risk, and program health without vanity metrics.",
+        "Feeds systemic findings into platform, framework, and architecture improvements."
+      ],
+      "sources": ["nist-ssdf", "amazon-prep", "palantir-appsec"]
+    },
+    "threat-modeling": {
+      "frequency": "Core",
+      "prompt": "Threat-model a multi-tenant SaaS platform that supports browser and mobile clients, SSO, support impersonation, file uploads, webhooks, background jobs, analytics exports, and third-party plugins.",
+      "probes": [
+        "Clarify assets, actors, tenant boundaries, identities, data classifications, dependencies, and business-critical abuse cases.",
+        "Draw the most important data flows and identify where authority or interpretation changes.",
+        "Prioritize five attack paths; for each, state preconditions, impact, existing controls, recommended changes, and residual risk.",
+        "How do support access, asynchronous jobs, shared links, plugin execution, and outbound webhooks create confused-deputy or cross-tenant paths?",
+        "Requirements change mid-review: customers may install unsigned private plugins. Revise the model and explain what decisions must change."
+      ],
+      "rubric": [
+        "Clarifies system truth before generating generic threats.",
+        "Models identity, authority, interpretation, data, and tenant boundaries.",
+        "Produces plausible end-to-end attack paths with explicit preconditions.",
+        "Ranks findings by impact and likelihood and recommends testable controls.",
+        "Includes detection, response, residual risk, and control ownership.",
+        "Adapts coherently when constraints change and explains affected tradeoffs."
+      ],
+      "sources": ["amazon-prep", "amazon-glassdoor", "palantir-appsec"]
+    },
+    "detection-engineering": {
+      "frequency": "Core",
+      "prompt": "Design a production detector for account takeover that begins with password spraying, succeeds from rotating infrastructure, creates an OAuth grant, and exports data over several hours.",
+      "probes": [
+        "State the threat hypothesis, event sources, required fields, identities, grouping keys, and time semantics.",
+        "Explain which signals detect spraying, successful compromise, persistence, data access, and exfiltration independently.",
+        "How do NAT, VPNs, shared devices, travel, service accounts, delayed logs, and schema drift affect the rule?",
+        "Provide positive, negative, boundary, out-of-order, duplicate, missing-field, and evasion test fixtures.",
+        "Define alert context, analyst pivots, response automation boundaries, and health metrics that distinguish no attacks from a broken pipeline."
+      ],
+      "rubric": [
+        "Starts from attacker behavior and required evidence rather than a query syntax.",
+        "Correlates identity, session, OAuth, application, and data-access stages.",
+        "Defines precise grouping, ordering, thresholds, and missing-data behavior.",
+        "Tests realistic benign activity, boundaries, evasions, and pipeline failures.",
+        "Produces actionable context and a clear investigation path.",
+        "Measures telemetry and rule health, false positives, coverage, and response risk."
+      ],
+      "sources": ["google-role", "google-reddit", "mitre-attack"]
+    },
+    "incident-response": {
+      "frequency": "Core",
+      "prompt": "A privileged cloud identity creates new credentials, modifies logging, accesses customer storage, and starts a large export. The activity is ongoing when you are paged. Lead the first hour and the path to trusted recovery.",
+      "probes": [
+        "State immediate objectives, roles, communication cadence, known facts, hypotheses, and decisions that cannot wait.",
+        "What evidence must be preserved before revoking access, and when would you contain first despite evidence loss?",
+        "Enumerate persistence through keys, sessions, federation, OAuth grants, roles, workloads, and modified automation.",
+        "Define customer-impact scoping, legal or privacy coordination, executive updates, and what you will not claim yet.",
+        "What evidence proves containment, eradication, clean recovery, and closure of the identity and logging root causes?"
+      ],
+      "rubric": [
+        "Prioritizes stopping active harm while preserving decision-critical evidence.",
+        "Establishes command roles, facts versus hypotheses, decisions, and communication.",
+        "Scopes all demonstrated and plausible identity persistence paths.",
+        "Sequences containment, replacement access, evidence, and business continuity deliberately.",
+        "Communicates impact and uncertainty without unsupported attribution.",
+        "Defines measurable containment and recovery validation plus systemic remediation."
+      ],
+      "sources": ["nist-ir", "google-role", "amazon-prep"]
+    },
+    "coding-algorithms": {
+      "frequency": "Core",
+      "prompt": "You receive a stream of authentication events and must flag sources that exceed a failure threshold in any rolling window, while supporting out-of-order events, malformed input, bounded memory, and distributed spraying. Design and implement the core algorithm.",
+      "probes": [
+        "Clarify input contract, timestamp guarantees, grouping semantics, output, event volume, and allowed detection delay.",
+        "Give a simple correct approach, then derive the data structures and complexity for the stated scale.",
+        "How do you expire state, handle duplicates and late events, and prevent one attacker-controlled key from exhausting memory?",
+        "Explain why a per-source rule misses distributed spraying and how you would add account or campaign-level views.",
+        "List tests for window boundaries, ordering, malformed records, ties, high cardinality, and adversarial inputs before coding."
+      ],
+      "rubric": [
+        "Clarifies the operational contract before selecting an algorithm.",
+        "Presents a correct baseline and justified optimization.",
+        "Uses appropriate maps, queues, windows, and bounded-state controls.",
+        "Handles malformed, duplicate, out-of-order, boundary, and adversarial events.",
+        "Explains time and space complexity in terms of event rate and cardinality.",
+        "Connects implementation limits to detection evasions and distributed-system design."
+      ],
+      "sources": ["google-glassdoor", "google-reddit", "palantir-phone"]
+    },
+    "interview-execution": {
+      "frequency": "Core",
+      "prompt": "You are given an underspecified prompt: `How would you secure login for our new product?` Demonstrate how you would run the interview conversation from the first clarification through design, abuse cases, validation, and tradeoffs.",
+      "probes": [
+        "Ask only the highest-value clarifying questions about users, clients, assurance, data, threat actors, scale, availability, and recovery.",
+        "Build a coherent baseline architecture before enumerating every possible control.",
+        "Choose the highest-risk abuse cases and explain why they outrank others for this product.",
+        "Respond when the interviewer adds mobile clients, enterprise SSO, offline use, and a requirement that support can recover accounts.",
+        "Close by testing the design, naming unresolved risks, and summarizing the decisions you would validate with the team."
+      ],
+      "rubric": [
+        "Clarifies product and threat constraints without stalling in questions.",
+        "Communicates a structured model and makes assumptions explicit.",
+        "Prioritizes controls and connects them to concrete attack paths.",
+        "Adapts the design coherently as constraints change.",
+        "Explains tradeoffs across security, usability, availability, cost, and operations.",
+        "Ends with tests, telemetry, open risks, and crisp decision-oriented summary."
+      ],
+      "sources": ["amazon-login-report", "amazon-prep", "palantir-phone", "palantir-process"]
+    }
+  }
+}

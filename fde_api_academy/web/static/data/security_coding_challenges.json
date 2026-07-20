@@ -1,0 +1,223 @@
+{
+  "version": 1,
+  "language": "Python 3",
+  "methodology": "Each challenge preserves a publicly reported interview task or task shape, then adds explicit fixtures and edge cases so it can be graded. Candidate reports are anecdotal; none of these prompts is presented as an official company question bank.",
+  "challenges": [
+    {
+      "id": "google-email-header-parser",
+      "title": "Email Header Domain Parser",
+      "company": "Google",
+      "role": "Infrastructure Security Engineer",
+      "difficulty": "Medium",
+      "minutes": 30,
+      "evidence_level": "Direct candidate-reported task",
+      "source_title": "Google Security Engineer interview discussion",
+      "source_url": "https://www.reddit.com/r/cybersecurity/comments/10d99g2/security_engineer_interview_google/",
+      "source_note": "A candidate discussion specifically reports practical log parsing or writing an email-header parser in Google security-engineering interviews. This version adds deterministic domain-counting requirements for grading.",
+      "prompt": "Implement `count_address_domains(headers)`. Each string is one raw RFC-style header block. Count domains from every From, To, and Cc address, case-insensitively. Handle display names, comma-separated recipients, folded continuation lines, malformed addresses, and repeated domains. Ignore addresses without a domain. Return a dictionary sorted by domain.",
+      "why": "Header parsing appears simple until folding, display names, multiple recipients, and malformed input expose brittle string splitting. Security automation must prefer standard parsers and preserve predictable failure behavior.",
+      "signature": "def count_address_domains(headers: list[str]) -> dict[str, int]:",
+      "constraints": ["0 <= len(headers) <= 10,000", "Use only the Python standard library", "Count From, To, and Cc fields only", "Normalize domains to lowercase"],
+      "starter_code": "from email import policy\nfrom email.parser import Parser\nfrom email.utils import getaddresses\n\ndef count_address_domains(headers):\n    # Parse address-bearing fields and return {domain: count}.\n    pass\n",
+      "hint": "The `email` package understands folded fields. `getaddresses()` can parse a list of field values without hand-splitting commas.",
+      "entry_function": "count_address_domains",
+      "visible_tests": [
+        {"name": "display names and multiple recipients", "args": [["From: Alice <alice@Example.com>\nTo: bob@example.com, Carol <carol@security.dev>\nSubject: Test"]], "expected": {"example.com": 2, "security.dev": 1}}
+      ],
+      "hidden_tests": [
+        {"name": "folded cc and malformed address", "args": [["From: root@corp.test\nCc: One <one@corp.test>,\n Two <two@other.test>, invalid\nTo: local-user"]], "expected": {"corp.test": 2, "other.test": 1}},
+        {"name": "multiple messages and casing", "args": [["FROM: a@A.IO\nTO: b@a.io", "Cc: c@B.IO, d@b.io\nX-Forwarded-To: ignored@x.io"]], "expected": {"a.io": 2, "b.io": 2}},
+        {"name": "empty input", "args": [[]], "expected": {}}
+      ]
+    },
+    {
+      "id": "google-defang-indicators",
+      "title": "Defang Security Indicators",
+      "company": "Google / FAANG",
+      "role": "Security Engineer",
+      "difficulty": "Medium",
+      "minutes": 25,
+      "evidence_level": "Recurring candidate-reported pattern",
+      "source_title": "Google Security Engineer interview discussion",
+      "source_url": "https://www.reddit.com/r/cybersecurity/comments/10d99g2/security_engineer_interview_google/",
+      "source_note": "The Google-focused discussion reports defanging IPs and URLs as a recurring security-engineering coding pattern, while explicitly noting that practices vary by company. This is labeled as a pattern, not a confirmed Google prompt.",
+      "prompt": "Implement `defang_indicators(values)`. Defang valid IPv4 addresses, domain names, and HTTP(S) URLs without corrupting ports, paths, query strings, or fragments. Replace `http` with `hxxp`, `https` with `hxxps`, and dots in the hostname or IP with `[.]`. Leave invalid or unsupported values unchanged.",
+      "why": "Indicator handling tests parsing discipline. Blind global replacement corrupts paths and query parameters, while a security-safe implementation distinguishes URL structure from the hostname being neutralized.",
+      "signature": "def defang_indicators(values: list[str]) -> list[str]:",
+      "constraints": ["Preserve input order", "Support IPv4, domains, and http/https URLs", "Do not defang dots outside a URL hostname", "Leave malformed input unchanged"],
+      "starter_code": "import ipaddress\nfrom urllib.parse import urlsplit, urlunsplit\n\ndef defang_indicators(values):\n    # Return one safely defanged string for each input value.\n    pass\n",
+      "hint": "Parse URLs before replacing anything. Rebuild the netloc from hostname, optional credentials, and optional port instead of replacing every dot in the full string.",
+      "entry_function": "defang_indicators",
+      "visible_tests": [
+        {"name": "ip domain and url", "args": [["192.0.2.10", "evil.example", "https://evil.example/a.b?q=x.y"]], "expected": ["192[.]0[.]2[.]10", "evil[.]example", "hxxps://evil[.]example/a.b?q=x.y"]}
+      ],
+      "hidden_tests": [
+        {"name": "port and fragment", "args": [["http://10.0.0.5:8080/path#v1.2", "https://user:pass@a.test/x"]], "expected": ["hxxp://10[.]0[.]0[.]5:8080/path#v1.2", "hxxps://user:pass@a[.]test/x"]},
+        {"name": "unsupported and malformed", "args": [["ftp://example.com/file", "999.1.1.1", "not a domain", "localhost"]], "expected": ["ftp://example.com/file", "999.1.1.1", "not a domain", "localhost"]},
+        {"name": "case normalization is not required", "args": [["HTTPS://EXAMPLE.COM/A.B"]], "expected": ["hxxps://EXAMPLE[.]COM/A.B"]}
+      ]
+    },
+    {
+      "id": "amazon-most-common-source-ip",
+      "title": "Most Frequent HTTPS Source",
+      "company": "Amazon",
+      "role": "Security Engineer, Incident Response",
+      "difficulty": "Medium",
+      "minutes": 25,
+      "evidence_level": "Direct candidate-reported task",
+      "source_title": "Amazon SIRT coding-round discussion",
+      "source_url": "https://www.reddit.com/r/cybersecurity/comments/1ktdfg8",
+      "source_note": "A candidate reports being shown HTTPS logs and asked to script extraction of the most commonly occurring IP address. This version defines malformed-line and tie behavior.",
+      "prompt": "Implement `most_common_source_ip(lines)`. Each valid line starts with an IPv4 or IPv6 source followed by whitespace and arbitrary HTTPS log fields. Ignore blank lines, comments, and malformed addresses. Return the most frequent normalized IP. Break ties by numeric IP order. Return `None` when no valid source exists.",
+      "why": "This is representative response automation: parse hostile input, normalize identifiers, aggregate efficiently, and make tie and failure semantics explicit.",
+      "signature": "def most_common_source_ip(lines: list[str]) -> str | None:",
+      "constraints": ["Process each line once", "Support IPv4 and IPv6", "Ignore malformed sources", "Use numeric IP ordering for ties"],
+      "starter_code": "from collections import Counter\nimport ipaddress\n\ndef most_common_source_ip(lines):\n    # Parse, normalize, count, and apply deterministic tie-breaking.\n    pass\n",
+      "hint": "Use `ipaddress.ip_address()` for validation and normalization. Store the parsed address object alongside its normalized string for numeric tie-breaking.",
+      "entry_function": "most_common_source_ip",
+      "visible_tests": [
+        {"name": "common source with malformed line", "args": [["192.0.2.2 GET / 200", "bad-ip GET /x 404", "192.0.2.1 POST /login 401", "192.0.2.2 GET /admin 403"]], "expected": "192.0.2.2"}
+      ],
+      "hidden_tests": [
+        {"name": "numeric tie break", "args": [["192.0.2.10 GET /", "192.0.2.2 GET /"]], "expected": "192.0.2.2"},
+        {"name": "ipv6 normalization", "args": [["2001:0db8::1 GET /", "2001:db8:0:0::1 POST /", "2001:db8::2 GET /"]], "expected": "2001:db8::1"},
+        {"name": "no valid events", "args": [["", "# rotated", "not-an-ip GET /"]], "expected": null}
+      ]
+    },
+    {
+      "id": "amazon-apache-subnet-aggregation",
+      "title": "Top /24 Subnets by Month",
+      "company": "Amazon",
+      "role": "Systems Engineer",
+      "difficulty": "Hard",
+      "minutes": 45,
+      "evidence_level": "Direct candidate-reported task",
+      "source_title": "Amazon Apache-log coding question",
+      "source_url": "https://www.glassdoor.com/Interview/Write-some-code-to-parse-an-apache-log-file-grouping-requests-by-24-subnet-and-month-and-then-give-me-the-top-10-subnets-QTN_870803.htm",
+      "source_note": "The reported Amazon prompt asks candidates to group Apache requests by /24 subnet and month and return each month's top ten. This version defines parsing, ordering, and a configurable `k`.",
+      "prompt": "Implement `top_subnets_by_month(lines, k)`. Parse Apache combined-log prefixes such as `203.0.113.9 - - [03/Jan/2026:10:00:00 +0000] ...`. Group valid IPv4 requests by calendar month (`YYYY-MM`) and `/24` network. Return `{month: [[subnet, count], ...]}` with at most `k` entries per month, ordered by descending count then numeric network. Ignore malformed lines and IPv6.",
+      "why": "This is a real aggregation problem with parsing, IP arithmetic, stable ranking, and scale implications. A strong answer also explains how it would stream a file larger than memory.",
+      "signature": "def top_subnets_by_month(lines: list[str], k: int) -> dict[str, list[list]]:",
+      "constraints": ["1 <= k <= 100", "Do not load or sort every individual request", "Return canonical `/24` strings", "Ignore malformed dates and non-IPv4 addresses"],
+      "starter_code": "from collections import Counter, defaultdict\nfrom datetime import datetime\nimport ipaddress\nimport re\n\ndef top_subnets_by_month(lines, k):\n    # Aggregate counts, then rank only the subnet counters.\n    pass\n",
+      "hint": "Extract the source and timestamp prefix with one regex. `ip_network(f'{ip}/24', strict=False)` returns the canonical network.",
+      "entry_function": "top_subnets_by_month",
+      "visible_tests": [
+        {"name": "two months and ranking", "args": [["203.0.113.9 - - [03/Jan/2026:10:00:00 +0000] \"GET / HTTP/1.1\" 200 10", "203.0.113.22 - - [04/Jan/2026:10:00:00 +0000] \"GET /a HTTP/1.1\" 200 10", "198.51.100.7 - - [05/Jan/2026:10:00:00 +0000] \"GET /b HTTP/1.1\" 200 10", "192.0.2.1 - - [01/Feb/2026:10:00:00 +0000] \"GET / HTTP/1.1\" 200 10"], 2], "expected": {"2026-01": [["203.0.113.0/24", 2], ["198.51.100.0/24", 1]], "2026-02": [["192.0.2.0/24", 1]]}}
+      ],
+      "hidden_tests": [
+        {"name": "numeric network tie break", "args": [["192.0.10.1 - - [01/Mar/2026:00:00:00 +0000] \"GET / HTTP/1.1\" 200 1", "192.0.2.1 - - [01/Mar/2026:00:00:00 +0000] \"GET / HTTP/1.1\" 200 1"], 5], "expected": {"2026-03": [["192.0.2.0/24", 1], ["192.0.10.0/24", 1]]}},
+        {"name": "ignore invalid and cap k", "args": [["bad line", "2001:db8::1 - - [01/Jan/2026:00:00:00 +0000] x", "10.1.1.1 - - [01/Apr/2026:00:00:00 +0000] x", "10.2.2.2 - - [01/Apr/2026:00:00:00 +0000] x"], 1], "expected": {"2026-04": [["10.1.1.0/24", 1]]}},
+        {"name": "empty logs", "args": [[], 10], "expected": {}}
+      ]
+    },
+    {
+      "id": "amazon-offline-idor-enumerator",
+      "title": "Detect Cross-Tenant IDOR Exposure",
+      "company": "Amazon",
+      "role": "Security Engineer Intern",
+      "difficulty": "Medium",
+      "minutes": 30,
+      "evidence_level": "Direct candidate-reported task, safely adapted",
+      "source_title": "Amazon Security Engineer internship report",
+      "source_url": "https://www.reddit.com/r/cybersecurity/comments/1flm5fr",
+      "source_note": "Candidates report being asked to write a simple Python script against exposed user IDs to demonstrate IDOR. The academy preserves the enumeration and authorization reasoning but uses supplied offline responses only; no network requests or real targets are involved.",
+      "prompt": "Implement `find_cross_tenant_exposure(current_tenant, responses)`. `responses` maps requested object IDs to simulated API results containing `status` and optional `body`. Return sorted object IDs where a `200` response exposes a body whose `tenant_id` differs from `current_tenant`. Ignore denied, missing, malformed, and same-tenant results. Do not mutate input.",
+      "why": "A useful security script separates transport success from authorization correctness and handles partial, malformed, and denied responses without turning a test into uncontrolled offensive automation.",
+      "signature": "def find_cross_tenant_exposure(current_tenant: str, responses: dict) -> list[str]:",
+      "constraints": ["Operate only on the supplied offline fixture", "Object IDs may be strings or integers", "Require status 200 and a dictionary body", "Sort IDs lexicographically as strings"],
+      "starter_code": "def find_cross_tenant_exposure(current_tenant, responses):\n    # Inspect simulated API responses; never perform network activity.\n    pass\n",
+      "hint": "Treat every nested field as untrusted. Check response type, exact status, body type, and tenant presence before comparing.",
+      "entry_function": "find_cross_tenant_exposure",
+      "visible_tests": [
+        {"name": "same tenant denied and exposed", "args": ["tenant-a", {"100": {"status": 200, "body": {"tenant_id": "tenant-a"}}, "101": {"status": 403}, "102": {"status": 200, "body": {"tenant_id": "tenant-b"}}}], "expected": ["102"]}
+      ],
+      "hidden_tests": [
+        {"name": "malformed response bodies", "args": ["a", {"1": null, "2": {"status": 200, "body": "oops"}, "3": {"status": 200, "body": {}}, "4": {"status": 200, "body": {"tenant_id": "b"}}}], "expected": ["4"]},
+        {"name": "lexicographic identifiers", "args": ["home", {"20": {"status": 200, "body": {"tenant_id": "other"}}, "3": {"status": 200, "body": {"tenant_id": "other"}}, "4": {"status": 404, "body": {"tenant_id": "other"}}}], "expected": ["20", "3"]},
+        {"name": "no exposure", "args": ["a", {"1": {"status": 200, "body": {"tenant_id": "a"}}, "2": {"status": 401}}], "expected": []}
+      ]
+    },
+    {
+      "id": "sucuri-web-log-triage",
+      "title": "Triage PHP Web Logs",
+      "company": "Sucuri",
+      "role": "Senior Security Engineer",
+      "difficulty": "Hard",
+      "minutes": 45,
+      "evidence_level": "Direct candidate-reported task",
+      "source_title": "Sucuri Senior Security Engineer interview report",
+      "source_url": "https://www.glassdoor.com/Interview/Sucuri-Interview-Questions-E422402.htm",
+      "source_note": "A candidate reports being asked to parse a PHP log, separate good and bad requests, and list the most popular pages, referrers, and user agents. This fixture defines a pipe-delimited format and explicit suspicious criteria.",
+      "prompt": "Implement `analyze_web_logs(lines)`. Each valid line is `status|path|referrer|user_agent`. A request is suspicious if status is 400-599 or the URL-decoded lowercase path contains `../`, `<script`, `union select`, or `/wp-admin`. Return counts for `good`, `suspicious`, and the top page, referrer, and user agent across all valid lines. Ties are lexicographic; missing winners are `None`.",
+      "why": "The task combines robust parsing, URL decoding, detection logic, aggregation, and deterministic output—the work security engineers actually automate during triage.",
+      "signature": "def analyze_web_logs(lines: list[str]) -> dict:",
+      "constraints": ["Split each line into at most four fields", "URL-decode the path before matching", "Ignore malformed status or field counts", "Count popularity across all valid events"],
+      "starter_code": "from collections import Counter\nfrom urllib.parse import unquote\n\ndef analyze_web_logs(lines):\n    # Return good/suspicious counts and deterministic popularity winners.\n    pass\n",
+      "hint": "Use `line.split('|', 3)`. Write one helper that returns the lexicographically smallest key among those with the maximum count.",
+      "entry_function": "analyze_web_logs",
+      "visible_tests": [
+        {"name": "mixed normal and attack traffic", "args": [["200|/index.php|https://search.test|BrowserA", "404|/missing.php|-|Scanner", "200|/search.php?q=1%20UNION%20SELECT%20password|https://evil.test|Scanner", "200|/index.php|https://search.test|BrowserA"]], "expected": {"good": 2, "suspicious": 2, "top_page": "/index.php", "top_referrer": "https://search.test", "top_user_agent": "BrowserA"}}
+      ],
+      "hidden_tests": [
+        {"name": "decoded traversal and script", "args": [["200|/%2e%2e/%2e%2e/etc/passwd|-|A", "200|/x?name=%3Cscript%3Ealert(1)|-|B", "302|/home|-|B"]], "expected": {"good": 1, "suspicious": 2, "top_page": "/%2e%2e/%2e%2e/etc/passwd", "top_referrer": "-", "top_user_agent": "B"}},
+        {"name": "tie and malformed lines", "args": [["oops", "200|/b|r2|u2", "200|/a|r1|u1"]], "expected": {"good": 2, "suspicious": 0, "top_page": "/a", "top_referrer": "r1", "top_user_agent": "u1"}},
+        {"name": "empty", "args": [[]], "expected": {"good": 0, "suspicious": 0, "top_page": null, "top_referrer": null, "top_user_agent": null}}
+      ]
+    },
+    {
+      "id": "kaedim-api-log-enrichment",
+      "title": "Enrich Alerts with Reputation Data",
+      "company": "Kaedim",
+      "role": "Security Engineer",
+      "difficulty": "Medium",
+      "minutes": 35,
+      "evidence_level": "Direct candidate-reported task shape",
+      "source_title": "Kaedim Security Engineer interview question",
+      "source_url": "https://www.glassdoor.com/Interview/Tell-me-about-a-project-you-are-proud-of-Whats-your-take-on-work-life-balance-Would-you-ideally-relocate-or-work-remotely-QTN_8611948.htm",
+      "source_note": "The reported prompt asks the candidate to parse log data using an API and Python or JavaScript. This version supplies an offline reputation-API fixture and precise alert semantics.",
+      "prompt": "Implement `enrich_malicious_events(log_lines, reputation)`. Parse JSON log lines containing `timestamp`, `source_ip`, and `action`. `reputation` is an offline API response mapping IP to `{score, provider}`. Return valid events whose score is at least 70, enriched with `score` and `provider`, sorted by timestamp then source IP. Ignore malformed logs, invalid IPs, missing reputation, and malformed scores.",
+      "why": "Security scripting frequently joins noisy telemetry with rate-limited external context. The interview signal is validation, predictable joins, output contracts, and safe handling of missing enrichment—not memorizing an HTTP library.",
+      "signature": "def enrich_malicious_events(log_lines: list[str], reputation: dict) -> list[dict]:",
+      "constraints": ["Use the supplied API-response fixture only", "Validate source IPs", "Do not mutate parsed events or reputation", "Include only scores from 70 through 100"],
+      "starter_code": "import ipaddress\nimport json\n\ndef enrich_malicious_events(log_lines, reputation):\n    # Parse, validate, join, filter, and sort events.\n    pass\n",
+      "hint": "Build a new dictionary for every output event. Validate the score as a number but reject booleans, which are subclasses of `int` in Python.",
+      "entry_function": "enrich_malicious_events",
+      "visible_tests": [
+        {"name": "valid malicious event and ignored benign event", "args": [["{\"timestamp\":\"2026-01-01T00:00:02Z\",\"source_ip\":\"192.0.2.2\",\"action\":\"login\"}", "{\"timestamp\":\"2026-01-01T00:00:01Z\",\"source_ip\":\"192.0.2.1\",\"action\":\"scan\"}"], {"192.0.2.1": {"score": 95, "provider": "fixture"}, "192.0.2.2": {"score": 10, "provider": "fixture"}}], "expected": [{"timestamp": "2026-01-01T00:00:01Z", "source_ip": "192.0.2.1", "action": "scan", "score": 95, "provider": "fixture"}]}
+      ],
+      "hidden_tests": [
+        {"name": "sorting and normalization", "args": [["{\"timestamp\":\"b\",\"source_ip\":\"2001:0db8::1\",\"action\":\"x\"}", "{\"timestamp\":\"a\",\"source_ip\":\"198.51.100.2\",\"action\":\"y\"}"], {"2001:db8::1": {"score": 70, "provider": "p"}, "198.51.100.2": {"score": 80, "provider": "q"}}], "expected": [{"timestamp": "a", "source_ip": "198.51.100.2", "action": "y", "score": 80, "provider": "q"}, {"timestamp": "b", "source_ip": "2001:db8::1", "action": "x", "score": 70, "provider": "p"}]},
+        {"name": "malformed inputs", "args": [["not json", "{\"timestamp\":\"a\",\"source_ip\":\"bad\",\"action\":\"x\"}", "{\"timestamp\":\"a\",\"source_ip\":\"192.0.2.3\",\"action\":\"x\"}"], {"192.0.2.3": {"score": true, "provider": "p"}}], "expected": []},
+        {"name": "no reputation match", "args": [["{\"timestamp\":\"a\",\"source_ip\":\"192.0.2.9\",\"action\":\"x\"}"], {}], "expected": []}
+      ]
+    },
+    {
+      "id": "security-compass-streaming-log-summary",
+      "title": "Stream a 60 GB Security Log",
+      "company": "Security Compass",
+      "role": "Principal Developer",
+      "difficulty": "Hard",
+      "minutes": 40,
+      "evidence_level": "Direct candidate-reported task, security-adapted",
+      "source_title": "Security Compass large-log interview question",
+      "source_url": "https://www.glassdoor.com/Interview/1-How-would-you-parse-a-large-60GB-log-file-into-a-csv-and-what-language-would-you-use-for-it-2-Describe-what-happens-QTN_6201132.htm",
+      "source_note": "The reported question asks how to parse a 60 GB log into CSV. This implementation task uses an iterable to enforce streaming behavior and summarizes authentication outcomes without retaining raw events.",
+      "prompt": "Implement `summarize_auth_stream(lines)`. Consume an iterable of JSON authentication events with `user`, `result`, and `bytes`. Return CSV text with header `user,success,failure,bytes`, one row per valid user sorted lexicographically. Accept only result `success` or `failure` and non-negative integer bytes; ignore malformed events. Do not materialize `lines` or retain individual events.",
+      "why": "The real interview question is about architecture as much as syntax: bounded memory, incremental parsing, malformed-record policy, deterministic CSV output, and counters sized for production volume.",
+      "signature": "def summarize_auth_stream(lines) -> str:",
+      "constraints": ["Iterate over `lines` once", "Do not call `list(lines)`", "Retain aggregates only", "Use the standard `csv` module for output"],
+      "starter_code": "from collections import defaultdict\nimport csv\nimport io\nimport json\n\ndef summarize_auth_stream(lines):\n    # Keep bounded per-user aggregates, not raw events.\n    pass\n",
+      "hint": "Use a dictionary of three integer counters per user and `io.StringIO(newline='')` with `csv.writer` for deterministic output.",
+      "entry_function": "summarize_auth_stream",
+      "visible_tests": [
+        {"name": "aggregate valid events", "args": [["{\"user\":\"bob\",\"result\":\"failure\",\"bytes\":5}", "{\"user\":\"ada\",\"result\":\"success\",\"bytes\":10}", "{\"user\":\"bob\",\"result\":\"success\",\"bytes\":7}"]], "expected": "user,success,failure,bytes\r\nada,1,0,10\r\nbob,1,1,12\r\n"}
+      ],
+      "hidden_tests": [
+        {"name": "ignore invalid records", "args": [["bad", "{\"user\":\"a\",\"result\":\"other\",\"bytes\":1}", "{\"user\":\"a\",\"result\":\"success\",\"bytes\":-1}", "{\"user\":\"a\",\"result\":\"failure\",\"bytes\":2}"]], "expected": "user,success,failure,bytes\r\na,0,1,2\r\n"},
+        {"name": "reject boolean bytes", "args": [["{\"user\":\"a\",\"result\":\"success\",\"bytes\":true}"]], "expected": "user,success,failure,bytes\r\n"},
+        {"name": "empty stream", "args": [[]], "expected": "user,success,failure,bytes\r\n"}
+      ]
+    }
+  ]
+}

@@ -2,7 +2,8 @@
   const COURSE_URL = "/data/security_course.json";
   const NOTES_URL = "/data/security_notes.md";
   const INTERVIEW_BANK_URL = "/data/security_interview_bank.json";
-  const PROGRESS_KEY = "security-academy-progress-v3";
+  const ORAL_BOARD_URL = "/data/security_oral_boards.json";
+  const PROGRESS_KEY = "security-academy-progress-v4";
   const standalone = document.body.dataset.academy === "security";
 
   const els = {
@@ -106,13 +107,13 @@
   }
 
   function emptyProgress() {
-    return { version: 3, selected: "", modules: {} };
+    return { version: 4, selected: "", modules: {} };
   }
 
   function loadProgress() {
     try {
       const parsed = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-      if (!parsed || parsed.version !== 3 || typeof parsed.modules !== "object") return emptyProgress();
+      if (!parsed || parsed.version !== 4 || typeof parsed.modules !== "object") return emptyProgress();
       return parsed;
     } catch {
       return emptyProgress();
@@ -125,15 +126,16 @@
 
   function moduleProgress(moduleId, progress = loadProgress()) {
     return progress.modules[moduleId] || {
-      answers: [],
+      oralAnswer: "",
+      oralPassed: false,
+      reviewOpen: false,
+      rubricChecks: [],
       attempts: 0,
-      quizScore: 0,
-      quizPassed: false,
     };
   }
 
   function isMastered(moduleId, progress = loadProgress()) {
-    return moduleProgress(moduleId, progress).quizPassed;
+    return moduleProgress(moduleId, progress).oralPassed;
   }
 
   function statusFor(moduleId, progress = loadProgress()) {
@@ -154,11 +156,11 @@
   function renderProgress() {
     const progress = loadProgress();
     const mastered = state.modules.filter((module) => isMastered(module.id, progress)).length;
-    const quizPassed = state.modules.filter((module) => moduleProgress(module.id, progress).quizPassed).length;
+    const oralPassed = state.modules.filter((module) => moduleProgress(module.id, progress).oralPassed).length;
     const pct = state.modules.length ? Math.round((mastered / state.modules.length) * 100) : 0;
     els.securityProgress.innerHTML = `
       <div><strong>${pct}%</strong><span>mastery</span></div>
-      <div class="security-progress-detail"><b>${mastered}/${state.modules.length}</b><span>modules mastered</span><small>${quizPassed} knowledge checks passed</small></div>
+      <div class="security-progress-detail"><b>${mastered}/${state.modules.length}</b><span>modules mastered</span><small>${oralPassed} oral boards reviewed</small></div>
     `;
 
     const phaseMap = new Map();
@@ -205,11 +207,11 @@
   }
 
   function renderStatus(module, record) {
-    const mastered = record.quizPassed;
+    const mastered = record.oralPassed;
     els.securityModuleStatus.innerHTML = `
-      <span class="security-status-chip ${mastered ? "complete" : ""}">${mastered ? "Mastered" : "Knowledge check pending"}</span>
-      <span class="security-status-chip ${record.quizPassed ? "complete" : ""}">${record.quizPassed ? "✓" : "1"} Score ${record.quizPassed ? `${record.quizScore}%` : "pending"}</span>
-      <span class="security-status-chip">${record.attempts} quiz attempt${record.attempts === 1 ? "" : "s"}</span>
+      <span class="security-status-chip ${mastered ? "complete" : ""}">${mastered ? "Mastered" : "Oral board pending"}</span>
+      <span class="security-status-chip ${record.reviewOpen ? "complete" : ""}">${record.reviewOpen ? "✓" : "1"} Written response</span>
+      <span class="security-status-chip">${record.attempts} review${record.attempts === 1 ? "" : "s"}</span>
     `;
   }
 
@@ -275,43 +277,53 @@
     `;
   }
 
-  function renderAssessment(module, record, result = null) {
-    const answers = result?.answers || record.answers || [];
-    const resultHtml = result
-      ? `<div class="security-quiz-result ${result.passed ? "pass" : "retry"}"><strong>${result.passed ? "Passed" : "Review and retry"} · ${result.score}%</strong><span>${result.correct}/${module.quiz.length} correct. Pass at ${state.course.pass_score}% or higher.</span></div>`
-      : record.quizPassed
-        ? `<div class="security-quiz-result pass"><strong>Passed · ${record.quizScore}%</strong><span>You can retake this check at any time.</span></div>`
-        : `<p class="security-test-intro">Answer ${module.quiz.length} interview-focused questions. Pass at ${state.course.pass_score}% or higher. These are original practice questions informed by public sources; candidate reports are anecdotal, not official company question banks.</p>`;
+  function wordCount(value) {
+    return value.trim() ? value.trim().split(/\s+/).length : 0;
+  }
 
+  function renderAssessment(module, record, message = "") {
+    const board = module.oral_board;
+    const words = wordCount(record.oralAnswer || "");
+    const minimum = state.course.oral_minimum_words;
+    const checks = board.rubric.map((_, index) => Boolean(record.rubricChecks?.[index]));
     els.securityAssessment.innerHTML = `
-      ${resultHtml}
-      <form id="securityQuizForm">
-        ${module.quiz
-          .map((question, questionIndex) => {
-            const feedback = result
-              ? `<div class="security-question-feedback ${result.details[questionIndex].correct ? "correct" : "incorrect"}"><strong>${result.details[questionIndex].correct ? "Correct" : "Not quite"}</strong><p>${esc(question.explanation)}</p></div>`
-              : "";
-            return `
-              <fieldset class="security-question">
-                <legend>${questionIndex + 1}. ${esc(question.prompt)}</legend>
-                ${question.options
-                  .map(
-                    (option, optionIndex) => `
-                      <label>
-                        <input type="radio" name="security-q-${questionIndex}" value="${optionIndex}" ${Number(answers[questionIndex]) === optionIndex ? "checked" : ""} />
-                        <span>${esc(option)}</span>
-                      </label>
-                    `,
-                  )
-                  .join("")}
-                ${feedback}
-                <div class="security-question-sources"><span>Question basis</span><div class="security-source-links">${sourceLinks(question.sources)}</div></div>
-              </fieldset>
-            `;
-          })
-          .join("")}
-        <button class="button primary" type="submit">${record.attempts ? "Check Again" : "Submit Knowledge Check"}</button>
+      ${record.oralPassed ? '<div class="security-quiz-result pass"><strong>Oral board reviewed</strong><span>Your answer met the full self-review bar. Rework it whenever you can make the reasoning tighter.</span></div>' : ""}
+      ${message ? `<div class="security-oral-message">${esc(message)}</div>` : ""}
+      <div class="security-oral-heading">
+        <span>${esc(board.frequency)} interview area</span>
+        <strong>No answer choices</strong>
+      </div>
+      <p class="security-oral-prompt">${esc(board.prompt)}</p>
+      <div class="security-oral-probes">
+        <h4>Interviewer follow-ups</h4>
+        <ol>${board.probes.map((probe) => `<li>${esc(probe)}</li>`).join("")}</ol>
+      </div>
+      <form id="securityOralForm">
+        <label class="security-oral-answer">
+          <span>Your interview answer</span>
+          <textarea id="securityOralAnswer" name="oral-answer" spellcheck="true">${esc(record.oralAnswer || "")}</textarea>
+          <small>${words} words · ${minimum} required before review</small>
+        </label>
+        <div class="security-question-sources"><span>Scenario basis</span><div class="security-source-links">${sourceLinks(board.sources)}</div></div>
+        <button class="button primary" type="submit">${record.reviewOpen ? "Review Again" : "Review Against the Bar"}</button>
       </form>
+      ${record.reviewOpen ? `
+        <div class="security-oral-review">
+          <h4>Strong-answer bar</h4>
+          <p>Check an item only when your written answer addresses it explicitly enough to survive a follow-up.</p>
+          ${board.rubric
+            .map(
+              (item, index) => `
+                <label>
+                  <input type="checkbox" data-security-rubric="${index}" ${checks[index] ? "checked" : ""} />
+                  <span>${esc(item)}</span>
+                </label>
+              `,
+            )
+            .join("")}
+          <button class="button primary" id="securityCompleteReview" type="button">Complete Self-Review</button>
+        </div>
+      ` : ""}
     `;
   }
 
@@ -347,27 +359,33 @@
     els.securityPrevious.disabled = state.selected === 0;
     els.securityNext.disabled = state.selected === state.modules.length - 1;
     els.securityNext.textContent = isMastered(module.id, progress) ? "Next Module" : "Next Module";
-    window.history.replaceState(null, "", `#security/${module.id}`);
+    if (!document.querySelector(".security-shell")?.classList.contains("coding-mode")) {
+      window.history.replaceState(null, "", `#security/${module.id}`);
+    }
   }
 
   async function ensureLoaded() {
     if (state.loaded) return;
-    const [courseResponse, notesResponse, interviewBankResponse] = await Promise.all([
+    const [courseResponse, notesResponse, interviewBankResponse, oralBoardResponse] = await Promise.all([
       fetch(COURSE_URL),
       fetch(NOTES_URL),
       fetch(INTERVIEW_BANK_URL),
+      fetch(ORAL_BOARD_URL),
     ]);
     if (!courseResponse.ok) throw new Error(`Could not load ${COURSE_URL}`);
     if (!notesResponse.ok) throw new Error(`Could not load ${NOTES_URL}`);
     if (!interviewBankResponse.ok) throw new Error(`Could not load ${INTERVIEW_BANK_URL}`);
+    if (!oralBoardResponse.ok) throw new Error(`Could not load ${ORAL_BOARD_URL}`);
     const course = await courseResponse.json();
     const notes = await notesResponse.text();
     const interviewBank = await interviewBankResponse.json();
+    const oralBoardBank = await oralBoardResponse.json();
     const sourceTitles = course.modules.map((module) => module.source_title).filter(Boolean);
     const sourceNotes = parseNotes(notes, sourceTitles);
 
     if (course.modules.length < 20) throw new Error("Security curriculum is incomplete.");
     course.sources = interviewBank.sources;
+    course.oral_minimum_words = oralBoardBank.minimum_words;
     course.modules = course.modules.map((module) => {
       const moduleBank = interviewBank.modules[module.id];
       if (!moduleBank) throw new Error(`Missing interview bank: ${module.title}`);
@@ -386,7 +404,31 @@
           throw new Error(`Missing source attribution: ${module.title}`);
         }
       });
-      return { ...module, quiz, deep_dive: moduleBank.deep_dive };
+      const roleSpecific = new Set(["exploitation", "malware-analysis", "digital-forensics", "security-projects"]);
+      const oralBoard = oralBoardBank.modules[module.id] || {
+        frequency: roleSpecific.has(module.id) ? "Role-specific" : "Common",
+        prompt: module.interview.prompt,
+        probes: [
+          "Clarify the system, assets, actors, constraints, and what a secure outcome means.",
+          `Walk the relevant ${module.title.toLowerCase()} flow end to end and name the trust boundaries.`,
+          "Prioritize plausible attack or failure paths and state the precondition and impact of each.",
+          "Design preventive, detective, containment, and recovery controls that fail independently.",
+          `Defend your tradeoffs, tests, telemetry, and response to this follow-up: ${module.interview.rubric.at(-1)}`,
+        ],
+        rubric: [
+          ...module.interview.rubric,
+          "States concrete telemetry, tests, and incident-response pivots.",
+          "Explains tradeoffs, residual risk, and what evidence would change the decision.",
+        ],
+        sources: moduleBank.default_sources,
+      };
+      if (oralBoard.probes.length !== 5 || oralBoard.rubric.length < 6) {
+        throw new Error(`Incomplete oral board: ${module.title}`);
+      }
+      if (oralBoard.sources.some((sourceId) => !course.sources[sourceId])) {
+        throw new Error(`Missing oral board source: ${module.title}`);
+      }
+      return { ...module, quiz, deep_dive: moduleBank.deep_dive, oral_board: oralBoard };
     });
 
     state.course = course;
@@ -404,6 +446,7 @@
 
   function selectModule(index) {
     if (index < 0 || index >= state.modules.length) return;
+    window.SecurityCodingLab?.showMode("course");
     state.selected = index;
     renderModule();
     document.querySelector(".security-main")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -423,32 +466,59 @@
   els.securityNext.addEventListener("click", () => selectModule(state.selected + 1));
 
   els.securityAssessment.addEventListener("submit", (event) => {
-    if (event.target.id !== "securityQuizForm") return;
+    if (event.target.id !== "securityOralForm") return;
     event.preventDefault();
     const module = state.modules[state.selected];
-    const form = new FormData(event.target);
-    const answers = module.quiz.map((_, index) => {
-      const value = form.get(`security-q-${index}`);
-      return value === null ? null : Number(value);
-    });
-    if (answers.some((answer) => answer === null)) {
-      const firstMissing = event.target.querySelector(`input[name="security-q-${answers.indexOf(null)}"]`);
-      firstMissing?.focus();
-      event.target.classList.add("needs-answers");
+    const answer = String(new FormData(event.target).get("oral-answer") || "").trim();
+    const current = moduleProgress(module.id);
+    if (wordCount(answer) < state.course.oral_minimum_words) {
+      const record = updateRecord(module.id, { oralAnswer: answer });
+      renderAssessment(module, record, `Develop the answer to at least ${state.course.oral_minimum_words} words before opening the review bar.`);
+      document.querySelector("#securityOralAnswer")?.focus();
       return;
     }
-    const details = module.quiz.map((question, index) => ({ correct: answers[index] === question.answer }));
-    const correct = details.filter((item) => item.correct).length;
-    const score = Math.round((correct / module.quiz.length) * 100);
-    const passed = score >= state.course.pass_score;
-    const current = moduleProgress(module.id);
     const record = updateRecord(module.id, {
-      answers,
+      oralAnswer: answer,
+      reviewOpen: true,
       attempts: current.attempts + 1,
-      quizScore: Math.max(current.quizScore, score),
-      quizPassed: current.quizPassed || passed,
     });
-    renderAssessment(module, record, { answers, correct, score, passed, details });
+    renderAssessment(module, record);
+    renderStatus(module, record);
+    renderProgress();
+    renderNav();
+  });
+
+  els.securityAssessment.addEventListener("input", (event) => {
+    if (event.target.id !== "securityOralAnswer") return;
+    const module = state.modules[state.selected];
+    updateRecord(module.id, { oralAnswer: event.target.value });
+    const counter = event.target.parentElement.querySelector("small");
+    if (counter) counter.textContent = `${wordCount(event.target.value)} words · ${state.course.oral_minimum_words} required before review`;
+  });
+
+  els.securityAssessment.addEventListener("change", (event) => {
+    if (!event.target.matches("[data-security-rubric]")) return;
+    const module = state.modules[state.selected];
+    const checks = module.oral_board.rubric.map((_, index) =>
+      Boolean(els.securityAssessment.querySelector(`[data-security-rubric="${index}"]`)?.checked),
+    );
+    updateRecord(module.id, { rubricChecks: checks });
+  });
+
+  els.securityAssessment.addEventListener("click", (event) => {
+    if (event.target.id !== "securityCompleteReview") return;
+    const module = state.modules[state.selected];
+    const current = moduleProgress(module.id);
+    const checks = module.oral_board.rubric.map((_, index) =>
+      Boolean(els.securityAssessment.querySelector(`[data-security-rubric="${index}"]`)?.checked),
+    );
+    if (wordCount(current.oralAnswer) < state.course.oral_minimum_words || checks.some((checked) => !checked)) {
+      const record = updateRecord(module.id, { rubricChecks: checks });
+      renderAssessment(module, record, "The review is not complete. Strengthen the answer until every bar item is explicit, then reassess it honestly.");
+      return;
+    }
+    const record = updateRecord(module.id, { oralPassed: true, reviewOpen: true, rubricChecks: checks });
+    renderAssessment(module, record);
     renderStatus(module, record);
     renderProgress();
     renderNav();
@@ -462,7 +532,7 @@
   });
 
   async function start() {
-    await ensureLoaded();
+    await Promise.all([ensureLoaded(), window.SecurityCodingLab?.start()]);
     renderModule();
   }
 
@@ -470,7 +540,7 @@
     els.securityLearn.innerHTML = `<p class="sd-error">${esc(error.message)}</p>`;
   }
 
-  window.SecurityAcademy = { parseNotes, showError, slug, start };
+  window.SecurityAcademy = { parseNotes, selectedId: () => state.modules[state.selected]?.id, showError, slug, start };
 
   if (standalone) {
     start().catch(showError);

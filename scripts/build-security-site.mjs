@@ -12,11 +12,11 @@ await mkdir(join(outputRoot, "data"), { recursive: true });
 const standaloneHtml = await readFile(join(staticRoot, "security.html"), "utf8");
 await writeFile(join(outputRoot, "index.html"), standaloneHtml, "utf8");
 
-for (const asset of ["styles.css", "security.js"]) {
+for (const asset of ["styles.css", "security-coding.js", "security-coding-worker.js", "security.js"]) {
   await cp(join(staticRoot, asset), join(outputRoot, asset));
 }
 
-for (const asset of ["security_course.json", "security_interview_bank.json", "security_notes.md"]) {
+for (const asset of ["security_coding_challenges.json", "security_course.json", "security_interview_bank.json", "security_notes.md", "security_oral_boards.json"]) {
   await cp(join(staticRoot, "data", asset), join(outputRoot, "data", asset));
 }
 

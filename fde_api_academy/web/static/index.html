@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FDE API Academy</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=5" />
   </head>
   <body class="academy-landing">
     <aside class="sidebar">
@@ -245,7 +245,11 @@
               <button class="button primary" id="securityNext" type="button">Next Module</button>
               <button class="button security-reset" id="securityReset" type="button">Reset Progress</button>
             </div>
-            <div class="security-panels">
+            <div class="security-mode-switch segmented" role="tablist" aria-label="Security academy mode">
+              <button class="segment active" id="securityViewCourse" type="button">Course</button>
+              <button class="segment" id="securityViewCoding" type="button">Coding Lab</button>
+            </div>
+            <div class="security-panels" id="securityCourseContent">
               <section class="security-panel security-learn-panel">
                 <span>Learn</span>
                 <div id="securityObjectives"></div>
@@ -256,7 +260,7 @@
                 <div id="securityInterview"></div>
               </section>
               <section class="security-panel security-test-panel">
-                <span>Knowledge Check</span>
+                <span>Oral Board</span>
                 <div id="securityAssessment"></div>
               </section>
               <details class="security-panel security-source-panel">
@@ -264,6 +268,33 @@
                 <div id="securitySource"></div>
               </details>
             </div>
+            <section class="security-coding-view" id="securityCodingView" hidden>
+              <header class="security-coding-head">
+                <div><p class="eyebrow">Interview scripting judge</p><h3>Security Coding Lab</h3><p>Candidate-reported tasks adapted into deterministic Python cases with company and source evidence.</p></div>
+                <div class="security-coding-progress" id="securityCodingProgress"></div>
+              </header>
+              <div class="security-coding-shell">
+                <aside class="security-coding-list" id="securityCodingList"></aside>
+                <article class="security-coding-problem">
+                  <header><span class="security-coding-company" id="securityCodingCompany"></span><h4 id="securityCodingTitle"></h4><p id="securityCodingMeta"></p></header>
+                  <div class="security-coding-workspace">
+                    <section class="security-coding-brief">
+                      <div id="securityCodingPrompt"></div>
+                      <section><h5>Why this matters</h5><p id="securityCodingWhy"></p></section>
+                      <section><h5>Constraints</h5><ul id="securityCodingConstraints"></ul></section>
+                      <section><h5>Visible example</h5><pre id="securityCodingExample"></pre></section>
+                      <section class="security-coding-source"><h5>Interview evidence</h5><a id="securityCodingSource" href="#" target="_blank" rel="noreferrer"></a><p id="securityCodingSourceNote"></p></section>
+                      <section><h5>Hint</h5><p id="securityCodingHint"></p><button class="button" id="securityCodingHintButton" type="button">Toggle Hint</button></section>
+                    </section>
+                    <section class="security-coding-editor">
+                      <div class="security-coding-toolbar"><span>solution.py</span><div><button class="button" id="securityCodingReset" type="button">Reset</button><button class="button" id="securityCodingRun" type="button">Run</button><button class="button primary" id="securityCodingSubmit" type="button">Submit</button></div></div>
+                      <textarea id="securityCodingEditor" spellcheck="false" aria-label="Python solution"></textarea>
+                      <div class="security-coding-result" id="securityCodingResult"></div>
+                    </section>
+                  </div>
+                </article>
+              </div>
+            </section>
           </article>
         </div>
       </section>
@@ -273,7 +304,8 @@
     <script src="/app.js?v=9"></script>
     <script src="/systemdesign.js?v=4"></script>
     <script src="/customersim.js?v=1"></script>
-    <script src="/security.js?v=3"></script>
+    <script src="/security-coding.js?v=3"></script>
+    <script src="/security.js?v=5"></script>
     <script src="/security-hub.js?v=1"></script>
   </body>
 </html>
