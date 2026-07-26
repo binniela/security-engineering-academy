@@ -1,0 +1,819 @@
+{
+  "version": 1,
+  "updated": "2026-07-23",
+  "title": "Palantir Defense Tech SWE Academy",
+  "subtitle": "A stage-by-stage preparation track for the Software Engineer Internship - Defense Tech loop.",
+  "methodology": "The ordering and priorities combine Palantir's public role and interview guidance with recurring candidate reports from the supplied Glassdoor export and Reddit notes. Candidate reports are anecdotal and the exact loop can vary. Problems are labeled as reported, close analogues, or pattern coverage so similarity is not mistaken for confirmation.",
+  "role": {
+    "company": "Palantir Technologies",
+    "position": "Software Engineer, Internship - Defense Tech",
+    "product": "Gotham",
+    "location_note": "On-site; the currently verified Defense Tech SWE internship posting is in New York, with location-specific postings handled separately.",
+    "mission": "Build mission-critical products that securely integrate and visualize data, support analysis, alert triage, geospatial workflows, and resource allocation for defense users.",
+    "signals": [
+      "Write clean, effective code and learn unfamiliar languages or systems quickly.",
+      "Turn ambiguous operational needs into scoped software and ship across the product lifecycle.",
+      "Communicate with engineers, users, and non-technical counterparts while showing ownership.",
+      "Reason about data structures, storage, cloud infrastructure, front-end systems, and reliability.",
+      "Discuss defense mission alignment honestly and be eligible and willing to obtain a US security clearance.",
+      "Confirm the current early-talent eligibility requirement: planned 2028 graduation and this being your final internship before graduating."
+    ],
+    "stack": ["Java", "Go", "TypeScript", "React", "Redux", "Cassandra", "Spark", "Elasticsearch", "Gradle", "GitHub"]
+  },
+  "sources": {
+    "official-role": {
+      "title": "Palantir Defense Tech SWE internship listing",
+      "url": "https://jobs.lever.co/palantir/8bcf4f33-0a79-4248-bbfd-49ac4be9dd8e",
+      "kind": "Official",
+      "note": "Role responsibilities, product context, technologies, values, and requirements."
+    },
+    "official-hiring": {
+      "title": "Palantir: Getting Hired",
+      "url": "https://www.palantir.com/careers/getting-hired/",
+      "kind": "Official",
+      "note": "Palantir's guidance on accomplishments, judgment, passion, clarifying questions, and collaboration."
+    },
+    "glassdoor-local": {
+      "title": "Supplied Glassdoor interview export",
+      "url": "https://www.glassdoor.com/Interview/Palantir-Technologies-Interview-Questions-E236375.htm?filter.jobTitleExact=Software+Engineer%28Internship%29",
+      "kind": "Candidate reports",
+      "note": "The local RTF supplied by the user includes internship and SWE reports through July 2026. Reports are anecdotal."
+    },
+    "glassdoor-web": {
+      "title": "Palantir SWE internship interview reports",
+      "url": "https://www.glassdoor.com/Interview/Palantir-Technologies-Interview-Questions-E236375.htm?filter.jobTitleExact=Software+Engineer%28Internship%29",
+      "kind": "Candidate reports",
+      "note": "Public candidate descriptions of the recruiter screen, OA, technical, Learning, Decomp, and hiring-manager stages."
+    },
+    "reddit-loop": {
+      "title": "Recent SWE intern loop discussion",
+      "url": "https://www.reddit.com/r/InterviewCoderHQ/comments/1peo7ut/my_palantir_swe_intern_interview_experience_need/",
+      "kind": "Community report",
+      "note": "Anecdotal descriptions of a codebase task, debugging, a small feature, system reasoning, and a variable hiring-manager round."
+    },
+    "reddit-intern": {
+      "title": "Palantir SWE internship experience discussion",
+      "url": "https://www.reddit.com/r/csMajors/comments/1oxu847/palantir_swe_internship_interview_experience/",
+      "kind": "Community report",
+      "note": "Anecdotal description of a behavioral-plus-coding interview and hiring-manager packet review."
+    },
+    "swecc-guide": {
+      "title": "SWECC Palantir intern and new-grad guide",
+      "url": "https://wiki.swecc.org/Member-Resources/Interview-Prep/Companies/palantir",
+      "kind": "Community guide",
+      "note": "Community synthesis of coding, Learning, Decomposition, and hiring-manager stages."
+    },
+    "leetcode-user": {
+      "title": "User-supplied recent Palantir problem list",
+      "url": "https://leetcode.com/company/palantir-technologies/",
+      "kind": "User-supplied trend",
+      "note": "The user supplied Beautiful Indices I and Merge Intervals as recent popular problems. Company-frequency lists can change and are not official question banks."
+    },
+    "discord-local": {
+      "title": "User-supplied Discord discussion (July 2026)",
+      "kind": "Anecdotal chat",
+      "note": "The Palantir-specific lines describe an easy recruiter call focused on previous/current work and why Palantir. The preceding OOD and LeetCode discussion explicitly concerns Citadel and is excluded from Palantir question evidence."
+    },
+    "leetcode-screenshots": {
+      "title": "User-supplied Palantir LeetCode tag screenshots",
+      "kind": "Company-tag snapshot",
+      "note": "Two screenshots supplied on July 21, 2026 list 29 Palantir-tagged problems with difficulty and acceptance rates. Company tags are useful practice signals, not guarantees of future questions."
+    },
+    "resume-local": {
+      "title": "Vincent La resume supplied July 2026",
+      "kind": "Candidate evidence",
+      "note": "Used only to personalize story selection and resume follow-ups. Prompts identify claims to verify; they do not add facts that are absent from the resume."
+    },
+    "grind75-official": {
+      "title": "Grind 75 by Tech Interview Handbook",
+      "url": "https://www.techinterviewhandbook.org/grind75/",
+      "kind": "Official study plan",
+      "note": "Yangshun Tay's customizable successor to Blind 75. The checklist preserves the official core priority order; scheduling can be adjusted on the source site."
+    }
+  },
+  "loop": [
+    {"id": "behavioral", "step": "01", "label": "Behavioral", "duration": "20-30 min", "confidence": "High", "summary": "Background, motivation, role fit, judgment, and evidence of ownership."},
+    {"id": "oa", "step": "02", "label": "HackerRank OA", "duration": "90 min", "confidence": "High", "summary": "Usually three tasks: current reports favor two algorithmic problems plus REST/API work; SQL has appeared in prior variants."},
+    {"id": "coding", "step": "03", "label": "Technical Coding", "duration": "45 min", "confidence": "High", "summary": "A medium-style problem with progressive follow-ups, complexity analysis, and heavy emphasis on clear reasoning."},
+    {"id": "learning", "step": "04", "label": "Learning + Debug", "duration": "45-60 min", "confidence": "High", "summary": "Understand unfamiliar material or an existing codebase, diagnose behavior, then extend or repair it."},
+    {"id": "decomposition", "step": "05", "label": "Decomposition", "duration": "45-60 min", "confidence": "High", "summary": "System-design-lite: drive an ambiguous product problem from users and data to an MVP and tradeoffs."},
+    {"id": "hiring-manager", "step": "06", "label": "Hiring Manager", "duration": "30-60 min", "confidence": "Medium", "summary": "Mission and role alignment, resume depth, judgment, and often a repeat of the weakest prior signal."}
+  ],
+  "behavioral": {
+    "intro": "Do not memorize ten STAR monologues. Prepare six strong stories and learn to retrieve them from different angles. Palantir reports consistently describe conversational follow-ups that probe the decisions underneath the polished summary.",
+    "recent_signal": "A July 2026 Palantir-specific Discord report describes the recruiter call as straightforward: discuss your previous or current job and explain why Palantir. Treat that as a fresh anecdotal confirmation of the existing preparation priorities, not a guarantee of the exact script.",
+    "answer_framework": [
+      "Lead with the decision or motivation in one sentence; do not spend a minute on chronology.",
+      "Give enough context to establish stakes, constraints, and your personal ownership.",
+      "Explain alternatives considered, the judgment call you made, and why.",
+      "Quantify the result, then state what you learned or would change.",
+      "Expect two layers of follow-up on tradeoffs, conflict, failure, or what was specifically yours.",
+      "Label impact honestly as measured, projected, or estimated. Never invent a number you cannot defend in a resume deep dive."
+    ],
+    "resume_profile": {
+      "positioning": "You are not pitching a security candidate who merely wants to try general SWE. Your evidence shows a software engineer who has repeatedly built operational systems where identity, authorization, alert triage, reliability, and human judgment matter. That is the bridge to Gotham.",
+      "role_thesis": "I have spent three internships turning high-stakes security workflows into production software: identity checks before privileged actions, risk-based alert triage, and authorization across services. Palantir Defense Tech is compelling because the engineering problem is broader but structurally familiar: integrate messy data, preserve trust and auditability, and build software that helps operators make consequential decisions. I want the SWE role because I want to own those product and platform systems beyond the security boundary.",
+      "risks": [
+        "Your resume is security-heavy. Be ready to prove that you want product and platform ownership, not simply a security role at a defense company.",
+        "The 2,000+ and 30,000+ figures establish deployment scope, not your impact by themselves. Separate reachable endpoints, active adoption, and measured outcomes.",
+        "Phrases such as enterprise-wide, AI agent-driven, secure, and improving reliability invite architecture-level scrutiny. Replace labels with mechanisms.",
+        "The founder bullet is broad. Prepare one concrete customer problem, design decision, production incident, and business tradeoff.",
+        "The 99.5% IDS accuracy is weak without class balance, train/test methodology, false-positive rate, and leakage analysis. Do not lead with accuracy alone."
+      ],
+      "stories": [
+        {
+          "id": "robinhood-step-up",
+          "title": "Privileged-action step-up verification",
+          "best_for": ["Ownership", "Technical judgment", "Security and reliability", "Cross-functional rollout"],
+          "evidence": "Swift agent deployed across 2,000+ developer endpoints, integrating Okta authentication and Touch ID before privileged actions.",
+          "prove": "Threat model, request and identity flow, policy decision point, replay resistance, failure behavior, rollout strategy, telemetry, and your exact ownership boundary.",
+          "pressure_questions": [
+            "What privileged action was being protected, and where could enforcement be bypassed?",
+            "What did Touch ID prove, what did Okta prove, and how were the two bound to one request?",
+            "What happened when the endpoint was offline, Okta was unavailable, or biometric verification failed?",
+            "How did you stage deployment across 2,000+ endpoints and detect regressions?",
+            "Which impact was measured beyond deployment coverage?"
+          ],
+          "caution": "Do not imply that biometrics alone established authorization or that endpoint count equals successful adoption."
+        },
+        {
+          "id": "delta-triage",
+          "title": "Insider-threat alert triage pipeline",
+          "best_for": ["Ambiguity", "Automation", "Data modeling", "Operational impact"],
+          "evidence": "Python workflow consuming real-time Proofpoint ITM webhooks across 30,000+ corporate endpoints with enrichment, cumulative risk, escalation, and a response runbook.",
+          "prove": "Webhook contract, idempotency, storage model, enrichment dependencies, risk aggregation, threshold calibration, duplicate and late events, observability, and analyst override.",
+          "pressure_questions": [
+            "What was the event schema, and how did you identify a user across changing devices or accounts?",
+            "How did the workflow handle duplicate delivery, retries, out-of-order events, or webhook downtime?",
+            "Who chose the risk thresholds, and how did you evaluate false positives and false negatives?",
+            "What remained a human decision after automation?",
+            "What evidence supports the claim that manual triage was reduced?"
+          ],
+          "caution": "Thirty thousand endpoints describes source coverage. Keep it distinct from alert volume, user count, and measured analyst time saved."
+        },
+        {
+          "id": "robinhood-ai-response",
+          "title": "AI-assisted detection and response workflow",
+          "best_for": ["Learning quickly", "System safety", "Experimentation", "Failure recovery"],
+          "evidence": "AI-agent automation orchestrating alert triage, enrichment, and response as repeatable runbook operations.",
+          "prove": "Why an agent was warranted, tool boundaries, deterministic versus model-driven steps, evaluation set, permission model, audit trail, timeout and retry behavior, and human approval gates.",
+          "pressure_questions": [
+            "Which decisions could the model make, and which actions were it prohibited from taking?",
+            "Why was a conventional workflow engine insufficient?",
+            "How did you evaluate correctness when model outputs were nondeterministic?",
+            "How were prompts, tools, and runbook versions traced for an incident review?",
+            "Describe one failure mode and the fallback path."
+          ],
+          "caution": "Avoid AI vocabulary unless you can explain the concrete architecture, evaluation method, and blast-radius controls."
+        },
+        {
+          "id": "auxilium-auth",
+          "title": "Authorization across REST services",
+          "best_for": ["Design tradeoffs", "Debugging", "Least privilege", "Distributed systems"],
+          "evidence": "Auth0 OAuth2/OIDC authentication and role-based authorization across backend REST APIs.",
+          "prove": "Actors and grant flow, token audience and validation, authorization enforcement location, role-to-permission model, service-to-service identity, revocation, caching, tests, and migration strategy.",
+          "pressure_questions": [
+            "Why did the system need both OIDC and OAuth2, and what did each provide?",
+            "Where was authorization enforced, and how did you prevent inconsistent checks between services?",
+            "How were signing-key rotation and token expiration handled?",
+            "Why RBAC instead of attributes or relationship-based authorization?",
+            "What negative authorization tests did you write?"
+          ],
+          "caution": "Saying Auth0 handled security is not enough. Be precise about what your code validated and enforced."
+        },
+        {
+          "id": "fellwind-founder",
+          "title": "Founder ownership under customer ambiguity",
+          "best_for": ["Initiative", "Product judgment", "Failure", "Prioritization"],
+          "evidence": "Founded a software business delivering and maintaining production web infrastructure for small businesses.",
+          "prove": "One named class of customer problem, discovery process, architecture, delivery constraint, reliability incident, customer tradeoff, business result, and what you personally built.",
+          "pressure_questions": [
+            "What customer behavior changed because of the product?",
+            "What did a customer ask for that you declined or reframed?",
+            "Describe the worst production incident and your prevention work afterward.",
+            "What did you automate only after doing it manually enough times?",
+            "What evidence shows this was a functioning business rather than a portfolio project?"
+          ],
+          "caution": "The current bullet is too broad to carry a story without one concrete customer, decision, failure, and outcome."
+        },
+        {
+          "id": "lockbox-pqc",
+          "title": "Post-quantum secure messaging design",
+          "best_for": ["Deep technical learning", "Threat modeling", "Architecture", "Challenging assumptions"],
+          "evidence": "FastAPI and AWS messaging platform using ML-DSA/liboqs, authentication, RBAC, and secure development practices.",
+          "prove": "Threat model, why ML-DSA was chosen, what it signs, classical/PQ hybrid decision, key lifecycle, message confidentiality versus authenticity, metadata exposure, AWS trust boundaries, and current production status.",
+          "pressure_questions": [
+            "ML-DSA is a signature scheme; how was message confidentiality provided?",
+            "What threat justified post-quantum cryptography for this project?",
+            "How were private keys generated, stored, rotated, and recovered?",
+            "What did liboqs provide, and what security properties remained your responsibility?",
+            "Which parts are deployed and tested versus still architectural?"
+          ],
+          "caution": "Do not use post-quantum as a synonym for end-to-end secure. Define the exact security property of every primitive."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": "background",
+        "question": "Tell me about yourself and walk me through your background.",
+        "frequency": "Very high",
+        "why": "This appears repeatedly across the supplied 2024-2026 internship reports. They are testing whether your trajectory has a coherent engineering story, not requesting a resume recital.",
+        "blueprint": "Present -> two relevant proof points -> why the next step is Defense Tech SWE. Keep it to roughly 90 seconds.",
+        "followups": ["Why did you choose computer science?", "Why that project or internship?", "What part was genuinely yours?"],
+        "avoid": "Listing every role chronologically or ending without a clear reason this role follows from your experience.",
+        "sources": ["glassdoor-local", "discord-local"]
+      },
+      {
+        "id": "why-palantir",
+        "question": "Why Palantir, why Defense Tech, and why the SWE/Dev role rather than FDSE?",
+        "frequency": "Very high",
+        "why": "Mission and role alignment recur in recruiter, onsite, and hiring-manager reports. The application itself asks candidates to distinguish engineering roles.",
+        "blueprint": "Connect one concrete capability of Gotham to a problem you care about, explain why product engineering at mission-critical scale fits your strengths, then distinguish building shared product primitives from primarily deploying with customers.",
+        "followups": ["Why Palantir over another strong software company?", "How do you think about defense work?", "Which Gotham problem would you want to work on?"],
+        "avoid": "Generic impact language, fandom, or pretending the defense tradeoffs do not exist. Give an honest, considered position.",
+        "sources": ["official-role", "glassdoor-local", "discord-local"]
+      },
+      {
+        "id": "internship-goals",
+        "question": "What are you looking for in an internship, and what defines your job search?",
+        "frequency": "High",
+        "why": "Multiple recent intern reports use nearly this exact wording. It tests whether Palantir's ownership, learning speed, and product environment match what you actually seek.",
+        "blueprint": "Name two or three criteria, support each with evidence from a prior experience, and connect them to this role's small teams, mentor model, and product lifecycle ownership.",
+        "followups": ["What would you change about your last internship?", "What other companies or roles are you considering?", "What would make the summer successful?"],
+        "avoid": "Centering prestige, compensation, or vague learning without naming the environment in which you learn best.",
+        "sources": ["official-role", "glassdoor-local"]
+      },
+      {
+        "id": "project",
+        "question": "Tell me about a technical project or accomplishment you are most proud of.",
+        "frequency": "High",
+        "why": "Palantir's official guidance explicitly calls out major accomplishments, and reports describe deep dives into one or two resume claims.",
+        "blueprint": "Problem and user -> architecture and your decisions -> hardest failure -> measured outcome -> what you would redesign. Be ready to draw the data flow and defend every resume verb.",
+        "followups": ["Why this architecture?", "What broke under scale or bad input?", "What did another teammate own?"],
+        "avoid": "Hiding behind 'we,' naming technologies without explaining their purpose, or having no metric or user outcome.",
+        "sources": ["official-hiring", "glassdoor-local"]
+      },
+      {
+        "id": "failure",
+        "question": "Tell me about a recent failure or a time your first approach did not work.",
+        "frequency": "High",
+        "why": "A supplied report explicitly attributes a final-round rejection to a weak failure answer. Palantir's official guidance says candidates should expect questions about failure and judgment.",
+        "blueprint": "Choose a real miss with consequences. Own your decision, explain the signal you missed, show the corrective action, and prove the learning changed later behavior.",
+        "followups": ["When did you know it was failing?", "Who did you tell?", "What guardrail exists now?"],
+        "avoid": "A disguised strength, blaming teammates, or a failure so old or harmless that it reveals nothing.",
+        "sources": ["official-hiring", "glassdoor-local"]
+      },
+      {
+        "id": "feedback",
+        "question": "What critical feedback have you received, and how did you respond?",
+        "frequency": "Medium-high",
+        "why": "This wording appears in the supplied intern reports and tests coachability without surrendering independent judgment.",
+        "blueprint": "State the feedback plainly, why it was valid or partly valid, the behavior you changed, and evidence the change held under pressure.",
+        "followups": ["Did you initially disagree?", "How did you measure improvement?", "What feedback would you give that person?"],
+        "avoid": "Claiming you immediately agreed with everything or choosing feedback that required no meaningful change.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "id": "tradeoff",
+        "question": "Tell me about a time you had to make a difficult tradeoff with incomplete information.",
+        "frequency": "Medium-high",
+        "why": "A 2025 report names this directly, and Palantir's public guidance emphasizes judgment and open-ended problem solving.",
+        "blueprint": "Define the competing objectives, constraints, reversible versus irreversible choices, evidence available, decision rule, and what you monitored after committing.",
+        "followups": ["What did you intentionally not do?", "What evidence would have reversed the decision?", "Who bore the downside?"],
+        "avoid": "Describing a prioritization with no real downside or failing to identify the stakeholder affected by the compromise.",
+        "sources": ["official-hiring", "glassdoor-local"]
+      },
+      {
+        "id": "collaboration",
+        "question": "Tell me about a disagreement or collaboration across technical and non-technical teammates.",
+        "frequency": "High signal",
+        "why": "The Defense Tech listing explicitly values collaboration with varied technical and non-technical counterparts. The answer should demonstrate conflict navigation, not merely friendliness.",
+        "blueprint": "Show the conflicting models of the problem, how you surfaced shared goals, what artifact or experiment resolved uncertainty, and what changed in the final solution.",
+        "followups": ["Where were you wrong?", "How did you explain the technical constraint?", "What if they still disagreed?"],
+        "avoid": "Casting yourself as the lone correct engineer who persuaded everyone else.",
+        "sources": ["official-role", "official-hiring"]
+      },
+      {
+        "id": "ownership",
+        "question": "Tell me about a project you drove from an ambiguous problem through execution despite obstacles.",
+        "frequency": "High signal",
+        "why": "Ownership is a named SWE principle in the supplied role. Decomposition interviews also reward candidates who create structure instead of waiting for instructions.",
+        "blueprint": "Explain how you clarified the outcome, reduced scope, chose the first deliverable, handled a blocking obstacle, and closed the loop with users or operators.",
+        "followups": ["What did you do without permission?", "When did you ask for help?", "How did you know it was done?"],
+        "avoid": "Equating ownership with doing everything alone or omitting the final operational outcome.",
+        "sources": ["official-role", "official-hiring"]
+      },
+      {
+        "id": "learning",
+        "question": "Tell me about a time you learned an unfamiliar technical concept quickly and applied it.",
+        "frequency": "High signal",
+        "why": "Learning is a named interview round, and the role says language familiarity matters less than writing effective code and adapting quickly.",
+        "blueprint": "Describe your initial knowledge gap, the smallest model or experiment you built, how you validated understanding, where you asked for help, and the production result.",
+        "followups": ["How did you identify the right documentation?", "What assumption was wrong?", "Teach me the core concept now."],
+        "avoid": "A passive course-taking story with no application, debugging, or evidence of transfer.",
+        "sources": ["official-role", "swecc-guide", "glassdoor-local"]
+      }
+    ]
+  },
+  "oa": {
+    "current_format": {
+      "confidence": "High",
+      "duration": "90 minutes",
+      "tasks": "Three questions. The newest supplied July 2026 report says two LeetCode-medium-style tasks plus one REST API task; a June 2026 report says three easy-to-medium problems.",
+      "historical_variant": "2023-2024 reports repeatedly describe one algorithm/DP problem, one SQL join-and-aggregate task, and one REST API parsing task. Prepare it as a contingency, not the default prediction.",
+      "sources": ["glassdoor-local", "glassdoor-web"]
+    },
+    "execution": [
+      {"time": "0-5 min", "action": "Read all three prompts, inspect input sizes, and rank by confidence and expected implementation time."},
+      {"time": "5-30 min", "action": "Finish the highest-confidence algorithm problem including edge cases and complexity."},
+      {"time": "30-55 min", "action": "Complete the second algorithm or SQL task; leave working partial credit before optimizing."},
+      {"time": "55-80 min", "action": "Implement REST pagination, status handling, missing fields, deterministic ordering, and exact output formatting."},
+      {"time": "80-90 min", "action": "Run boundary tests: empty input, duplicates, one element, maximum sizes, failed/empty API pages, and integer/string conversion."}
+    ],
+    "must_know": [
+      {"topic": "Arrays, strings, hash maps, and sorting", "reason": "Most recurrent implementation reports; often framed as stocks, portfolios, text indices, or records."},
+      {"topic": "Intervals and two pointers", "reason": "Merge Intervals is user-supplied at high recent frequency and interval reasoning transfers well."},
+      {"topic": "BFS/DFS and grid traversal", "reason": "Word Search and BFS/DFS appear explicitly in reports."},
+      {"topic": "1-D dynamic programming", "reason": "The supplied export explicitly reports a 1-D DP OA and older DP-heavy assessments."},
+      {"topic": "REST API pagination and JSON parsing", "reason": "The most stable non-DSA component across several years of reports."},
+      {"topic": "SQL joins, GROUP BY, aggregates, HAVING", "reason": "A recurring historical OA variant that remains cheap insurance to prepare."},
+      {"topic": "Complexity and exact implementation", "reason": "Reports emphasize asymptotic analysis, performance follow-ups, and precise output rather than merely finding an idea."}
+    ],
+    "custom_drills": [
+      {
+        "title": "Paginated incident feed",
+        "prompt": "Given an endpoint that returns {page, total_pages, data}, fetch every page, discard malformed records, group incidents by severity, and return each group sorted by timestamp then id. Handle non-200 responses and a page whose data field is missing.",
+        "bar": "Explain request count, deterministic ordering, retry policy versus fail-fast behavior, and how you would test pagination boundaries.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Mission event aggregation SQL",
+        "prompt": "Tables units(id, region), events(id, unit_id, severity, created_at), and acknowledgements(event_id, user_id). Return each region with at least five critical events in the last seven days, including critical event count and distinct acknowledging users; retain regions with zero acknowledgements.",
+        "bar": "Use the correct outer join, avoid duplicate inflation, group at the intended grain, and explain indexes.",
+        "sources": ["glassdoor-local"]
+      }
+    ]
+  },
+  "coding": {
+    "interview_bar": [
+      "Restate the contract and ask about input size, duplicates, ordering, mutation, and error behavior.",
+      "Give a correct baseline before optimizing; state the bottleneck precisely.",
+      "Name the invariant of the chosen data structure instead of pattern-dropping.",
+      "Write executable code with meaningful names and small helpers where they reduce risk.",
+      "Test normal, boundary, adversarial, and follow-up cases aloud.",
+      "State time and space complexity, including sorting, recursion depth, and output storage."
+    ],
+    "tagged_problems": [
+      {"number": 136, "title": "Single Number", "slug": "single-number", "difficulty": "Easy", "acceptance": "78.0%", "patterns": ["bit manipulation", "hash set"]},
+      {"number": 217, "title": "Contains Duplicate", "slug": "contains-duplicate", "difficulty": "Easy", "acceptance": "64.5%", "patterns": ["hash set", "sorting"]},
+      {"number": 219, "title": "Contains Duplicate II", "slug": "contains-duplicate-ii", "difficulty": "Easy", "acceptance": "51.6%", "patterns": ["sliding window", "hash map"]},
+      {"number": 303, "title": "Range Sum Query - Immutable", "slug": "range-sum-query-immutable", "difficulty": "Easy", "acceptance": "72.8%", "patterns": ["prefix sum", "class design"]},
+      {"number": 1232, "title": "Check If It Is a Straight Line", "slug": "check-if-it-is-a-straight-line", "difficulty": "Easy", "acceptance": "40.2%", "patterns": ["geometry", "cross product"]},
+      {"number": 5, "title": "Longest Palindromic Substring", "slug": "longest-palindromic-substring", "difficulty": "Medium", "acceptance": "38.2%", "patterns": ["expand around center", "dynamic programming"]},
+      {"number": 56, "title": "Merge Intervals", "slug": "merge-intervals", "difficulty": "Medium", "acceptance": "52.3%", "patterns": ["sorting", "intervals"]},
+      {"number": 146, "title": "LRU Cache", "slug": "lru-cache", "difficulty": "Medium", "acceptance": "47.7%", "patterns": ["hash map", "doubly linked list", "design"]},
+      {"number": 210, "title": "Course Schedule II", "slug": "course-schedule-ii", "difficulty": "Medium", "acceptance": "55.9%", "patterns": ["graph", "topological sort"]},
+      {"number": 244, "title": "Shortest Word Distance II", "slug": "shortest-word-distance-ii", "difficulty": "Medium", "acceptance": "63.0%", "patterns": ["hash map", "two pointers", "design"]},
+      {"number": 245, "title": "Shortest Word Distance III", "slug": "shortest-word-distance-iii", "difficulty": "Medium", "acceptance": "59.5%", "patterns": ["two pointers", "string"]},
+      {"number": 325, "title": "Maximum Size Subarray Sum Equals k", "slug": "maximum-size-subarray-sum-equals-k", "difficulty": "Medium", "acceptance": "50.9%", "patterns": ["prefix sum", "hash map"]},
+      {"number": 393, "title": "UTF-8 Validation", "slug": "utf-8-validation", "difficulty": "Medium", "acceptance": "46.4%", "patterns": ["bit manipulation", "state machine"]},
+      {"number": 427, "title": "Construct Quad Tree", "slug": "construct-quad-tree", "difficulty": "Medium", "acceptance": "78.5%", "patterns": ["divide and conquer", "tree", "matrix"]},
+      {"number": 443, "title": "String Compression", "slug": "string-compression", "difficulty": "Medium", "acceptance": "60.4%", "patterns": ["two pointers", "in-place mutation"]},
+      {"number": 539, "title": "Minimum Time Difference", "slug": "minimum-time-difference", "difficulty": "Medium", "acceptance": "62.6%", "patterns": ["sorting", "pigeonhole principle"]},
+      {"number": 718, "title": "Maximum Length of Repeated Subarray", "slug": "maximum-length-of-repeated-subarray", "difficulty": "Medium", "acceptance": "51.5%", "patterns": ["dynamic programming", "rolling hash"]},
+      {"number": 721, "title": "Accounts Merge", "slug": "accounts-merge", "difficulty": "Medium", "acceptance": "61.7%", "patterns": ["union find", "graph"]},
+      {"number": 981, "title": "Time Based Key-Value Store", "slug": "time-based-key-value-store", "difficulty": "Medium", "acceptance": "50.1%", "patterns": ["class design", "binary search", "hash map"]},
+      {"number": 1202, "title": "Smallest String With Swaps", "slug": "smallest-string-with-swaps", "difficulty": "Medium", "acceptance": "60.8%", "patterns": ["union find", "sorting"]},
+      {"number": 2225, "title": "Find Players With Zero or One Losses", "slug": "find-players-with-zero-or-one-losses", "difficulty": "Medium", "acceptance": "72.4%", "patterns": ["counting", "hash map", "sorting"]},
+      {"number": 2539, "title": "Count the Number of Good Subsequences", "slug": "count-the-number-of-good-subsequences", "difficulty": "Medium", "acceptance": "48.4%", "patterns": ["combinatorics", "counting", "dynamic programming"]},
+      {"number": 2964, "title": "Number of Divisible Triplet Sums", "slug": "number-of-divisible-triplet-sums", "difficulty": "Medium", "acceptance": "67.6%", "patterns": ["sorting", "two pointers"]},
+      {"number": 3006, "title": "Find Beautiful Indices in the Given Array I", "slug": "find-beautiful-indices-in-the-given-array-i", "difficulty": "Medium", "acceptance": "41.1%", "patterns": ["string matching", "binary search"]},
+      {"number": 23, "title": "Merge k Sorted Lists", "slug": "merge-k-sorted-lists", "difficulty": "Hard", "acceptance": "60.0%", "patterns": ["heap", "linked list", "divide and conquer"]},
+      {"number": 220, "title": "Contains Duplicate III", "slug": "contains-duplicate-iii", "difficulty": "Hard", "acceptance": "24.9%", "patterns": ["ordered set", "sliding window", "bucket"]},
+      {"number": 273, "title": "Integer to English Words", "slug": "integer-to-english-words", "difficulty": "Hard", "acceptance": "35.1%", "patterns": ["recursion", "string", "math"]},
+      {"number": 2312, "title": "Selling Pieces of Wood", "slug": "selling-pieces-of-wood", "difficulty": "Hard", "acceptance": "53.1%", "patterns": ["dynamic programming", "memoization"]},
+      {"number": 3008, "title": "Find Beautiful Indices in the Given Array II", "slug": "find-beautiful-indices-in-the-given-array-ii", "difficulty": "Hard", "acceptance": "28.3%", "patterns": ["KMP", "string matching", "binary search"]}
+    ],
+    "grind75": [
+      {"rank": 1, "title": "Two Sum", "slug": "two-sum", "difficulty": "Easy", "minutes": 15},
+      {"rank": 2, "title": "Valid Parentheses", "slug": "valid-parentheses", "difficulty": "Easy", "minutes": 20},
+      {"rank": 3, "title": "Merge Two Sorted Lists", "slug": "merge-two-sorted-lists", "difficulty": "Easy", "minutes": 20},
+      {"rank": 4, "title": "Best Time to Buy and Sell Stock", "slug": "best-time-to-buy-and-sell-stock", "difficulty": "Easy", "minutes": 20},
+      {"rank": 5, "title": "Valid Palindrome", "slug": "valid-palindrome", "difficulty": "Easy", "minutes": 15},
+      {"rank": 6, "title": "Invert Binary Tree", "slug": "invert-binary-tree", "difficulty": "Easy", "minutes": 15},
+      {"rank": 7, "title": "Valid Anagram", "slug": "valid-anagram", "difficulty": "Easy", "minutes": 15},
+      {"rank": 8, "title": "Binary Search", "slug": "binary-search", "difficulty": "Easy", "minutes": 15},
+      {"rank": 9, "title": "Flood Fill", "slug": "flood-fill", "difficulty": "Easy", "minutes": 20},
+      {"rank": 10, "title": "Maximum Subarray", "slug": "maximum-subarray", "difficulty": "Medium", "minutes": 20},
+      {"rank": 11, "title": "Lowest Common Ancestor of a Binary Search Tree", "slug": "lowest-common-ancestor-of-a-binary-search-tree", "difficulty": "Easy", "minutes": 20},
+      {"rank": 12, "title": "Insert Interval", "slug": "insert-interval", "difficulty": "Medium", "minutes": 25},
+      {"rank": 13, "title": "01 Matrix", "slug": "01-matrix", "difficulty": "Medium", "minutes": 30},
+      {"rank": 14, "title": "K Closest Points to Origin", "slug": "k-closest-points-to-origin", "difficulty": "Medium", "minutes": 30},
+      {"rank": 15, "title": "Balanced Binary Tree", "slug": "balanced-binary-tree", "difficulty": "Easy", "minutes": 15},
+      {"rank": 16, "title": "Linked List Cycle", "slug": "linked-list-cycle", "difficulty": "Easy", "minutes": 20},
+      {"rank": 17, "title": "Implement Queue using Stacks", "slug": "implement-queue-using-stacks", "difficulty": "Easy", "minutes": 20},
+      {"rank": 18, "title": "First Bad Version", "slug": "first-bad-version", "difficulty": "Easy", "minutes": 20},
+      {"rank": 19, "title": "Ransom Note", "slug": "ransom-note", "difficulty": "Easy", "minutes": 15},
+      {"rank": 20, "title": "Longest Substring Without Repeating Characters", "slug": "longest-substring-without-repeating-characters", "difficulty": "Medium", "minutes": 30},
+      {"rank": 21, "title": "3Sum", "slug": "3sum", "difficulty": "Medium", "minutes": 30},
+      {"rank": 22, "title": "Binary Tree Level Order Traversal", "slug": "binary-tree-level-order-traversal", "difficulty": "Medium", "minutes": 20},
+      {"rank": 23, "title": "Clone Graph", "slug": "clone-graph", "difficulty": "Medium", "minutes": 25},
+      {"rank": 24, "title": "Evaluate Reverse Polish Notation", "slug": "evaluate-reverse-polish-notation", "difficulty": "Medium", "minutes": 30},
+      {"rank": 25, "title": "Course Schedule", "slug": "course-schedule", "difficulty": "Medium", "minutes": 30},
+      {"rank": 26, "title": "Implement Trie (Prefix Tree)", "slug": "implement-trie-prefix-tree", "difficulty": "Medium", "minutes": 35},
+      {"rank": 27, "title": "Coin Change", "slug": "coin-change", "difficulty": "Medium", "minutes": 25},
+      {"rank": 28, "title": "Product of Array Except Self", "slug": "product-of-array-except-self", "difficulty": "Medium", "minutes": 30},
+      {"rank": 29, "title": "Climbing Stairs", "slug": "climbing-stairs", "difficulty": "Easy", "minutes": 20},
+      {"rank": 30, "title": "Longest Palindrome", "slug": "longest-palindrome", "difficulty": "Easy", "minutes": 20},
+      {"rank": 31, "title": "Min Stack", "slug": "min-stack", "difficulty": "Medium", "minutes": 20},
+      {"rank": 32, "title": "Reverse Linked List", "slug": "reverse-linked-list", "difficulty": "Easy", "minutes": 20},
+      {"rank": 33, "title": "Validate Binary Search Tree", "slug": "validate-binary-search-tree", "difficulty": "Medium", "minutes": 20},
+      {"rank": 34, "title": "Number of Islands", "slug": "number-of-islands", "difficulty": "Medium", "minutes": 25},
+      {"rank": 35, "title": "Rotting Oranges", "slug": "rotting-oranges", "difficulty": "Medium", "minutes": 30},
+      {"rank": 36, "title": "Search in Rotated Sorted Array", "slug": "search-in-rotated-sorted-array", "difficulty": "Medium", "minutes": 30},
+      {"rank": 37, "title": "Combination Sum", "slug": "combination-sum", "difficulty": "Medium", "minutes": 30},
+      {"rank": 38, "title": "Permutations", "slug": "permutations", "difficulty": "Medium", "minutes": 30},
+      {"rank": 39, "title": "Merge Intervals", "slug": "merge-intervals", "difficulty": "Medium", "minutes": 30},
+      {"rank": 40, "title": "Lowest Common Ancestor of a Binary Tree", "slug": "lowest-common-ancestor-of-a-binary-tree", "difficulty": "Medium", "minutes": 25},
+      {"rank": 41, "title": "Time Based Key-Value Store", "slug": "time-based-key-value-store", "difficulty": "Medium", "minutes": 35},
+      {"rank": 42, "title": "Minimum Window Substring", "slug": "minimum-window-substring", "difficulty": "Hard", "minutes": 30},
+      {"rank": 43, "title": "Serialize and Deserialize Binary Tree", "slug": "serialize-and-deserialize-binary-tree", "difficulty": "Hard", "minutes": 40},
+      {"rank": 44, "title": "Trapping Rain Water", "slug": "trapping-rain-water", "difficulty": "Hard", "minutes": 35},
+      {"rank": 45, "title": "Find Median from Data Stream", "slug": "find-median-from-data-stream", "difficulty": "Hard", "minutes": 30},
+      {"rank": 46, "title": "Majority Element", "slug": "majority-element", "difficulty": "Easy", "minutes": 20},
+      {"rank": 47, "title": "Add Binary", "slug": "add-binary", "difficulty": "Easy", "minutes": 15},
+      {"rank": 48, "title": "Diameter of Binary Tree", "slug": "diameter-of-binary-tree", "difficulty": "Easy", "minutes": 30},
+      {"rank": 49, "title": "Middle of the Linked List", "slug": "middle-of-the-linked-list", "difficulty": "Easy", "minutes": 20},
+      {"rank": 50, "title": "Accounts Merge", "slug": "accounts-merge", "difficulty": "Medium", "minutes": 30},
+      {"rank": 51, "title": "Sort Colors", "slug": "sort-colors", "difficulty": "Medium", "minutes": 25},
+      {"rank": 52, "title": "Word Break", "slug": "word-break", "difficulty": "Medium", "minutes": 30},
+      {"rank": 53, "title": "Partition Equal Subset Sum", "slug": "partition-equal-subset-sum", "difficulty": "Medium", "minutes": 30},
+      {"rank": 54, "title": "String to Integer (atoi)", "slug": "string-to-integer-atoi", "difficulty": "Medium", "minutes": 25},
+      {"rank": 55, "title": "Spiral Matrix", "slug": "spiral-matrix", "difficulty": "Medium", "minutes": 25},
+      {"rank": 56, "title": "Subsets", "slug": "subsets", "difficulty": "Medium", "minutes": 30},
+      {"rank": 57, "title": "Binary Tree Right Side View", "slug": "binary-tree-right-side-view", "difficulty": "Medium", "minutes": 20},
+      {"rank": 58, "title": "Longest Palindromic Substring", "slug": "longest-palindromic-substring", "difficulty": "Medium", "minutes": 25},
+      {"rank": 59, "title": "Word Ladder", "slug": "word-ladder", "difficulty": "Hard", "minutes": 45},
+      {"rank": 60, "title": "Basic Calculator", "slug": "basic-calculator", "difficulty": "Hard", "minutes": 40},
+      {"rank": 61, "title": "Maximum Profit in Job Scheduling", "slug": "maximum-profit-in-job-scheduling", "difficulty": "Hard", "minutes": 45},
+      {"rank": 62, "title": "Merge k Sorted Lists", "slug": "merge-k-sorted-lists", "difficulty": "Hard", "minutes": 30},
+      {"rank": 63, "title": "Largest Rectangle in Histogram", "slug": "largest-rectangle-in-histogram", "difficulty": "Hard", "minutes": 35},
+      {"rank": 64, "title": "Maximum Depth of Binary Tree", "slug": "maximum-depth-of-binary-tree", "difficulty": "Easy", "minutes": 15},
+      {"rank": 65, "title": "Contains Duplicate", "slug": "contains-duplicate", "difficulty": "Easy", "minutes": 15},
+      {"rank": 66, "title": "Unique Paths", "slug": "unique-paths", "difficulty": "Medium", "minutes": 20},
+      {"rank": 67, "title": "Construct Binary Tree from Preorder and Inorder Traversal", "slug": "construct-binary-tree-from-preorder-and-inorder-traversal", "difficulty": "Medium", "minutes": 25},
+      {"rank": 68, "title": "Container With Most Water", "slug": "container-with-most-water", "difficulty": "Medium", "minutes": 35},
+      {"rank": 69, "title": "Letter Combinations of a Phone Number", "slug": "letter-combinations-of-a-phone-number", "difficulty": "Medium", "minutes": 30},
+      {"rank": 70, "title": "Word Search", "slug": "word-search", "difficulty": "Medium", "minutes": 30},
+      {"rank": 71, "title": "Find All Anagrams in a String", "slug": "find-all-anagrams-in-a-string", "difficulty": "Medium", "minutes": 30},
+      {"rank": 72, "title": "Minimum Height Trees", "slug": "minimum-height-trees", "difficulty": "Medium", "minutes": 30},
+      {"rank": 73, "title": "Task Scheduler", "slug": "task-scheduler", "difficulty": "Medium", "minutes": 35},
+      {"rank": 74, "title": "LRU Cache", "slug": "lru-cache", "difficulty": "Medium", "minutes": 30},
+      {"rank": 75, "title": "Kth Smallest Element in a BST", "slug": "kth-smallest-element-in-a-bst", "difficulty": "Medium", "minutes": 25}
+    ],
+    "problems": [
+      {
+        "title": "Find Beautiful Indices in the Given Array I",
+        "url": "https://leetcode.com/problems/find-beautiful-indices-in-the-given-array-i/",
+        "difficulty": "Medium",
+        "priority": "A",
+        "evidence": "User-supplied recent trend",
+        "patterns": ["string matching", "binary search", "two pointers"],
+        "why": "Directly supplied as 100% in the user's recent-three-month list and resembles the reported task to return matching text indices.",
+        "practice": "Solve once with simple occurrence scanning, then optimize how you pair index lists. Explain overlap and empty-match assumptions.",
+        "sources": ["leetcode-user", "glassdoor-local"]
+      },
+      {
+        "title": "Merge Intervals",
+        "url": "https://leetcode.com/problems/merge-intervals/",
+        "difficulty": "Medium",
+        "priority": "A",
+        "evidence": "User-supplied recent trend",
+        "patterns": ["sorting", "intervals"],
+        "why": "Directly supplied as 75% in the user's recent-three-month list and tests clean invariant communication.",
+        "practice": "Defend touching-interval semantics, mutation choices, and the sorting lower bound; handle a follow-up that streams intervals.",
+        "sources": ["leetcode-user"]
+      },
+      {
+        "title": "Word Search",
+        "url": "https://leetcode.com/problems/word-search/",
+        "difficulty": "Medium",
+        "priority": "A",
+        "evidence": "Reported exact",
+        "patterns": ["DFS", "backtracking", "grid"],
+        "why": "Named directly in a supplied November 2024 SWE internship report, including DFS/BFS discussion and a harder follow-up.",
+        "practice": "State the visited-cell invariant, restore state correctly, prune impossible starts, and discuss repeated-query optimization with a trie.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Find Players With Zero or One Losses",
+        "url": "https://leetcode.com/problems/find-players-with-zero-or-one-losses/",
+        "difficulty": "Medium",
+        "priority": "A",
+        "evidence": "Reported exact",
+        "patterns": ["hash map", "counting", "sorting"],
+        "why": "Named directly in a December 2025 SWE report.",
+        "practice": "Use a loss-count map, account for winners never seen as losers, and explain why final sorting affects complexity.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Merge k Sorted Lists",
+        "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
+        "difficulty": "Hard",
+        "priority": "A",
+        "evidence": "Reported exact",
+        "patterns": ["heap", "linked list", "divide and conquer"],
+        "why": "A supplied January 2024 report names merging n sorted lists. Hard difficulty makes it useful for follow-up pressure even if the base prompt is simplified.",
+        "practice": "Implement heap and pairwise-merge versions; compare O(N log k), mutation, heap tie-breaking, and empty lists.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "UTF-8 Validation",
+        "url": "https://leetcode.com/problems/utf-8-validation/",
+        "difficulty": "Medium",
+        "priority": "A",
+        "evidence": "Reported exact or near-exact",
+        "patterns": ["bit manipulation", "state machine", "parsing"],
+        "why": "An older supplied interview report explicitly points candidates to UTF-8 validation. It remains strong practice for precise implementation and bit reasoning.",
+        "practice": "Model continuation bytes as state, mask to eight bits, reject invalid prefixes, and test truncated sequences.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Evaluate Reverse Polish Notation",
+        "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "difficulty": "Medium",
+        "priority": "B",
+        "evidence": "Reported exact analogue",
+        "patterns": ["stack", "parsing"],
+        "why": "A public Palantir intern experience reports evaluating a postfix numeric expression.",
+        "practice": "Preserve operand order, define integer division semantics, and separate token parsing from evaluation.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "House Robber",
+        "url": "https://leetcode.com/problems/house-robber/",
+        "difficulty": "Medium",
+        "priority": "B",
+        "evidence": "Pattern analogue",
+        "patterns": ["1-D dynamic programming"],
+        "why": "The exact OA problem is undisclosed, but a supplied report explicitly says 1-D DP. This is a compact way to prove recurrence, base cases, and O(1) space optimization.",
+        "practice": "Derive the recurrence from choices rather than memorizing it, then handle empty input and negative-value assumptions.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Longest Substring Without Repeating Characters",
+        "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+        "difficulty": "Medium",
+        "priority": "B",
+        "evidence": "Pattern coverage",
+        "patterns": ["sliding window", "hash map", "string"],
+        "why": "Recent SWE reports mention medium sliding-window and performance-sensitive string questions without disclosing the exact prompt.",
+        "practice": "State the window invariant and prove why the left pointer never moves backward.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Network Delay Time",
+        "url": "https://leetcode.com/problems/network-delay-time/",
+        "difficulty": "Medium",
+        "priority": "B",
+        "evidence": "Pattern analogue",
+        "patterns": ["graph", "Dijkstra", "heap"],
+        "why": "Graphs, BFS/DFS, and a networking-themed LeetCode problem appear in supplied reports. This is not claimed as the exact question.",
+        "practice": "Explain why BFS is insufficient for weighted edges, stale heap entries, and unreachable nodes.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Design a HashMap",
+        "url": "https://leetcode.com/problems/design-hashmap/",
+        "difficulty": "Easy",
+        "priority": "B",
+        "evidence": "Pattern analogue",
+        "patterns": ["class design", "hashing", "linked list"],
+        "why": "Reports mention class design with linked lists and small class-based real-world models. Practice the abstraction and collisions, then add real requirements.",
+        "practice": "Discuss collision strategy, resizing, load factor, API contracts, and tests instead of stopping at a fixed-size toy implementation.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Best Time to Buy and Sell Stock",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+        "difficulty": "Easy",
+        "priority": "B",
+        "evidence": "Pattern analogue",
+        "patterns": ["array", "running optimum"],
+        "why": "Stock and portfolio framing appears repeatedly, but reports describe custom parsing and per-day portfolio calculations rather than this exact LeetCode problem.",
+        "practice": "Use this only as a warm-up, then solve the custom portfolio event problem below.",
+        "sources": ["glassdoor-local"]
+      }
+    ],
+    "custom": [
+      {
+        "title": "Active stock portfolio by day",
+        "evidence": "Reported custom problem",
+        "prompt": "You receive holdings (symbol, quantity, active_start, active_end) and daily prices. Return the portfolio value for every day it is active. A follow-up introduces buy/sell events and missing prices.",
+        "expected_reasoning": "Clarify date inclusivity and missing data; index prices by symbol/day; convert holding activity to events or sweep-line deltas; separate parsing from valuation; analyze O(records log records) versus dense-day iteration.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Can the binary row be filled in one operation?",
+        "evidence": "Reported wording, incomplete specification",
+        "prompt": "The report only says: determine whether an array of 0s and 1s can be 'filled' in one go. Practice by driving clarification: define the allowed operation, then solve variants such as filling one contiguous zero segment or flipping one subarray.",
+        "expected_reasoning": "The interview skill is recovering an underspecified contract. Give examples, establish the exact operation, identify the invariant, and only then code.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Chess game domain model",
+        "evidence": "Reported design prompt",
+        "prompt": "Design a chess game in Python. Start with move validation and game state, then support undo, check detection, and alternate rule sets without a giant conditional.",
+        "expected_reasoning": "Separate board state, pieces or movement rules, commands/moves, and game orchestration. Define invariants, legal-move generation, testing boundaries, and where inheritance becomes brittle.",
+        "sources": ["glassdoor-local"]
+      }
+    ]
+  },
+  "learning": {
+    "intro": "Learning is not trivia. The interviewer gives you an unfamiliar model, API, documentation fragment, or codebase and watches whether you form and test a correct mental model. Recent reports also describe a debugging/re-engineering variant: trace data flow, fix a subtle bug, then add a small feature.",
+    "protocol": [
+      "Map the surface: entry points, core data types, state, side effects, and observable output.",
+      "Run or mentally execute one tiny example before attempting the requested change.",
+      "State your current model and uncertainty aloud; ask a question that eliminates a branch of possibilities.",
+      "Localize the invariant violation with evidence instead of editing the first suspicious line.",
+      "Make the smallest correct change, then test neighboring behavior and regression risk.",
+      "Summarize what you learned, what remains uncertain, and how you would validate it in production."
+    ],
+    "drills": [
+      {
+        "title": "Package-manager proxy",
+        "evidence": "Reported Learning prompt",
+        "setup": "You inherit a proxy that resolves packages from an internal cache or an upstream registry. Learn the provided version and cache semantics, then implement support for prerelease versions.",
+        "pressure": "The interviewer changes the rule: upstream can time out after the cache miss, and concurrent clients may request the same uncached package.",
+        "bar": "Model cache key, version resolution, stale data, request coalescing, error propagation, and tests before coding.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Trace, debug, extend",
+        "evidence": "Recent community report",
+        "setup": "Take a small unfamiliar Python service. Trace one request through validation, storage, and response; explain the data flow; reproduce a bug; then add support for one new optional parameter.",
+        "pressure": "The new parameter changes caching behavior and must remain backward compatible.",
+        "bar": "Find entry points quickly, form a falsifiable hypothesis, preserve existing contracts, add focused tests, and explain blast radius.",
+        "sources": ["reddit-loop", "glassdoor-local"]
+      },
+      {
+        "title": "Concurrent payment totals",
+        "evidence": "Reported debugging prompt",
+        "setup": "A payment module produces incorrect totals under concurrent writes. Diagnose the race from logs and code, identify the unsafe read-modify-write sequence, and propose a repair.",
+        "pressure": "A global lock fixes correctness but violates latency objectives and fails across processes.",
+        "bar": "Discuss transaction isolation, atomic updates, idempotency, optimistic concurrency, retry behavior, and a deterministic concurrency test.",
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Unfamiliar mission-events API",
+        "evidence": "Role-tailored practice analogue",
+        "setup": "You receive short documentation for an API with cursor pagination, eventual consistency, and event revisions. Build a client that produces a stable latest-state view.",
+        "pressure": "Events can arrive out of order and the cursor can repeat after a retry.",
+        "bar": "Learn the semantics from examples, define deduplication and ordering, handle partial failure, and expose uncertainty instead of silently dropping data.",
+        "sources": ["official-role", "glassdoor-local"]
+      }
+    ]
+  },
+  "decomposition": {
+    "intro": "Treat Decomposition as product and data design under ambiguity, not a miniature distributed-systems lecture. Reports say candidates must be proactive: define the user, outcome, primitives, workflow, and MVP before discussing scale machinery.",
+    "framework": [
+      {"step": "1", "name": "Outcome", "prompt": "Who is the primary user, what decision or action must improve, and what measurable outcome defines success?"},
+      {"step": "2", "name": "Scope", "prompt": "Clarify functional requirements, constraints, trust boundaries, non-goals, and the first operational workflow."},
+      {"step": "3", "name": "Primitives", "prompt": "Define entities, relationships, state transitions, ownership, identifiers, and source-of-truth rules."},
+      {"step": "4", "name": "Interfaces", "prompt": "Sketch user flow and APIs or events. Show one end-to-end read and one write, including failure behavior."},
+      {"step": "5", "name": "MVP", "prompt": "Choose what ships first, what remains manual, and which risky assumption you validate earliest."},
+      {"step": "6", "name": "Operate", "prompt": "Address authorization, auditability, bad data, concurrency, reliability, observability, and recovery in proportion to the problem."},
+      {"step": "7", "name": "Iterate", "prompt": "Name tradeoffs, metrics, user feedback, and the next version after evidence arrives."}
+    ],
+    "scenarios": [
+      {
+        "title": "Palantir employee matching",
+        "evidence": "Reported intern Decomp prompt",
+        "prompt": "Build a Hinge-like application that helps employees find useful internal connections for mentorship, expertise, or project collaboration.",
+        "twist": "Users distrust popularity scores and sensitive profile attributes cannot be exposed.",
+        "look_for": ["User intent and opt-in", "skills and project graph", "candidate generation versus ranking", "explanations and feedback", "privacy and abuse controls"],
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Internal meeting arrangement service",
+        "evidence": "Reported intern Decomp prompt",
+        "prompt": "Design a service that schedules internal meetings across attendees, rooms, locations, and time zones.",
+        "twist": "Calendars update concurrently and some schedules are classified or only expose free/busy windows.",
+        "look_for": ["Availability model", "constraints and preferences", "conflict resolution", "tentative holds", "privacy and notifications"],
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Mission alert-triage inbox",
+        "evidence": "Defense-role tailored",
+        "prompt": "Operators receive thousands of alerts from sensors and intelligence feeds. Design an inbox that helps them identify, assign, investigate, and resolve the most urgent events.",
+        "twist": "Feeds are delayed, duplicated, and sometimes contradictory; connectivity can be intermittent.",
+        "look_for": ["Operator workflow", "event and evidence model", "deduplication and priority", "human override", "audit and degraded-mode behavior"],
+        "sources": ["official-role"]
+      },
+      {
+        "title": "Resource allocation across units",
+        "evidence": "Reported medicine-distribution theme plus role tailoring",
+        "prompt": "Allocate a limited resource across geographically distributed units with changing demand, delivery constraints, and competing priorities.",
+        "twist": "The optimization recommendation must be explainable, and commanders can override it during an emergency.",
+        "look_for": ["Objectives and fairness", "inventory and demand data", "optimization boundary", "override and audit", "replanning after disruption"],
+        "sources": ["glassdoor-local", "official-role"]
+      },
+      {
+        "title": "Geospatial listing search",
+        "evidence": "Reported Zillow-style prompt",
+        "prompt": "Design a backend for listings with 2-D coordinates and efficient search inside a rectangular map region.",
+        "twist": "Listings move, map tiles become hot, and users need consistent pagination while updates occur.",
+        "look_for": ["Spatial primitives", "index choices", "update/query tradeoff", "pagination semantics", "hot-region scaling"],
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "College course registration",
+        "evidence": "Reported prompt",
+        "prompt": "Design a course registration application with prerequisites, capacity, waitlists, schedule conflicts, and phased enrollment.",
+        "twist": "Thousands of students submit at the same second and the registrar requires explainable fairness.",
+        "look_for": ["Enrollment state machine", "eligibility rules", "concurrency", "waitlist policy", "audit and appeals"],
+        "sources": ["glassdoor-local"]
+      },
+      {
+        "title": "Parking availability",
+        "evidence": "Community-reported prompt",
+        "prompt": "Employees complain that they cannot find parking. Design a practical product response rather than jumping directly to a reservation app.",
+        "twist": "Sensors are expensive, reservations create no-shows, and different shifts have different needs.",
+        "look_for": ["Root-cause discovery", "policy versus software", "capacity data", "MVP experiment", "fairness and abuse"],
+        "sources": ["reddit-loop"]
+      },
+      {
+        "title": "In-memory database",
+        "evidence": "Reported SWE design prompt",
+        "prompt": "Design an in-memory database with CRUD, querying by multiple fields, and transaction rollback.",
+        "twist": "A query can read while another transaction rolls back, and memory is bounded.",
+        "look_for": ["Data and index model", "transaction semantics", "undo log or copy-on-write", "concurrency", "eviction and durability boundary"],
+        "sources": ["glassdoor-local"]
+      }
+    ]
+  },
+  "hiring_manager": {
+    "intro": "Prepare for a variable final round, not a ceremonial fit chat. Reports range from mostly behavioral to a technical repeat of the candidate's weakest onsite signal. The robust strategy is a tight mission story plus readiness to redo coding, Learning, or Decomp under stronger follow-up.",
+    "likely_blocks": [
+      {"name": "Why Palantir / Defense Tech", "weight": "Very likely", "prepare": "A specific, honest mission and role thesis grounded in Gotham's product problems, not prestige."},
+      {"name": "Resume deep dive", "weight": "Very likely", "prepare": "Architecture, ownership boundaries, failures, alternatives, and whether every impact number is measured, projected, or estimated."},
+      {"name": "Weakest-round replay", "weight": "Likely", "prepare": "After each mock, record the weakest signal and redo it the next day without notes."},
+      {"name": "Judgment and culture", "weight": "Likely", "prepare": "Tradeoffs, failure, feedback, independence, asking for help, and disagreement."},
+      {"name": "Technical coding", "weight": "Possible", "prepare": "Remain warm on one medium in 35 minutes with clean tests and two follow-ups."}
+    ],
+    "questions": [
+      "Why Palantir over every other company where you could write software?",
+      "Why Defense Tech, and how have you thought through the consequences of the work?",
+      "Which part of the SWE role fits you better than FDSE, and where would FDSE fit you better?",
+      "Pick the strongest claim on your resume. What evidence would convince me it is overstated?",
+      "What was the most consequential technical judgment you made on that project?",
+      "Tell me about a failure. What did you change that I can verify in a later example?",
+      "What did you learn during our interview loop, and where were you weakest?",
+      "Redo the core of your Decomposition solution with the feedback you now have.",
+      "Teach me the unfamiliar concept from Learning, then apply it to a new case.",
+      "What kind of problem would make you leave a comfortable project and take ownership?"
+    ],
+    "resume_grill": {
+      "headline": "Your likely packet discussion",
+      "intro": "A hiring manager can plausibly spend the round testing whether the resume describes real production ownership or polished security labels. Answer from architecture and decisions, and say when a detail is confidential rather than becoming vague.",
+      "questions": [
+        "Draw the Robinhood step-up verification flow from privileged request to final authorization. Mark every trust boundary and bypass path.",
+        "What did you personally design and implement in that agent, and what was supplied by Okta, Apple APIs, or another team?",
+        "Of 2,000+ endpoints, how many actively used the control, and which outcome changed after rollout?",
+        "Reconstruct the Delta webhook pipeline, including retries, deduplication, late events, enrichment failure, and analyst override.",
+        "How was cumulative risk calibrated, and what was the cost of a false positive versus a false negative?",
+        "Give one production detection rule: data source, logic, baseline, tuning process, validation, and response action.",
+        "For the AI response workflow, identify every nondeterministic component and the control that constrained its blast radius.",
+        "Explain the complete OAuth2/OIDC flow at Auxilium and one authorization bug your design prevented.",
+        "Defend the 99.5% IDS result using confusion matrix, class balance, split methodology, and leakage controls.",
+        "In Lockbox, distinguish authentication, authorization, signatures, key exchange, encryption, integrity, and metadata protection.",
+        "Tell me about one Fellwind customer tradeoff where the technically strongest solution was not the right product decision.",
+        "Your experience is security-centered. Show me evidence that you can own a general product codebase and explain why SWE is the deliberate next step."
+      ]
+    },
+    "closing": [
+      "Ask what distinguishes interns who become trusted contributors on Gotham teams.",
+      "Ask for a recent engineering tradeoff the team made between operator needs and platform consistency.",
+      "Ask how interns receive context for mission-sensitive work and how design decisions are reviewed.",
+      "Do not ask questions answered plainly by the posting; use the time to test mutual fit."
+    ],
+    "sources": ["official-role", "official-hiring", "glassdoor-local", "reddit-intern"]
+  },
+  "schedule": [
+    {"day": "Day 1", "focus": "Role thesis + behavioral inventory", "deliverable": "90-second background, two-minute Why Palantir/Defense Tech, and six indexed stories."},
+    {"day": "Day 2", "focus": "Arrays, strings, hash maps", "deliverable": "Beautiful Indices, Find Players, and the stock-portfolio custom problem."},
+    {"day": "Day 3", "focus": "Intervals + sliding window", "deliverable": "Merge Intervals plus one unseen medium in 35 minutes."},
+    {"day": "Day 4", "focus": "Graphs + backtracking", "deliverable": "Word Search and Network Delay Time with follow-ups."},
+    {"day": "Day 5", "focus": "DP + linked structures", "deliverable": "House Robber and Merge k Sorted Lists; explain both from invariants."},
+    {"day": "Day 6", "focus": "OA implementation", "deliverable": "Timed REST pagination and SQL join/aggregate drills."},
+    {"day": "Day 7", "focus": "Full 90-minute OA", "deliverable": "Two algorithm tasks plus REST; write a miss log immediately afterward."},
+    {"day": "Day 8", "focus": "Learning", "deliverable": "Package-proxy drill with a new rule introduced halfway through."},
+    {"day": "Day 9", "focus": "Debugging/re-engineering", "deliverable": "Trace an unfamiliar codebase, reproduce one bug, patch it, add one parameter."},
+    {"day": "Day 10", "focus": "Concurrency", "deliverable": "Diagnose the payment-total race and design a deterministic regression test."},
+    {"day": "Day 11", "focus": "Decomposition fundamentals", "deliverable": "Employee matching and course registration in 45 minutes each."},
+    {"day": "Day 12", "focus": "Defense product Decomp", "deliverable": "Alert-triage inbox including degraded connectivity, authorization, audit, and MVP."},
+    {"day": "Day 13", "focus": "Hiring manager", "deliverable": "Resume grill, failure/tradeoff follow-ups, and redo your weakest technical round."},
+    {"day": "Day 14", "focus": "Full loop simulation", "deliverable": "20-minute behavioral, 45-minute coding, 45-minute Decomp, then a blunt written retrospective."}
+  ]
+}

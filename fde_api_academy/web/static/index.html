@@ -40,6 +40,11 @@
             <strong>Security Engineering Academy</strong>
             <span>Grace Nolan's interview notes organized into security modules, drills, and interview prompts.</span>
           </button>
+          <button class="academy-card" data-open-academy="palantir">
+            <span class="academy-mark palantir">PLTR</span>
+            <strong>Palantir Engineering Academy</strong>
+            <span>Defense Tech SWE internship preparation across behavioral, HackerRank, coding, Learning, Decomposition, and hiring manager.</span>
+          </button>
         </div>
       </section>
 
@@ -53,6 +58,7 @@
             <button class="segment" data-open-academy="home">Home</button>
             <button class="segment active" data-open-academy="fde">FDE</button>
             <button class="segment" data-open-academy="security">Security</button>
+            <button class="segment" data-open-academy="palantir">Palantir</button>
           </div>
           <div class="segmented" role="tablist" aria-label="App view">
             <button id="viewCurriculum" class="segment active">API Curriculum</button>
@@ -298,6 +304,37 @@
           </article>
         </div>
       </section>
+
+      <section class="palantir-view" id="palantirAcademyView" hidden>
+        <div class="palantir-shell">
+          <aside class="palantir-nav">
+            <div class="palantir-nav-head">
+              <p class="eyebrow">Interview loop</p>
+              <h3>Preparation Map</h3>
+            </div>
+            <div class="palantir-progress" id="palantirProgress"></div>
+            <nav id="palantirStageNav" aria-label="Palantir interview stages"></nav>
+            <button class="button palantir-reset" id="palantirReset" type="button">Reset Progress</button>
+          </aside>
+
+          <article class="palantir-main">
+            <header class="palantir-hero">
+              <div>
+                <p class="eyebrow">Defense Tech SWE Internship</p>
+                <h3 id="palantirStageTitle">Loading interview track...</h3>
+                <div class="palantir-stage-meta" id="palantirStageMeta"></div>
+              </div>
+              <a class="button" href="https://jobs.lever.co/palantir/8bcf4f33-0a79-4248-bbfd-49ac4be9dd8e" target="_blank" rel="noreferrer">Role Posting</a>
+            </header>
+            <section class="palantir-role-brief" id="palantirRoleBrief"></section>
+            <div class="palantir-actions">
+              <button class="button" id="palantirPrevious" type="button">Previous</button>
+              <button class="button primary" id="palantirNext" type="button">Next Stage</button>
+            </div>
+            <div class="palantir-content" id="palantirContent"></div>
+          </article>
+        </div>
+      </section>
     </main>
 
     <script src="/views.js?v=2"></script>
@@ -306,6 +343,7 @@
     <script src="/customersim.js?v=1"></script>
     <script src="/security-coding.js?v=3"></script>
     <script src="/security.js?v=5"></script>
-    <script src="/security-hub.js?v=1"></script>
+    <script src="/palantir.js?v=1"></script>
+    <script src="/security-hub.js?v=2"></script>
   </body>
 </html>

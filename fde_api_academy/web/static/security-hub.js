@@ -9,6 +9,7 @@
     refresh: document.querySelector("#refreshButton"),
     apiLink: document.querySelector('.top-actions a[href="/api/state"]'),
     securityView: document.querySelector("#securityAcademyView"),
+    palantirView: document.querySelector("#palantirAcademyView"),
     fdeViews: [
       document.querySelector("#curriculumView"),
       document.querySelector("#systemDesignView"),
@@ -39,6 +40,7 @@
       els.body.className = "academy-landing";
       els.chooser.hidden = false;
       els.securityView.hidden = true;
+      els.palantirView.hidden = true;
       els.fdeViews.forEach((view) => {
         if (view) view.hidden = true;
       });
@@ -48,6 +50,7 @@
 
     els.chooser.hidden = true;
     els.topbar.hidden = false;
+    els.palantirView.hidden = true;
     if (name === "security") {
       els.body.className = "academy-security";
       els.topEyebrow.textContent = "Mastery-based interview course";
@@ -63,6 +66,22 @@
       return;
     }
 
+    if (name === "palantir") {
+      els.body.className = "academy-palantir";
+      els.topEyebrow.textContent = "Defense Tech SWE interview preparation";
+      els.topTitle.textContent = "Palantir Engineering Academy";
+      els.fdeControls.hidden = true;
+      els.refresh.hidden = true;
+      els.apiLink.hidden = true;
+      els.fdeViews.forEach((view) => {
+        if (view) view.hidden = true;
+      });
+      els.securityView.hidden = true;
+      els.palantirView.hidden = false;
+      await window.PalantirAcademy.start();
+      return;
+    }
+
     els.body.className = "academy-fde";
     els.topEyebrow.textContent = "Local bootcamp";
     els.topTitle.textContent = "FDE API Academy";
@@ -70,6 +89,7 @@
     els.refresh.hidden = false;
     els.apiLink.hidden = false;
     els.securityView.hidden = true;
+    els.palantirView.hidden = true;
     window.history.replaceState(null, "", window.location.pathname);
     showFdeDefault();
   }
@@ -77,6 +97,21 @@
   document.addEventListener("click", (event) => {
     const academyButton = event.target.closest("[data-open-academy]");
     if (!academyButton) return;
-    openAcademy(academyButton.dataset.openAcademy).catch(window.SecurityAcademy.showError);
+    openAcademy(academyButton.dataset.openAcademy).catch((error) => {
+      if (academyButton.dataset.openAcademy === "palantir") window.PalantirAcademy.showError(error);
+      else window.SecurityAcademy.showError(error);
+    });
   });
+
+  const initialAcademy = window.location.hash.startsWith("#palantir/")
+    ? "palantir"
+    : window.location.hash.startsWith("#security/")
+      ? "security"
+      : null;
+  if (initialAcademy) {
+    openAcademy(initialAcademy).catch((error) => {
+      if (initialAcademy === "palantir") window.PalantirAcademy.showError(error);
+      else window.SecurityAcademy.showError(error);
+    });
+  }
 })();

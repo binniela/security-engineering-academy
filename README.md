@@ -1,6 +1,6 @@
 # Local Interview Academies
 
-An interactive local learning platform with separate Forward Deployed Engineer and Security Engineering interview academies.
+An interactive local learning platform with separate Forward Deployed Engineer, Security Engineering, and Palantir Defense Tech SWE interview academies.
 
 It focuses on practical startup engineering:
 
@@ -62,6 +62,9 @@ The localhost landing screen lets you choose between:
 
 - **FDE API Academy** for Python, APIs, system design, and customer simulations.
 - **Security Engineering Academy** for a 23-module intermediate security curriculum based on Grace Nolan's interview notes and expanded for the current engineering bar.
+- **Palantir Engineering Academy** for the Defense Tech SWE internship loop: behavioral screen, HackerRank OA, technical coding, Learning/debugging, Decomposition, and hiring manager.
+
+The Palantir track is built from the supplied Glassdoor export, Reddit and Discord notes, Palantir's official role and interview guidance, and clearly labeled practice analogues. It includes the ten highest-value behavioral questions, a resume-personalized six-story evidence bank and hiring-manager packet defense, a complete 29-question Palantir-tagged LeetCode inventory transcribed from the supplied screenshots, the official-order Grind 75 checklist with direct links and Palantir-overlap filtering, a smaller interview-priority shortlist, custom reported prompts without clean LeetCode matches, codebase and concurrency drills, eight Decomposition mocks, a variable hiring-manager simulator, and a 14-day preparation sequence. Evidence labels distinguish official guidance, repeated candidate reports, one-off reports, and pattern coverage. Completion stays in browser `localStorage`.
 
 The Security Engineering Academy includes current concept lessons, deeper interview explanations, applied examples, common weak answers, interview rubrics, and source notes. Multiple-choice checks have been replaced by open-ended oral boards: each module presents a realistic scenario, five interviewer follow-ups, a written response, and a six-part self-review bar. Core, common, and role-specific labels help prioritize likely interview material. A module is mastered after a substantive response clears its complete review bar. Answers, attempts, search state, and phase readiness stay local to the browser.
 
