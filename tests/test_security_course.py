@@ -13,8 +13,10 @@ HTML_PATH = STATIC_DIR / "index.html"
 SCRIPT_PATH = STATIC_DIR / "security.js"
 STANDALONE_PATH = STATIC_DIR / "security.html"
 HUB_SCRIPT_PATH = STATIC_DIR / "security-hub.js"
+STATIC_HUB_SCRIPT_PATH = STATIC_DIR / "academy-static-hub.js"
 CODING_SCRIPT_PATH = STATIC_DIR / "security-coding.js"
 CODING_WORKER_PATH = STATIC_DIR / "security-coding-worker.js"
+BUILD_SCRIPT_PATH = STATIC_DIR.parents[2] / "scripts" / "build-security-site.mjs"
 
 
 def load_course():
@@ -143,16 +145,30 @@ def test_security_ui_exposes_mastery_controls_and_gates_completion():
     assert "quiz.length < 5" in script
 
 
-def test_standalone_security_entry_has_no_backend_or_fde_dependencies():
+def test_static_academy_hub_has_security_and_palantir_without_backend_dependencies():
     standalone = STANDALONE_PATH.read_text(encoding="utf-8")
     script = SCRIPT_PATH.read_text(encoding="utf-8")
     hub_script = HUB_SCRIPT_PATH.read_text(encoding="utf-8")
+    static_hub_script = STATIC_HUB_SCRIPT_PATH.read_text(encoding="utf-8")
+    build_script = BUILD_SCRIPT_PATH.read_text(encoding="utf-8")
 
-    assert 'data-academy="security"' in standalone
+    assert 'data-academy="hub"' in standalone
     assert "security-hub.js" not in standalone
     assert "/api/" not in standalone
+    assert 'id="academyChooser"' in standalone
+    assert 'id="securityAcademyView"' in standalone
+    assert 'id="palantirAcademyView"' in standalone
+    assert 'data-open-academy="security"' in standalone
+    assert 'data-open-academy="palantir"' in standalone
+    assert 'src="/palantir.js?v=2"' in standalone
+    assert 'src="/academy-static-hub.js?v=1"' in standalone
     assert "/api/" not in script
+    assert "/api/" not in static_hub_script
     assert "FDE API Academy" not in script
+    assert "FDE API Academy" not in standalone
+    assert "palantir.js" in build_script
+    assert "palantir_academy.json" in build_script
+    assert "academy-static-hub.js" in build_script
     assert "/api/state" in hub_script
 
 

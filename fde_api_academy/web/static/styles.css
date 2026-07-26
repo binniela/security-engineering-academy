@@ -1704,6 +1704,21 @@ body.academy-palantir {
   margin: 0 auto;
 }
 
+.academy-static-app {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.academy-static-topbar {
+  min-height: 58px;
+  height: auto;
+}
+
+.academy-grid-static {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .security-standalone-topbar {
   min-height: 58px;
   height: auto;

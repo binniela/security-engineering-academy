@@ -72,7 +72,7 @@ The separate Security Coding Lab adds eight company-attributed Python interview 
 
 ## Deploy Security Academy to Vercel
 
-The Vercel build publishes only the standalone Security Engineering Academy. It does not deploy the Python backend, FDE interface, or any API routes.
+The Vercel build publishes a static academy hub with the Security Engineering Academy and Palantir Defense Tech SWE Academy. It does not deploy the Python backend, FDE interface, or any API routes.
 
 1. Push this repository to GitHub.
 2. Import the repository into Vercel.
@@ -86,7 +86,7 @@ node scripts/build-security-site.mjs
 python -m http.server 8766 --directory security-dist
 ```
 
-The deployed academy has no server-side storage. Progress and notes remain in each browser's `localStorage` and do not sync between devices.
+The deployed academies have no server-side storage. Security and Palantir progress remain in each browser's `localStorage` and do not sync between devices.
 
 ## How Lessons Work
 
