@@ -3279,6 +3279,125 @@ body.academy-landing #palantirAcademyView {
   line-height: 1.65;
 }
 
+.palantir-confirmed-round {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid #0f766e;
+  border-top-width: 4px;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.palantir-confirmed-round > header > span,
+.palantir-round-extras > div > span {
+  color: #047857;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.palantir-confirmed-round > header h4,
+.palantir-round-extras h4 {
+  margin: 4px 0 6px;
+  font-size: 20px;
+}
+
+.palantir-confirmed-round > header p,
+.palantir-confirmed-round > p,
+.palantir-round-structure p,
+.palantir-round-extras li {
+  margin: 0;
+  color: #4b5563;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.palantir-round-structure {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+}
+
+.palantir-round-structure > section {
+  padding: 14px;
+}
+
+.palantir-round-structure > section + section {
+  border-left: 1px solid #d1d5db;
+}
+
+.palantir-round-structure strong {
+  color: #047857;
+  font-size: 11px;
+}
+
+.palantir-round-structure h5 {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.palantir-confirmed-round > ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.palantir-confirmed-round > ol > li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.palantir-confirmed-round > ol > li > span {
+  color: #047857;
+  font: 900 10px/1.5 "SFMono-Regular", Consolas, monospace;
+}
+
+.palantir-confirmed-round > ol > li > p {
+  margin: 0;
+  color: #374151;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.palantir-confirmed-round > ol .palantir-task {
+  grid-column: 1 / -1;
+}
+
+.palantir-round-sessions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.palantir-round-extras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.palantir-round-extras > div {
+  padding: 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #ffffff;
+}
+
+.palantir-round-extras ol {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.palantir-round-extras li + li {
+  margin-top: 8px;
+}
+
 .palantir-answer-model {
   margin-top: 18px;
   padding-top: 16px;
@@ -4329,6 +4448,10 @@ body.academy-landing #palantirAcademyView {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .palantir-round-sessions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .security-concepts {
     grid-template-columns: 1fr;
   }
@@ -4396,6 +4519,9 @@ body.academy-landing #palantirAcademyView {
   .palantir-question-body,
   .palantir-format,
   .palantir-answer-model ol,
+  .palantir-round-structure,
+  .palantir-round-sessions,
+  .palantir-round-extras,
   .palantir-resume-thesis,
   .palantir-resume-story-list,
   .palantir-resume-grill,
@@ -4404,6 +4530,11 @@ body.academy-landing #palantirAcademyView {
   .palantir-drills,
   .palantir-scenario-list {
     grid-template-columns: 1fr;
+  }
+
+  .palantir-round-structure > section + section {
+    border-top: 1px solid #d1d5db;
+    border-left: 0;
   }
 
   .palantir-resume-thesis > aside,

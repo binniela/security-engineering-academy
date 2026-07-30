@@ -13,22 +13,47 @@ def load_academy():
     return json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
 
-def test_palantir_academy_follows_the_reported_interview_order():
+def test_palantir_academy_prioritizes_the_confirmed_first_interview():
     academy = load_academy()
 
-    assert academy["version"] >= 1
-    assert academy["role"]["position"] == "Software Engineer, Internship - Defense Tech"
+    assert academy["version"] >= 2
+    assert academy["role"]["position"] == "Gotham Dev - Internship"
     assert academy["role"]["product"] == "Gotham"
+    assert "Palo Alto" in academy["role"]["location_note"]
     assert [stage["id"] for stage in academy["loop"]] == [
-        "behavioral",
-        "oa",
         "coding",
+        "behavioral",
         "learning",
         "decomposition",
         "hiring-manager",
     ]
-    assert all(stage["confidence"] in {"High", "Medium"} for stage in academy["loop"])
+    assert academy["loop"][0]["confidence"] == "Confirmed"
+    assert academy["loop"][0]["duration"] == "30-45 min"
+    assert all(stage["confidence"] in {"Confirmed", "Medium"} for stage in academy["loop"])
+    assert "candidate portal" in academy["methodology"].lower()
     assert "anecdotal" in academy["methodology"].lower()
+
+
+def test_confirmed_first_round_has_exact_timing_and_practice_protocol():
+    academy = load_academy()
+    round_data = academy["current_round"]
+    serialized = json.dumps(round_data).lower()
+    script = SCRIPT_PATH.read_text(encoding="utf-8")
+
+    assert 'selected: "coding"' in script
+    assert round_data["name"] == "Technical Problem Solving Interview"
+    assert round_data["delivery"] == "30-45 minutes via Microsoft Teams"
+    assert round_data["language"] == "Python"
+    assert [item["time"] for item in round_data["structure"]] == ["~30 min", "~10 min", "~5 min"]
+    assert len(round_data["technical_plan"]) == 5
+    assert round_data["technical_plan"][0]["time"] == "0-2 min"
+    assert round_data["technical_plan"][-1]["time"] == "26-30 min"
+    assert len(round_data["background_prompts"]) == 3
+    assert len(round_data["questions_to_ask"]) == 3
+    assert len(round_data["prep_sessions"]) == 4
+    assert round_data["sources"] == ["candidate-portal"]
+    for expected in ("algorithmic", "leetcode", "map the solution", "think aloud", "test"):
+        assert expected in serialized
 
 
 def test_behavioral_section_has_ten_high_value_questions_with_followups():
@@ -223,7 +248,7 @@ def test_palantir_ui_is_integrated_into_the_academy_hub():
         assert f'id="{element_id}"' in html
 
     assert 'data-open-academy="palantir"' in html
-    assert 'src="/palantir.js?v=1"' in html
+    assert 'src="/palantir.js?v=2"' in html
     assert "palantir-academy-progress-v1" in script
     assert "#palantir/" in script
     assert "window.PalantirAcademy" in script

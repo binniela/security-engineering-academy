@@ -1,14 +1,14 @@
 {
-  "version": 1,
-  "updated": "2026-07-23",
-  "title": "Palantir Defense Tech SWE Academy",
-  "subtitle": "A stage-by-stage preparation track for the Software Engineer Internship - Defense Tech loop.",
-  "methodology": "The ordering and priorities combine Palantir's public role and interview guidance with recurring candidate reports from the supplied Glassdoor export and Reddit notes. Candidate reports are anecdotal and the exact loop can vary. Problems are labeled as reported, close analogues, or pattern coverage so similarity is not mistaken for confirmation.",
+  "version": 2,
+  "updated": "2026-07-29",
+  "title": "Palantir Gotham Dev Academy",
+  "subtitle": "A candidate-specific preparation track for the Gotham Dev Internship interview process.",
+  "methodology": "The confirmed first-round format comes directly from Vincent's Palantir candidate portal and takes precedence over public candidate reports. Later-round preparation combines Palantir's public guidance with recurring reports from the supplied Glassdoor export and Reddit notes; those later-round reports remain anecdotal until Palantir confirms the onsite schedule. Problems are labeled as reported, close analogues, or pattern coverage so similarity is not mistaken for confirmation.",
   "role": {
     "company": "Palantir Technologies",
-    "position": "Software Engineer, Internship - Defense Tech",
+    "position": "Gotham Dev - Internship",
     "product": "Gotham",
-    "location_note": "On-site; the currently verified Defense Tech SWE internship posting is in New York, with location-specific postings handled separately.",
+    "location_note": "Palo Alto candidate process; first interview is remote via Microsoft Teams.",
     "mission": "Build mission-critical products that securely integrate and visualize data, support analysis, alert triage, geospatial workflows, and resource allocation for defense users.",
     "signals": [
       "Write clean, effective code and learn unfamiliar languages or systems quickly.",
@@ -21,6 +21,11 @@
     "stack": ["Java", "Go", "TypeScript", "React", "Redux", "Cassandra", "Spark", "Elasticsearch", "Gradle", "GitHub"]
   },
   "sources": {
+    "candidate-portal": {
+      "title": "Vincent's Palantir candidate portal",
+      "kind": "Confirmed candidate instructions",
+      "note": "Candidate-specific July 2026 instructions for Gotham Dev - Internship - Palo Alto. Confirms a 30-45 minute Microsoft Teams Technical Problem Solving Interview with roughly 30 minutes of algorithmic coding, 10 minutes of background and motivation, and 5 minutes for candidate questions."
+    },
     "official-role": {
       "title": "Palantir Defense Tech SWE internship listing",
       "url": "https://jobs.lever.co/palantir/8bcf4f33-0a79-4248-bbfd-49ac4be9dd8e",
@@ -92,13 +97,54 @@
     }
   },
   "loop": [
-    {"id": "behavioral", "step": "01", "label": "Behavioral", "duration": "20-30 min", "confidence": "High", "summary": "Background, motivation, role fit, judgment, and evidence of ownership."},
-    {"id": "oa", "step": "02", "label": "HackerRank OA", "duration": "90 min", "confidence": "High", "summary": "Usually three tasks: current reports favor two algorithmic problems plus REST/API work; SQL has appeared in prior variants."},
-    {"id": "coding", "step": "03", "label": "Technical Coding", "duration": "45 min", "confidence": "High", "summary": "A medium-style problem with progressive follow-ups, complexity analysis, and heavy emphasis on clear reasoning."},
-    {"id": "learning", "step": "04", "label": "Learning + Debug", "duration": "45-60 min", "confidence": "High", "summary": "Understand unfamiliar material or an existing codebase, diagnose behavior, then extend or repair it."},
-    {"id": "decomposition", "step": "05", "label": "Decomposition", "duration": "45-60 min", "confidence": "High", "summary": "System-design-lite: drive an ambiguous product problem from users and data to an MVP and tradeoffs."},
-    {"id": "hiring-manager", "step": "06", "label": "Hiring Manager", "duration": "30-60 min", "confidence": "Medium", "summary": "Mission and role alignment, resume depth, judgment, and often a repeat of the weakest prior signal."}
+    {"id": "coding", "step": "01", "label": "First Interview", "duration": "30-45 min", "confidence": "Confirmed", "summary": "Technical Problem Solving: roughly 30 minutes of algorithmic coding, 10 minutes of background and motivation, and 5 minutes for your questions."},
+    {"id": "behavioral", "step": "01B", "label": "Background Drill", "duration": "10 min", "confidence": "Confirmed", "summary": "A compact introduction, motivation for Palantir and Gotham, and one resume proof point inside the first interview."},
+    {"id": "learning", "step": "02", "label": "Learning + Debug", "duration": "45-60 min", "confidence": "Medium", "summary": "Reported onsite pattern: understand unfamiliar material or an existing codebase, diagnose behavior, then extend or repair it."},
+    {"id": "decomposition", "step": "03", "label": "Decomposition", "duration": "45-60 min", "confidence": "Medium", "summary": "Reported onsite pattern: drive an ambiguous product problem from users and data to an MVP and tradeoffs."},
+    {"id": "hiring-manager", "step": "04", "label": "Final Rounds", "duration": "30-60 min", "confidence": "Medium", "summary": "Potential mission alignment, resume depth, judgment, and a repeat of the weakest prior signal; await candidate-portal confirmation."}
   ],
+  "current_round": {
+    "name": "Technical Problem Solving Interview",
+    "status": "Confirmed first interview",
+    "delivery": "30-45 minutes via Microsoft Teams",
+    "language": "Python",
+    "technical_focus": "One algorithmic / LeetCode-style problem testing algorithms, data structures, implementation, and technical problem solving. Language choice is not evaluated; fluency and implementation quality are.",
+    "structure": [
+      {"time": "~30 min", "label": "Technical problem", "goal": "Clarify, map the solution, implement it, narrate decisions, and test the finished code."},
+      {"time": "~10 min", "label": "Background + motivation", "goal": "Give a tight background, explain why Palantir and Gotham, and support the fit with one concrete engineering example."},
+      {"time": "~5 min", "label": "Your questions", "goal": "Ask specific questions about Gotham engineering work, intern ownership, and how strong interns earn trust."}
+    ],
+    "great_answer": [
+      "Use the language you know best and warm up by writing executable code in it before the interview.",
+      "Map the solution before coding: decompose the problem, compare plausible approaches, choose one, and state the invariant.",
+      "Think aloud about assumptions, alternatives, tradeoffs, edge cases, and concerns so the interviewer can follow and collaborate.",
+      "Review the implementation with concrete tests and identify what could fail before declaring the solution complete."
+    ],
+    "technical_plan": [
+      {"time": "0-2 min", "action": "Restate the problem and clarify input shape, constraints, duplicates, ordering, mutation, and expected output."},
+      {"time": "2-6 min", "action": "Walk through a small example, state a correct baseline, identify its bottleneck, and propose the chosen data structure and invariant."},
+      {"time": "6-20 min", "action": "Implement in Python while narrating state changes and checking each completed block against the invariant."},
+      {"time": "20-26 min", "action": "Trace a normal case plus empty/minimal, duplicate, boundary, and adversarial cases; repair the code rather than hand-waving."},
+      {"time": "26-30 min", "action": "State time and space complexity, name remaining risks, and respond to an optimization or changed-constraint follow-up."}
+    ],
+    "background_prompts": [
+      "Give your 60-75 second background: production security software, operational workflows, and why broader Gotham product engineering is the deliberate next step.",
+      "Answer Why Palantir and Why Gotham in 60 seconds using a real product problem, not prestige or generic mission language.",
+      "Choose one proof point—Robinhood step-up verification or Delta alert triage—and explain your ownership, hardest judgment, and measured outcome in 90 seconds."
+    ],
+    "questions_to_ask": [
+      "What kind of Gotham problem has an intern recently owned from design through deployment?",
+      "How does a Gotham Dev team balance reusable product primitives with urgent operator needs?",
+      "What distinguishes interns who become trusted contributors by the middle of the internship?"
+    ],
+    "prep_sessions": [
+      {"name": "Mock 1: clean medium", "deliverable": "One unseen array/hash-map or interval problem in 30 minutes with a complete spoken plan and tests."},
+      {"name": "Mock 2: traversal", "deliverable": "One tree, graph, or grid problem in 30 minutes; state the visited-state invariant and recursion/queue space."},
+      {"name": "Mock 3: follow-up pressure", "deliverable": "Solve a medium, then handle a changed constraint without rewriting blindly."},
+      {"name": "Full first-round simulation", "deliverable": "30-minute coding, 10-minute background/motivation, and 5 minutes of questions with no notes."}
+    ],
+    "sources": ["candidate-portal"]
+  },
   "behavioral": {
     "intro": "Do not memorize ten STAR monologues. Prepare six strong stories and learn to retrieve them from different angles. Palantir reports consistently describe conversational follow-ups that probe the decisions underneath the polished summary.",
     "recent_signal": "A July 2026 Palantir-specific Discord report describes the recruiter call as straightforward: discuss your previous or current job and explain why Palantir. Treat that as a fresh anecdotal confirmation of the existing preparation priorities, not a guarantee of the exact script.",

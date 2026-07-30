@@ -4,7 +4,7 @@
 
   const state = {
     data: null,
-    selected: "behavioral",
+    selected: "coding",
   };
 
   const els = {
@@ -107,7 +107,13 @@
   function renderBehavioral() {
     const section = state.data.behavioral;
     const resume = section.resume_profile;
+    const round = state.data.current_round;
     return `
+      <section class="palantir-confirmed-round">
+        <header><span>Confirmed first interview</span><h4>Ten-minute background and motivation drill</h4><p>This is not a full behavioral round. Deliver the three answers below compactly so the interview keeps its technical majority.</p></header>
+        <ol>${round.background_prompts.map((prompt, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span><p>${esc(prompt)}</p>${taskCheckbox("behavioral", `first-round-${index}`, "Delivered within the time limit")}</li>`).join("")}</ol>
+        ${sourceBlock(round.sources, "Confirmed format source")}
+      </section>
       <section class="palantir-lead">
         <p>${esc(section.intro)}</p>
         <aside class="palantir-recent-signal"><strong>Fresh recruiter signal</strong><p>${esc(section.recent_signal)}</p>${sourceBlock(["discord-local"], "User-supplied source")}</aside>
@@ -186,6 +192,7 @@
 
   function renderCoding() {
     const section = state.data.coding;
+    const round = state.data.current_round;
     const taggedSlugs = new Set(section.tagged_problems.map((problem) => problem.slug));
     const grindOverlap = section.grind75.filter((problem) => taggedSlugs.has(problem.slug)).length;
     const grindMinutes = section.grind75.reduce((total, problem) => total + problem.minutes, 0);
@@ -194,8 +201,29 @@
       return counts;
     }, {});
     return `
+      <section class="palantir-confirmed-round">
+        <header><span>${esc(round.status)}</span><h4>${esc(round.name)}</h4><p>${esc(round.delivery)} · Recommended language: ${esc(round.language)}</p></header>
+        <p>${esc(round.technical_focus)}</p>
+        <div class="palantir-round-structure">
+          ${round.structure.map((item) => `<section><strong>${esc(item.time)}</strong><h5>${esc(item.label)}</h5><p>${esc(item.goal)}</p></section>`).join("")}
+        </div>
+        <div class="palantir-answer-model"><h4>What Palantir explicitly rewards</h4><ol>${round.great_answer.map((item) => `<li>${esc(item)}</li>`).join("")}</ol></div>
+        ${sourceBlock(round.sources, "Confirmed candidate instructions")}
+      </section>
+      <section class="palantir-section-head"><div><span>Thirty-minute clock</span><h4>Technical execution protocol</h4></div><p>Practice this exact sequence until planning and testing happen automatically.</p></section>
+      <div class="palantir-timeline palantir-first-round-timeline">
+        ${round.technical_plan.map((item, index) => `<div><strong>${esc(item.time)}</strong><p>${esc(item.action)}</p>${taskCheckbox("coding", `first-round-time-${index}`, "Rehearsed this checkpoint")}</div>`).join("")}
+      </div>
+      <section class="palantir-section-head"><div><span>Full simulation</span><h4>Four sessions before the interview</h4></div><p>Do not count a session complete unless the code runs and the explanation stays continuous.</p></section>
+      <div class="palantir-coverage palantir-round-sessions">
+        ${round.prep_sessions.map((session, index) => `<section><strong>${esc(session.name)}</strong><p>${esc(session.deliverable)}</p>${taskCheckbox("coding", `first-round-session-${index}`, "Completed under interview timing")}</section>`).join("")}
+      </div>
+      <section class="palantir-round-extras">
+        <div><span>Ten-minute close</span><h4>Background + motivation</h4><ol>${round.background_prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join("")}</ol></div>
+        <div><span>Five-minute close</span><h4>Questions worth asking</h4><ol>${round.questions_to_ask.map((question) => `<li>${esc(question)}</li>`).join("")}</ol></div>
+      </section>
       <section class="palantir-lead">
-        <p>The highest return is not grinding every tagged problem. Master the reported questions, then cover the few recurring patterns and practice responding to follow-ups without losing code quality.</p>
+        <p>Your immediate target is one clean algorithmic solution in 30 minutes. Master the priority problems and communication loop before expanding into tagged inventories or Grind 75.</p>
         <div class="palantir-answer-model"><h4>Live interview bar</h4><ol>${section.interview_bar.map((item) => `<li>${esc(item)}</li>`).join("")}</ol></div>
       </section>
       <section class="palantir-section-head"><div><span>Start here</span><h4>Priority shortlist and reported questions</h4></div><p>Finish the A set first. Use the B set for pattern insurance, then expand into the inventories only when a miss log shows a gap.</p></section>
